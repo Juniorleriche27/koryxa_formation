@@ -8,12 +8,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Loader2, X } from "lucide-react";
 import { aiAPI } from "@/lib/api";
 
-interface CellOutput {
+export interface CellOutput {
   type: "image" | "text" | "html";
   data: string;
 }
 
-interface NotebookCell {
+export interface NotebookCell {
   cell_type: "markdown" | "code" | "raw";
   source: string;
   outputs: CellOutput[];

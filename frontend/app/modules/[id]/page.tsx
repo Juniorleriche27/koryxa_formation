@@ -10,15 +10,9 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Badge from "@/components/ui/Badge";
 import ModuleProgress from "@/components/modules/ModuleProgress";
-import NotebookViewer from "@/components/modules/NotebookViewer";
+import NotebookViewer, { NotebookCell } from "@/components/modules/NotebookViewer";
 import AIAssistant from "@/components/modules/AIAssistant";
 import QuizBlock from "@/components/modules/QuizBlock";
-
-interface NotebookCell {
-  cell_type: "markdown" | "code" | "raw";
-  source: string;
-  outputs: { type: string; data: string }[];
-}
 
 export default function ModuleDetailPage() {
   const { id } = useParams<{ id: string }>();
