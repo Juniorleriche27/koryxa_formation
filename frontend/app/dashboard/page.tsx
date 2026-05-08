@@ -14,7 +14,9 @@ export default function DashboardPage() {
   const { completion, isCompleted } = useProgress();
 
   useEffect(() => {
-    modulesAPI.getAll().then((r) => setModules(r.data));
+    modulesAPI.getAll()
+      .then((r) => setModules(r.data))
+      .catch(() => {/* 401 handled globally, other errors leave modules empty */});
   }, []);
 
   const completedCount = modules.filter((m) => isCompleted(m.id)).length;

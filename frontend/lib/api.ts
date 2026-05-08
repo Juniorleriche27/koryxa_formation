@@ -5,6 +5,17 @@ const api = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err?.response?.status === 401 && typeof window !== "undefined") {
+      const koryxaLogin = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
+      window.location.href = `${koryxaLogin}?redirect=${encodeURIComponent(window.location.href)}`;
+    }
+    return Promise.reject(err);
+  }
+);
+
 export const modulesAPI = {
   getAll: () => api.get("/modules"),
   getOne: (id: string) => api.get(`/modules/${id}`),

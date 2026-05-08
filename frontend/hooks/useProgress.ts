@@ -8,8 +8,12 @@ export function useProgress() {
   const [completion, setCompletion] = useState<number>(0);
 
   useEffect(() => {
-    progressAPI.getAll().then((r) => setProgress(r.data));
-    progressAPI.getCompletion().then((r) => setCompletion(r.data.percentage));
+    progressAPI.getAll()
+      .then((r) => setProgress(r.data))
+      .catch(() => {});
+    progressAPI.getCompletion()
+      .then((r) => setCompletion(r.data.percentage))
+      .catch(() => {});
   }, []);
 
   const markCompleted = async (moduleId: string) => {
