@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Loader2, X } from "lucide-react";
+import { Sparkles, Loader2, X, Lightbulb } from "lucide-react";
 import { aiAPI } from "@/lib/api";
 
 export interface CellOutput {
@@ -22,6 +22,13 @@ export interface NotebookCell {
 interface NotebookViewerProps {
   cells: NotebookCell[];
   moduleTitle?: string;
+}
+
+// Supprime les formules d'intro inutiles de l'IA
+function cleanAIResponse(text: string): string {
+  return text
+    .replace(/^(Bonjour\s*!?\s*|Pas de souci\s*!?\s*|Bien sûr\s*!?\s*|Avec plaisir\s*!?\s*|Bien entendu\s*!?\s*)/i, "")
+    .trimStart();
 }
 
 function MarkdownCell({ source }: { source: string }) {
@@ -42,13 +49,71 @@ function MarkdownCell({ source }: { source: string }) {
         remarkPlugins={[remarkGfm]}
         components={{
           a: ({ href, children }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+            <a href={href} target="_blank" rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
               {children}
             </a>
           ),
         }}
       >
         {source}
+      </ReactMarkdown>
+    </div>
+  );
+}
+
+// Rendu markdown pour l'explication IA — styles soignés purple/dark
+function AIMarkdown({ text }: { text: string }) {
+  return (
+    <div className="
+      prose prose-invert prose-sm max-w-none
+      prose-p:text-slate-200 prose-p:leading-[1.8] prose-p:my-2
+      prose-strong:text-white prose-strong:font-semibold
+      prose-em:text-purple-300 prose-em:not-italic prose-em:font-medium
+      prose-h1:text-white prose-h1:text-base prose-h1:font-bold prose-h1:mt-4 prose-h1:mb-1
+      prose-h2:text-white prose-h2:text-sm prose-h2:font-semibold prose-h2:mt-3 prose-h2:mb-1
+      prose-h3:text-purple-300 prose-h3:text-sm prose-h3:font-semibold prose-h3:mt-2 prose-h3:mb-1
+      prose-ul:my-2 prose-ul:space-y-1
+      prose-ol:my-2 prose-ol:space-y-1
+      prose-li:text-slate-200 prose-li:leading-relaxed
+      prose-ul:marker:text-purple-400
+      prose-ol:marker:text-purple-400
+      prose-code:text-amber-300 prose-code:bg-white/8 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:font-mono
+      prose-pre:bg-[#0d0d1a] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-pre:text-xs
+      prose-blockquote:border-l-purple-500 prose-blockquote:bg-purple-500/5 prose-blockquote:text-slate-300 prose-blockquote:rounded-r
+      prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+    ">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ href, children }) => (
+            <a href={href} target="_blank" rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+              {children}
+            </a>
+          ),
+          code: ({ inline, className, children, ...props }: { inline?: boolean; className?: string; children?: React.ReactNode }) => {
+            const match = /language-(\w+)/.exec(className || "");
+            if (!inline && match) {
+              return (
+                <SyntaxHighlighter
+                  language={match[1]}
+                  style={vscDarkPlus}
+                  customStyle={{ margin: 0, borderRadius: "0.5rem", fontSize: "0.75rem", background: "#0d0d1a" }}
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              );
+            }
+            return (
+              <code className="text-amber-300 bg-white/8 px-1.5 py-0.5 rounded text-xs font-mono" {...props}>
+                {children}
+              </code>
+            );
+          },
+        }}
+      >
+        {text}
       </ReactMarkdown>
     </div>
   );
@@ -64,7 +129,7 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
     setLoading(true);
     try {
       const res = await aiAPI.explain(source, moduleTitle);
-      setExplanation(res.data.explanation);
+      setExplanation(cleanAIResponse(res.data.explanation));
       setShowExp(true);
     } catch {
       setExplanation("Impossible de générer l'explication.");
@@ -91,10 +156,12 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
           disabled={loading}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 disabled:opacity-50 transition border border-purple-500/30 hover:border-purple-400/50 px-2.5 py-1 rounded-lg"
+          className="flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 disabled:opacity-50 transition border border-purple-500/30 hover:border-purple-400/50 bg-purple-500/5 hover:bg-purple-500/10 px-2.5 py-1 rounded-lg"
         >
-          {loading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-          {loading ? "Analyse..." : "Explique"}
+          {loading
+            ? <><Loader2 size={12} className="animate-spin" /> Analyse en cours…</>
+            : <><Sparkles size={12} /> Expliquer ce code</>
+          }
         </motion.button>
       </div>
 
@@ -109,23 +176,55 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
         {source}
       </SyntaxHighlighter>
 
-      {/* Explication IA */}
+      {/* ── Carte explication IA ── */}
       <AnimatePresence>
         {showExp && explanation && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-purple-900/20 border-t border-purple-500/20 px-4 py-3"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
           >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start gap-2 flex-1">
-                <Sparkles size={14} className="text-purple-400 mt-0.5 shrink-0" />
-                <p className="text-slate-300 text-sm leading-relaxed">{explanation}</p>
+            <div className="relative bg-gradient-to-b from-[#1a0f2e] to-[#130d24] border-t border-purple-500/25">
+
+              {/* Lueur subtile en haut */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+
+              <div className="px-5 py-4">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                      <Lightbulb size={13} className="text-purple-300" />
+                    </div>
+                    <span className="text-xs font-semibold text-purple-300 uppercase tracking-widest">
+                      Explication simplifiée
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-purple-500/70 font-mono">
+                      <Sparkles size={10} /> IA
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setShowExp(false)}
+                    className="text-slate-600 hover:text-slate-300 transition rounded-lg hover:bg-white/5 p-1"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+
+                {/* Corps markdown */}
+                <div className="pl-1">
+                  <AIMarkdown text={explanation} />
+                </div>
               </div>
-              <button onClick={() => setShowExp(false)} className="text-slate-500 hover:text-white transition shrink-0">
-                <X size={14} />
-              </button>
+
+              {/* Pied discret */}
+              <div className="px-5 pb-3 flex items-center gap-1.5">
+                <div className="h-px flex-1 bg-white/5" />
+                <span className="text-xs text-slate-600 font-mono">généré par IA · à vérifier</span>
+                <div className="h-px flex-1 bg-white/5" />
+              </div>
             </div>
           </motion.div>
         )}
