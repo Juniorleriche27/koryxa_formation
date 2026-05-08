@@ -59,7 +59,7 @@ function Orb({ color, size, x, y, dur }: { color: string; size: number; x: numbe
 }
 
 // ── Typing text animation ──────────────────────────────────────
-const words = ["Data Analyst", "Data Scientist", "Professionnel", "Expert Python"];
+const words = ["Data Analyst", "Analyste métier", "Professionnel de la donnée", "Portfolio data"];
 function TypingText() {
   const [idx, setIdx] = useState(0);
   const [displayed, setDisplayed] = useState("");
@@ -282,7 +282,7 @@ export default function LandingPage() {
             >
               29 000 FCFA
             </motion.span>
-            <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-2 py-1 rounded-lg">−95%</span>
+            <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-2 py-1 rounded-lg">−47%</span>
           </motion.div>
 
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight mb-6">
@@ -299,7 +299,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-base sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Maîtrise Python, Pandas, NumPy, Matplotlib et l&apos;analyse de données réelles en{" "}
+            Apprends à analyser des données réelles avec Python, Pandas, NumPy, Matplotlib et une vraie logique métier en{" "}
             <motion.span
               animate={{ color: ["#fff", "#60a5fa", "#a78bfa", "#fff"] }}
               transition={{ duration: 3, repeat: Infinity }}
@@ -320,7 +320,7 @@ export default function LandingPage() {
                 className="w-full sm:w-auto flex flex-col items-center justify-center gap-0.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold px-7 sm:px-9 py-3 rounded-2xl text-base sm:text-lg"
               >
                 <span className="flex items-center gap-2">
-                  Accéder à la formation
+                  Commencer le parcours
                   <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1, repeat: Infinity }}>
                     <ArrowRight size={20} />
                   </motion.span>
@@ -408,11 +408,11 @@ export default function LandingPage() {
             transition={{ delay: 0.3 }}
             className="text-center mt-8"
           >
-            <p className="text-slate-400 mb-2">Tu as aimé ? Accède aux 7 autres modules.</p>
+            <p className="text-slate-400 mb-2">Tu veux construire ton portfolio data ? Accède au parcours complet.</p>
             <div className="flex items-center justify-center gap-2 mb-5">
               <span className="text-slate-500 line-through text-sm">55 000 F</span>
               <span className="text-white font-bold text-xl">29 000 FCFA</span>
-              <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-2 py-0.5 rounded-lg">−95%</span>
+              <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-2 py-0.5 rounded-lg">−47%</span>
             </div>
             <Link href="/register">
               <motion.button
@@ -422,7 +422,7 @@ export default function LandingPage() {
                 whileTap={{ scale: 0.97 }}
                 className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold px-10 py-4 rounded-2xl text-lg"
               >
-                Accéder à la formation →
+                Commencer le parcours →
               </motion.button>
             </Link>
           </motion.div>
@@ -473,9 +473,9 @@ export default function LandingPage() {
               transition={{ duration: 2, repeat: Infinity }}
               className="text-blue-400 font-semibold text-sm uppercase tracking-widest mb-3"
             >
-              Programme complet
+              Parcours complet
             </motion.p>
-            <h2 className="text-3xl sm:text-4xl font-bold">8 modules pour tout maîtriser</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold">8 modules pour devenir Data Analyst opérationnel</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -651,11 +651,11 @@ export default function LandingPage() {
               transition={{ duration: 3, repeat: Infinity }}
               className="bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent bg-[length:200%]"
             >
-              Data Analyst ?
+              Data Analyst opérationnel ?
             </motion.span>
           </motion.h2>
           <p className="text-slate-400 text-base sm:text-lg mb-8">
-            Rejoins KORYXA Formation et transforme ta carrière.
+            Rejoins KORYXA Formation et construis des compétences data utiles, visibles et exploitables.
           </p>
 
           {/* Pricing card */}

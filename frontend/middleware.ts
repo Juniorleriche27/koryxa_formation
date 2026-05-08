@@ -1,19 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = ["/", "/login", "/register"];
+const KORYXA_LOGIN = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
+const APP_URL      = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Laisser passer les routes publiques
-  if (PUBLIC_ROUTES.includes(pathname)) return NextResponse.next();
-
-  // Vérifier le token dans les cookies
-  const token = request.cookies.get("access_token")?.value;
-  if (!token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
+  const session = request.cookies.get("innova_session")?.value;
+  if (!session) {
+    const returnUrl = APP_URL + pathname;
+    const loginUrl  = `${KORYXA_LOGIN}?redirect=${encodeURIComponent(returnUrl)}`;
     return NextResponse.redirect(loginUrl);
   }
 

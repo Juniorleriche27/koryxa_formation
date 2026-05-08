@@ -1,29 +1,22 @@
 "use client";
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { authAPI } from "@/lib/api";
-import { saveToken, removeToken } from "@/lib/auth";
-import type { User } from "@/types";
+
+const KORYXA_LOGIN  = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
+const KORYXA_LOGOUT = process.env.NEXT_PUBLIC_KORYXA_LOGOUT_URL ?? (process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/logout");
+const APP_URL       = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
 export function useAuth() {
-  const [user, setUser]       = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const login = async (email: string, password: string) => {
-    setLoading(true);
-    const res = await authAPI.login({ email, password });
-    saveToken(res.data.access_token);
-    router.push("/dashboard");
-    setLoading(false);
+  const login = (redirectPath = "/dashboard") => {
+    const returnUrl = APP_URL + redirectPath;
+    window.location.href = `${KORYXA_LOGIN}?redirect=${encodeURIComponent(returnUrl)}`;
   };
 
-  const logout = async () => {
-    await authAPI.logout();
-    removeToken();
-    setUser(null);
-    router.push("/login");
+  const logout = () => {
+    const returnUrl = APP_URL;
+    window.location.href = `${KORYXA_LOGOUT}?redirect=${encodeURIComponent(returnUrl)}`;
   };
 
-  return { user, loading, login, logout };
+  return { login, logout };
 }
