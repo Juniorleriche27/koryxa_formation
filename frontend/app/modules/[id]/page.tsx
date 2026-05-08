@@ -150,27 +150,46 @@ export default function ModuleDetailPage() {
                             {videos.map((r) => {
                               const ytId = getYouTubeId(r.url);
                               return (
-                                <div key={r.id} className="rounded-xl overflow-hidden border border-white/8 bg-black">
-                                  {r.title && (
-                                    <div className="px-4 py-2 bg-white/3 border-b border-white/5">
-                                      <p className="text-sm font-medium text-white">{r.title}</p>
-                                      {r.description && <p className="text-xs text-slate-400 mt-0.5">{r.description}</p>}
-                                    </div>
-                                  )}
+                                <div key={r.id} className="rounded-xl overflow-hidden border border-white/8 bg-[#0d0d1a]">
                                   {ytId ? (
-                                    <div className="aspect-video">
-                                      <iframe
-                                        src={`https://www.youtube.com/embed/${ytId}`}
-                                        title={r.title}
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        className="w-full h-full"
-                                      />
-                                    </div>
+                                    <>
+                                      {r.title && (
+                                        <div className="px-4 py-2 bg-white/3 border-b border-white/5">
+                                          <p className="text-sm font-medium text-white">{r.title}</p>
+                                          {r.description && <p className="text-xs text-slate-400 mt-0.5">{r.description}</p>}
+                                        </div>
+                                      )}
+                                      <div className="aspect-video">
+                                        <iframe
+                                          src={`https://www.youtube.com/embed/${ytId}`}
+                                          title={r.title}
+                                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                          allowFullScreen
+                                          className="w-full h-full"
+                                        />
+                                      </div>
+                                    </>
                                   ) : (
-                                    <a href={r.url} target="_blank" rel="noopener noreferrer"
-                                      className="flex items-center gap-2 p-4 text-sm text-blue-400 hover:text-blue-300 transition">
-                                      <ExternalLink size={14} /> Ouvrir la vidéo
+                                    /* URL non-embeddable (recherche, lien court, etc.) → carte cliquable */
+                                    <a
+                                      href={r.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex items-center gap-4 p-5 hover:bg-white/3 transition group"
+                                    >
+                                      {/* Thumbnail placeholder */}
+                                      <div className="w-24 h-14 shrink-0 rounded-lg bg-red-600/20 border border-red-500/20 flex items-center justify-center">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-red-500">
+                                          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0C.488 3.45.029 5.804 0 12c.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/>
+                                        </svg>
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-white group-hover:text-red-300 transition truncate">{r.title}</p>
+                                        {r.description && <p className="text-slate-400 text-sm mt-0.5 line-clamp-2">{r.description}</p>}
+                                        <p className="text-xs text-red-400/70 mt-1.5 flex items-center gap-1">
+                                          <ExternalLink size={11} /> Regarder sur YouTube
+                                        </p>
+                                      </div>
                                     </a>
                                   )}
                                 </div>
