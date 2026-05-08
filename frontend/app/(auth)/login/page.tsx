@@ -1,9 +1,9 @@
 "use client";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 
-export default function LoginPage() {
+function RedirectToKoryxa() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -13,8 +13,15 @@ export default function LoginPage() {
     window.location.href = `${koryxaLogin}?redirect=${encodeURIComponent(returnUrl)}`;
   }, [searchParams]);
 
+  return null;
+}
+
+export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#050c1a] flex items-center justify-center px-4">
+      <Suspense>
+        <RedirectToKoryxa />
+      </Suspense>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
