@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -120,19 +120,40 @@ function AIMarkdown({ text }: { text: string }) {
 }
 
 function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: CellOutput[]; moduleTitle?: string }) {
-  const [explanation, setExplanation] = useState("");
+  const [fullText, setFullText]       = useState("");
+  const [displayed, setDisplayed]     = useState("");
+  const [streaming, setStreaming]     = useState(false);
   const [loading, setLoading]         = useState(false);
   const [showExp, setShowExp]         = useState(false);
 
+  // Typewriter: reveal fullText char by char when it changes
+  useEffect(() => {
+    if (!fullText) return;
+    setDisplayed("");
+    setStreaming(true);
+    let i = 0;
+    // Faster for longer texts to avoid waiting forever
+    const delay = fullText.length > 600 ? 8 : fullText.length > 300 ? 12 : 18;
+    const timer = setInterval(() => {
+      i++;
+      setDisplayed(fullText.slice(0, i));
+      if (i >= fullText.length) {
+        clearInterval(timer);
+        setStreaming(false);
+      }
+    }, delay);
+    return () => clearInterval(timer);
+  }, [fullText]);
+
   const explain = async () => {
-    if (explanation) { setShowExp(true); return; }
+    if (fullText) { setShowExp(true); return; }
     setLoading(true);
     try {
       const res = await aiAPI.explain(source, moduleTitle);
-      setExplanation(cleanAIResponse(res.data.explanation));
+      setFullText(cleanAIResponse(res.data.explanation));
       setShowExp(true);
     } catch {
-      setExplanation("Impossible de générer l'explication.");
+      setFullText("Impossible de générer l'explication.");
       setShowExp(true);
     } finally {
       setLoading(false);
@@ -213,9 +234,9 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
                   </button>
                 </div>
 
-                {/* Corps markdown */}
+                {/* Corps markdown avec curseur pendant le streaming */}
                 <div className="pl-1">
-                  <AIMarkdown text={explanation} />
+                  <AIMarkdown text={displayed + (streaming ? "▍" : "")} />
                 </div>
               </div>
 
