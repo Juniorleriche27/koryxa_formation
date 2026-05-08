@@ -1,11 +1,12 @@
 "use client";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { safeReturnUrl } from "@/lib/redirectUtils";
 
 export default function RegisterPage() {
   useEffect(() => {
-    const returnUrl     = process.env.NEXT_PUBLIC_APP_URL ?? "";
-    const koryxaSignup  = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/signup";
+    const returnUrl    = safeReturnUrl(null); // always /dashboard
+    const koryxaSignup = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/signup";
     window.location.href = `${koryxaSignup}?redirect=${encodeURIComponent(returnUrl)}`;
   }, []);
 

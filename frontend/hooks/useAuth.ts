@@ -1,15 +1,13 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { safeReturnUrl } from "@/lib/redirectUtils";
 
 const KORYXA_LOGIN  = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
 const KORYXA_LOGOUT = process.env.NEXT_PUBLIC_KORYXA_LOGOUT_URL ?? (process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/logout");
 const APP_URL       = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
 export function useAuth() {
-  const router = useRouter();
-
   const login = (redirectPath = "/dashboard") => {
-    const returnUrl = APP_URL + redirectPath;
+    const returnUrl = safeReturnUrl(APP_URL + redirectPath);
     window.location.href = `${KORYXA_LOGIN}?redirect=${encodeURIComponent(returnUrl)}`;
   };
 

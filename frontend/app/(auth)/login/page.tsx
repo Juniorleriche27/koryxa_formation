@@ -2,14 +2,15 @@
 import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { safeReturnUrl } from "@/lib/redirectUtils";
 
 function RedirectToKoryxa() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const redirectPath = searchParams.get("redirect") ?? "/dashboard";
-    const returnUrl    = (process.env.NEXT_PUBLIC_APP_URL ?? "") + redirectPath;
-    const koryxaLogin  = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
+    const raw         = searchParams.get("redirect");
+    const returnUrl   = safeReturnUrl(raw);
+    const koryxaLogin = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
     window.location.href = `${koryxaLogin}?redirect=${encodeURIComponent(returnUrl)}`;
   }, [searchParams]);
 
