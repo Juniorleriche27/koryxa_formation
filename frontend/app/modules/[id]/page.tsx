@@ -15,6 +15,7 @@ import ModuleProgress from "@/components/modules/ModuleProgress";
 import NotebookViewer, { NotebookCell } from "@/components/modules/NotebookViewer";
 import AIAssistant from "@/components/modules/AIAssistant";
 import QuizBlock from "@/components/modules/QuizBlock";
+import DocumentViewer from "@/components/modules/DocumentViewer";
 
 export default function ModuleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -199,12 +200,26 @@ export default function ModuleDetailPage() {
                   );
                 })()}
               </>
-            ) : (
-              <div className="text-center py-20 text-slate-500">
-                <BookOpen size={40} className="mx-auto mb-4 opacity-30" />
-                <p>Le contenu de ce module sera bientôt disponible.</p>
-              </div>
-            )}
+            ) : (() => {
+              // Cherche un document principal parmi les ressources
+              const docResource = module.resources?.find(
+                (r) => r.type === "notebook" || r.type === "article" || r.type === "dataset"
+              );
+              if (docResource) {
+                return (
+                  <>
+                    <DocumentViewer resource={docResource} />
+                    <QuizBlock moduleId={id} onComplete={() => markCompleted(id)} />
+                  </>
+                );
+              }
+              return (
+                <div className="text-center py-20 text-slate-500">
+                  <BookOpen size={40} className="mx-auto mb-4 opacity-30" />
+                  <p>Le contenu de ce module sera bientôt disponible.</p>
+                </div>
+              );
+            })()}
           </>
         )}
 
