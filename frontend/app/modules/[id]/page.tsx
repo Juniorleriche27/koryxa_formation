@@ -9,6 +9,7 @@ import type { Module } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Badge from "@/components/ui/Badge";
+import { ExternalLink } from "lucide-react";
 import ModuleProgress from "@/components/modules/ModuleProgress";
 import NotebookViewer, { NotebookCell } from "@/components/modules/NotebookViewer";
 import AIAssistant from "@/components/modules/AIAssistant";
@@ -90,11 +91,22 @@ export default function ModuleDetailPage() {
           <div className="flex gap-1 mt-8 bg-white/3 p-1 rounded-xl w-fit">
             {(["cours", "ressources"] as const).map((t) => (
               <button key={t} onClick={() => setTab(t)}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition capitalize ${
+                className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition ${
                   tab === t ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
                 }`}
               >
-                {t === "cours" ? "📖 Cours" : "🔗 Ressources"}
+                {t === "cours" ? "📖 Cours" : (
+                  <>
+                    🔗 Ressources
+                    {module.resources && module.resources.length > 0 && (
+                      <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
+                        tab === "ressources" ? "bg-white/20 text-white" : "bg-blue-500/30 text-blue-300"
+                      }`}>
+                        {module.resources.length}
+                      </span>
+                    )}
+                  </>
+                )}
               </button>
             ))}
           </div>
@@ -116,6 +128,30 @@ export default function ModuleDetailPage() {
               <>
                 <NotebookViewer cells={cells} moduleTitle={module.title} />
                 <QuizBlock moduleId={id} onComplete={() => markCompleted(id)} />
+
+                {/* Ressources rapides sous le notebook */}
+                {module.resources && module.resources.length > 0 && (
+                  <div className="mt-8 border-t border-white/5 pt-8">
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <ExternalLink size={14} /> Ressources du module
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                      {module.resources.map((r) => (
+                        <a
+                          key={r.id}
+                          href={r.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 bg-white/3 hover:bg-white/6 border border-white/8 hover:border-blue-500/40 text-sm text-slate-300 hover:text-white px-4 py-2 rounded-xl transition"
+                        >
+                          <Badge color={r.type === "video" ? "orange" : "blue"}>{r.type}</Badge>
+                          {r.title}
+                          <ExternalLink size={12} className="text-slate-500" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <div className="text-center py-20 text-slate-500">

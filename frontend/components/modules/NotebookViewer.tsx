@@ -38,7 +38,16 @@ function MarkdownCell({ source }: { source: string }) {
       prose-table:text-sm prose-th:text-white prose-th:bg-white/5 prose-td:text-slate-300 prose-td:border-white/10
       prose-li:text-slate-300 prose-ul:marker:text-blue-400
     ">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ href, children }) => (
+            <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+              {children}
+            </a>
+          ),
+        }}
+      >
         {source}
       </ReactMarkdown>
     </div>
