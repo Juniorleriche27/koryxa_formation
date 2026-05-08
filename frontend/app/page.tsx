@@ -389,15 +389,13 @@ export default function LandingPage() {
             transition={{ boxShadow: { duration: 3, repeat: Infinity } }}
             className="rounded-2xl overflow-hidden border border-white/10 bg-black"
           >
-            <video
-              controls
+            <iframe
+              src="https://www.youtube.com/embed/EWy_CcxHyxc"
+              title="Analyse de Données avec Python — Module 0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
               className="w-full aspect-video"
-              poster=""
-              preload="metadata"
-            >
-              <source src="/intro.mp4" type="video/mp4" />
-              Ton navigateur ne supporte pas la lecture vidéo.
-            </video>
+            />
           </motion.div>
 
           {/* CTA sous la vidéo */}
