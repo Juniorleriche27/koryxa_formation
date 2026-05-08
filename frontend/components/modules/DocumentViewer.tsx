@@ -19,6 +19,10 @@ function getEmbedUrl(url: string): string | null {
     const id = url.match(/\/d\/([^/]+)/)?.[1];
     return id ? `https://drive.google.com/file/d/${id}/preview` : null;
   }
+  // Fichier Office (.docx, .doc, .pptx, .xlsx…) → Google Docs Viewer
+  if (url.match(/\.(docx?|pptx?|xlsx?)(\?|$)/i)) {
+    return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+  }
   return null;
 }
 
@@ -52,7 +56,7 @@ export default function DocumentViewer({ resource }: DocumentViewerProps) {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <a
-            href={resource.url}
+            href={embedUrl ?? `https://docs.google.com/viewer?url=${encodeURIComponent(resource.url)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white border border-white/10 hover:border-white/25 bg-white/3 hover:bg-white/8 px-3 py-1.5 rounded-lg transition"
@@ -101,7 +105,7 @@ export default function DocumentViewer({ resource }: DocumentViewerProps) {
           </div>
           <div className="flex flex-wrap gap-3 justify-center">
             <a
-              href={resource.url}
+              href={`https://docs.google.com/viewer?url=${encodeURIComponent(resource.url)}`}
               target="_blank"
               rel="noopener noreferrer"
             >
