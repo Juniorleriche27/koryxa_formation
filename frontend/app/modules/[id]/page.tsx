@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Download, BookOpen, Clock, ChevronRight } from "lucide-react";
 import { modulesAPI, notebookAPI } from "@/lib/api";
 import { useProgress } from "@/hooks/useProgress";
@@ -55,7 +56,7 @@ export default function ModuleDetailPage() {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
             <div>
               <div className="flex items-center gap-2 text-slate-500 text-sm mb-3">
-                <span>Modules</span>
+                <Link href="/modules" className="hover:text-white transition">Modules</Link>
                 <ChevronRight size={14} />
                 <span className="text-white">Module {module.order_index}</span>
               </div>

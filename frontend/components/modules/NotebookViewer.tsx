@@ -199,7 +199,7 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
 
       {/* ── Carte explication IA ── */}
       <AnimatePresence>
-        {showExp && explanation && (
+        {showExp && fullText && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
