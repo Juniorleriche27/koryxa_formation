@@ -130,29 +130,74 @@ export default function ModuleDetailPage() {
                 <NotebookViewer cells={cells} moduleTitle={module.title} />
                 <QuizBlock moduleId={id} onComplete={() => markCompleted(id)} />
 
-                {/* Ressources rapides sous le notebook */}
-                {module.resources && module.resources.length > 0 && (
-                  <div className="mt-8 border-t border-white/5 pt-8">
-                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <ExternalLink size={14} /> Ressources du module
-                    </h3>
-                    <div className="flex flex-wrap gap-3">
-                      {module.resources.map((r) => (
-                        <a
-                          key={r.id}
-                          href={r.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 bg-white/3 hover:bg-white/6 border border-white/8 hover:border-blue-500/40 text-sm text-slate-300 hover:text-white px-4 py-2 rounded-xl transition"
-                        >
-                          <Badge color={r.type === "video" ? "orange" : "blue"}>{r.type}</Badge>
-                          {r.title}
-                          <ExternalLink size={12} className="text-slate-500" />
-                        </a>
-                      ))}
+                {/* Ressources sous le notebook */}
+                {module.resources && module.resources.length > 0 && (() => {
+                  const videos = module.resources.filter((r) => r.type === "video");
+                  const others = module.resources.filter((r) => r.type !== "video");
+                  const getYouTubeId = (url: string) => {
+                    const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/))([^&?/\s]{11})/);
+                    return m?.[1] ?? null;
+                  };
+                  return (
+                    <div className="mt-8 border-t border-white/5 pt-8 space-y-6">
+                      {videos.length > 0 && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <ExternalLink size={14} /> Vidéos du module
+                          </h3>
+                          <div className="space-y-4">
+                            {videos.map((r) => {
+                              const ytId = getYouTubeId(r.url);
+                              return (
+                                <div key={r.id} className="rounded-xl overflow-hidden border border-white/8 bg-black">
+                                  {r.title && (
+                                    <div className="px-4 py-2 bg-white/3 border-b border-white/5">
+                                      <p className="text-sm font-medium text-white">{r.title}</p>
+                                      {r.description && <p className="text-xs text-slate-400 mt-0.5">{r.description}</p>}
+                                    </div>
+                                  )}
+                                  {ytId ? (
+                                    <div className="aspect-video">
+                                      <iframe
+                                        src={`https://www.youtube.com/embed/${ytId}`}
+                                        title={r.title}
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        className="w-full h-full"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <a href={r.url} target="_blank" rel="noopener noreferrer"
+                                      className="flex items-center gap-2 p-4 text-sm text-blue-400 hover:text-blue-300 transition">
+                                      <ExternalLink size={14} /> Ouvrir la vidéo
+                                    </a>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                      {others.length > 0 && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <ExternalLink size={14} /> Autres ressources
+                          </h3>
+                          <div className="flex flex-wrap gap-3">
+                            {others.map((r) => (
+                              <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer"
+                                className="flex items-center gap-2 bg-white/3 hover:bg-white/6 border border-white/8 hover:border-blue-500/40 text-sm text-slate-300 hover:text-white px-4 py-2 rounded-xl transition">
+                                <Badge color="blue">{r.type}</Badge>
+                                {r.title}
+                                <ExternalLink size={12} className="text-slate-500" />
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </>
             ) : (
               <div className="text-center py-20 text-slate-500">
