@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { ACCESS_COOKIE_NAME, getExpectedAccessToken } from "@/lib/accessControl";
 
 const KORYXA_LOGIN = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
 const APP_URL      = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const session = request.cookies.get("innova_session")?.value;
@@ -12,6 +13,17 @@ export function middleware(request: NextRequest) {
     const returnUrl = APP_URL + pathname;
     const loginUrl  = `${KORYXA_LOGIN}?redirect=${encodeURIComponent(returnUrl)}`;
     return NextResponse.redirect(loginUrl);
+  }
+
+  const expectedAccessToken = await getExpectedAccessToken();
+  const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
+
+  if (!expectedAccessToken || accessToken !== expectedAccessToken) {
+    const accessUrl = request.nextUrl.clone();
+    accessUrl.pathname = "/access";
+    accessUrl.search = "";
+    accessUrl.searchParams.set("redirect", pathname + request.nextUrl.search);
+    return NextResponse.redirect(accessUrl);
   }
 
   return NextResponse.next();
