@@ -62,7 +62,6 @@ function AccessForm() {
                 value={code}
                 onChange={(event) => setCode(event.target.value)}
                 autoComplete="one-time-code"
-                placeholder="Ex: KORYXA-2026"
                 className="w-full rounded-xl border border-white/10 bg-[#071326] px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               />
             </div>
