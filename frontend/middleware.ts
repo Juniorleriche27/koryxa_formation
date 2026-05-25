@@ -8,13 +8,6 @@ const APP_URL      = process.env.NEXT_PUBLIC_APP_URL ?? "";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const session = request.cookies.get("innova_session")?.value;
-  if (!session) {
-    const returnUrl = APP_URL + pathname;
-    const loginUrl  = `${KORYXA_LOGIN}?redirect=${encodeURIComponent(returnUrl)}`;
-    return NextResponse.redirect(loginUrl);
-  }
-
   const expectedAccessToken = await getExpectedAccessToken();
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
 
@@ -26,9 +19,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(accessUrl);
   }
 
+  if (pathname === "/login" || pathname === "/register") {
+    return NextResponse.next();
+  }
+
+  const session = request.cookies.get("innova_session")?.value;
+  if (!session) {
+    const returnUrl = APP_URL + pathname;
+    const loginUrl  = `${KORYXA_LOGIN}?redirect=${encodeURIComponent(returnUrl)}`;
+    return NextResponse.redirect(loginUrl);
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
+  matcher: ["/login", "/register", "/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
 };
