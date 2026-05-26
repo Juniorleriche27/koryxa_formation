@@ -85,7 +85,16 @@ function AccessForm() {
           <div className="mt-6 flex gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
             <MessageCircle className="text-green-300 shrink-0 mt-0.5" size={20} />
             <p className="text-sm text-slate-400">
-              Paiement déjà effectué ? Contacte l'équipe sur WhatsApp avec ton nom et ton email pour recevoir le code.
+              Discutez avec notre assistant commercial sur{" "}
+              <a
+                href="https://cora.innovaplus.africa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-300 underline underline-offset-4 hover:text-blue-200"
+              >
+                cora.innovaplus.africa
+              </a>
+              .
             </p>
           </div>
         </div>
