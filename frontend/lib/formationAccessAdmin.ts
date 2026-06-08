@@ -86,6 +86,27 @@ export function summarizeGrant(grant: FormationAccessGrant | null) {
   return { status: "active" as FormationAccessStatus, grant, access_until: grant.access_until || grant.expires_at };
 }
 
+export async function findGrantById(id: string) {
+  const config = getSupabaseConfig();
+  if (!config) throw new Error("Supabase formation non configuré.");
+
+  const response = await fetch(
+    `${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}&id=eq.${encodeURIComponent(id)}&limit=1`,
+    {
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+      },
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) throw new Error("Impossible de lire l'accès formation.");
+
+  const rows = (await response.json()) as FormationAccessGrant[];
+  return rows[0] || null;
+}
+
 export async function findGrantByPartnerCode(partnerCode: string) {
   const config = getSupabaseConfig();
   if (!config) throw new Error("Supabase formation non configuré.");

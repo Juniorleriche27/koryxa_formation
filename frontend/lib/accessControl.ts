@@ -92,22 +92,27 @@ export async function createAccessSession(
   return `v1.${encodedPayload}.${signature}`;
 }
 
-export async function isValidAccessSession(value?: string | null) {
-  if (!value) return false;
+export async function getAccessSessionPayload(value?: string | null) {
+  if (!value) return null;
 
   const secret = getAccessSecret();
-  if (!secret) return false;
+  if (!secret) return null;
 
   const [version, encodedPayload, signature] = value.split(".");
-  if (version !== "v1" || !encodedPayload || !signature) return false;
+  if (version !== "v1" || !encodedPayload || !signature) return null;
 
   const expectedSignature = await hmacSha256(encodedPayload, secret);
-  if (signature !== expectedSignature) return false;
+  if (signature !== expectedSignature) return null;
 
   try {
     const payload = JSON.parse(base64UrlDecode(encodedPayload)) as AccessSessionPayload;
-    return typeof payload.exp === "number" && payload.exp > Math.floor(Date.now() / 1000);
+    if (typeof payload.exp !== "number" || payload.exp <= Math.floor(Date.now() / 1000)) return null;
+    return payload;
   } catch {
-    return false;
+    return null;
   }
+}
+
+export async function isValidAccessSession(value?: string | null) {
+  return Boolean(await getAccessSessionPayload(value));
 }
