@@ -134,3 +134,5 @@ Après déploiement :
 - Révoquer un code depuis `/admin` quand l'accès doit être coupé.
 
 Les policies publiques de lecture sur `modules` et `resources` sont volontaires : l’accès apprenant reste contrôlé par le cookie signé Formation côté frontend.
+
+Render doit définir `CORS_ORIGINS=https://formation.innovaplus.africa,https://koryxa-formation-jlr7.vercel.app,https://koryxa-formation.vercel.app,http://localhost:3000` pour autoriser le frontend Formation.
