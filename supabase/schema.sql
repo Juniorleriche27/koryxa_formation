@@ -232,12 +232,22 @@ CREATE TABLE IF NOT EXISTS public.formation_access_codes (
     last_used_at  TIMESTAMPTZ,
     expires_at    TIMESTAMPTZ,
     notes         TEXT,
+    partner_code  TEXT,
+    partner_email TEXT,
+    partner_name  TEXT,
+    activated_at  TIMESTAMPTZ,
+    access_until  TIMESTAMPTZ,
     created_by_admin_email TEXT,
     created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 ALTER TABLE public.formation_access_codes
+    ADD COLUMN IF NOT EXISTS partner_code TEXT,
+    ADD COLUMN IF NOT EXISTS partner_email TEXT,
+    ADD COLUMN IF NOT EXISTS partner_name TEXT,
+    ADD COLUMN IF NOT EXISTS activated_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS access_until TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS created_by_admin_email TEXT;
 
 CREATE OR REPLACE TRIGGER formation_access_codes_updated_at
@@ -250,16 +260,32 @@ CREATE INDEX IF NOT EXISTS idx_formation_access_codes_hash
 CREATE INDEX IF NOT EXISTS idx_formation_access_codes_status
     ON public.formation_access_codes(status);
 
+CREATE INDEX IF NOT EXISTS idx_formation_access_codes_partner
+    ON public.formation_access_codes(partner_code);
+
 ALTER TABLE public.formation_access_codes ENABLE ROW LEVEL SECURITY;
 
 -- Pas de policy publique volontairement : cette table est lue uniquement côté serveur
 -- avec SUPABASE_SERVICE_ROLE_KEY. Ne jamais exposer la clé service role côté navigateur.
 
-CREATE OR REPLACE FUNCTION public.redeem_formation_access_code(p_code_hash TEXT)
+CREATE OR REPLACE FUNCTION public.redeem_formation_access_code(
+    p_code_hash TEXT,
+    p_partner_code TEXT DEFAULT NULL,
+    p_partner_email TEXT DEFAULT NULL,
+    p_partner_name TEXT DEFAULT NULL
+)
 RETURNS JSONB AS $$
 DECLARE
     v_code public.formation_access_codes%ROWTYPE;
+    v_partner_code TEXT;
+    v_partner_email TEXT;
+    v_partner_name TEXT;
+    v_access_until TIMESTAMPTZ;
 BEGIN
+    v_partner_code := NULLIF(TRIM(COALESCE(p_partner_code, '')), '');
+    v_partner_email := NULLIF(LOWER(TRIM(COALESCE(p_partner_email, ''))), '');
+    v_partner_name := NULLIF(TRIM(COALESCE(p_partner_name, '')), '');
+
     SELECT * INTO v_code
     FROM public.formation_access_codes
     WHERE code_hash = p_code_hash
@@ -269,50 +295,84 @@ BEGIN
         RETURN jsonb_build_object('ok', false, 'reason', 'invalid');
     END IF;
 
+    IF v_code.expires_at IS NOT NULL AND v_code.expires_at < NOW() THEN
+        UPDATE public.formation_access_codes SET status = 'expired' WHERE id = v_code.id;
+        RETURN jsonb_build_object('ok', false, 'reason', 'expired');
+    END IF;
+
+    IF v_code.access_until IS NOT NULL AND v_code.access_until < NOW() THEN
+        UPDATE public.formation_access_codes SET status = 'expired' WHERE id = v_code.id;
+        RETURN jsonb_build_object('ok', false, 'reason', 'expired');
+    END IF;
+
+    IF v_code.status IN ('revoked', 'expired') THEN
+        RETURN jsonb_build_object('ok', false, 'reason', v_code.status);
+    END IF;
+
+    IF v_code.partner_code IS NOT NULL THEN
+        IF v_partner_code IS NULL OR v_code.partner_code <> v_partner_code THEN
+            RETURN jsonb_build_object('ok', false, 'reason', 'bound_to_another_partner');
+        END IF;
+
+        UPDATE public.formation_access_codes SET last_used_at = NOW()
+        WHERE id = v_code.id RETURNING * INTO v_code;
+
+        RETURN jsonb_build_object(
+            'ok', true,
+            'id', v_code.id,
+            'student_name', COALESCE(v_code.student_name, v_code.partner_name),
+            'student_email', COALESCE(v_code.student_email, v_code.partner_email),
+            'partner_code', v_code.partner_code,
+            'partner_email', v_code.partner_email,
+            'access_until', v_code.access_until,
+            'used_count', v_code.used_count,
+            'max_uses', v_code.max_uses
+        );
+    END IF;
+
     IF v_code.status <> 'active' THEN
         RETURN jsonb_build_object('ok', false, 'reason', v_code.status);
     END IF;
 
-    IF v_code.expires_at IS NOT NULL AND v_code.expires_at < NOW() THEN
-        UPDATE public.formation_access_codes
-        SET status = 'expired'
-        WHERE id = v_code.id;
-
-        RETURN jsonb_build_object('ok', false, 'reason', 'expired');
-    END IF;
-
     IF v_code.used_count >= v_code.max_uses THEN
-        UPDATE public.formation_access_codes
-        SET status = 'used'
-        WHERE id = v_code.id;
-
+        UPDATE public.formation_access_codes SET status = 'used' WHERE id = v_code.id;
         RETURN jsonb_build_object('ok', false, 'reason', 'used');
     END IF;
+
+    v_access_until := COALESCE(v_code.expires_at, NOW() + INTERVAL '2 months');
 
     UPDATE public.formation_access_codes
     SET
         used_count = used_count + 1,
         first_used_at = COALESCE(first_used_at, NOW()),
         last_used_at = NOW(),
-        status = CASE WHEN used_count + 1 >= max_uses THEN 'used' ELSE 'active' END
+        activated_at = COALESCE(activated_at, NOW()),
+        access_until = COALESCE(access_until, v_access_until),
+        partner_code = COALESCE(v_code.partner_code, v_partner_code),
+        partner_email = COALESCE(v_code.partner_email, v_partner_email),
+        partner_name = COALESCE(v_code.partner_name, v_partner_name),
+        status = CASE WHEN v_partner_code IS NOT NULL THEN 'used' WHEN used_count + 1 >= max_uses THEN 'used' ELSE 'active' END
     WHERE id = v_code.id
     RETURNING * INTO v_code;
 
     RETURN jsonb_build_object(
         'ok', true,
         'id', v_code.id,
-        'student_name', v_code.student_name,
-        'student_email', v_code.student_email,
+        'student_name', COALESCE(v_code.student_name, v_code.partner_name),
+        'student_email', COALESCE(v_code.student_email, v_code.partner_email),
+        'partner_code', v_code.partner_code,
+        'partner_email', v_code.partner_email,
+        'access_until', v_code.access_until,
         'used_count', v_code.used_count,
         'max_uses', v_code.max_uses
     );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
-REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT) FROM PUBLIC;
-REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT) FROM anon;
-REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT) FROM authenticated;
-GRANT EXECUTE ON FUNCTION public.redeem_formation_access_code(TEXT) TO service_role;
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM anon;
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) TO service_role;
 
 -- Exemple à exécuter dans Supabase pour créer les codes de juin.
 -- Remplace les valeurs O-JUIN-CLIENT-1 / O-JUIN-CLIENT-2 par les vrais codes envoyés aux apprenants.

@@ -14,6 +14,11 @@ type AccessCodeRow = {
   last_used_at: string | null;
   expires_at: string | null;
   notes: string | null;
+  partner_code: string | null;
+  partner_email: string | null;
+  partner_name: string | null;
+  activated_at: string | null;
+  access_until: string | null;
   created_at: string;
   created_by_admin_email?: string | null;
 };
@@ -30,6 +35,11 @@ const SELECT_COLUMNS = [
   "last_used_at",
   "expires_at",
   "notes",
+  "partner_code",
+  "partner_email",
+  "partner_name",
+  "activated_at",
+  "access_until",
   "created_at",
   "created_by_admin_email",
 ].join(",");

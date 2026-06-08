@@ -4,23 +4,31 @@ import {
   accessTokenFor,
   createAccessSession,
 } from "@/lib/accessControl";
+import { verifyPartnerBridgeContext } from "@/lib/partnerBridge";
 
 type RedeemAccessResponse = {
   ok?: boolean;
   id?: string;
   student_name?: string | null;
   student_email?: string | null;
-  reason?: "invalid" | "used" | "revoked" | "expired" | string;
+  partner_code?: string | null;
+  partner_email?: string | null;
+  access_until?: string | null;
+  reason?: "invalid" | "used" | "revoked" | "expired" | "bound_to_another_partner" | string;
 };
 
 const ERROR_MESSAGES: Record<string, string> = {
   invalid: "Code incorrect. Vérifie le code reçu après validation du paiement.",
   used: "Ce code a déjà été utilisé. Contacte le support KORYXA si tu penses qu'il s'agit d'une erreur.",
+  bound_to_another_partner: "Ce code est déjà lié à un autre compte partenaire.",
   revoked: "Ce code a été désactivé. Contacte le support KORYXA.",
   expired: "Ce code a expiré. Contacte le support KORYXA pour renouveler ton accès.",
 };
 
-async function redeemCodeWithSupabase(code: string): Promise<RedeemAccessResponse> {
+async function redeemCodeWithSupabase(
+  code: string,
+  partner: { partner_code: string; partner_email: string | null; partner_name: string | null } | null
+): Promise<RedeemAccessResponse> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -36,7 +44,12 @@ async function redeemCodeWithSupabase(code: string): Promise<RedeemAccessRespons
       Authorization: `Bearer ${serviceRoleKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ p_code_hash: codeHash }),
+    body: JSON.stringify({
+      p_code_hash: codeHash,
+      p_partner_code: partner?.partner_code || null,
+      p_partner_email: partner?.partner_email || null,
+      p_partner_name: partner?.partner_name || null,
+    }),
     cache: "no-store",
   });
 
@@ -50,6 +63,10 @@ async function redeemCodeWithSupabase(code: string): Promise<RedeemAccessRespons
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const code = typeof body?.code === "string" ? body.code.trim() : "";
+  const partner = verifyPartnerBridgeContext(
+    typeof body?.partner_ctx === "string" ? body.partner_ctx : null,
+    typeof body?.partner_sig === "string" ? body.partner_sig : null
+  );
 
   if (!code) {
     return NextResponse.json(
@@ -58,7 +75,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const redeemResult = await redeemCodeWithSupabase(code);
+  const redeemResult = await redeemCodeWithSupabase(code, partner);
 
   if (!redeemResult.ok) {
     const legacyCode = process.env.KORYXA_FORMATION_ACCESS_CODE?.trim();
@@ -77,8 +94,8 @@ export async function POST(request: Request) {
   const accessSession = await createAccessSession(
     {
       sub: redeemResult.id || "legacy-access",
-      name: redeemResult.student_name || "Apprenant KORYXA",
-      email: redeemResult.student_email || null,
+      name: redeemResult.student_name || partner?.partner_name || "Apprenant KORYXA",
+      email: redeemResult.student_email || redeemResult.partner_email || partner?.partner_email || null,
     },
     maxAge
   );

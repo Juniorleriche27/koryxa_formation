@@ -9,6 +9,8 @@ import { ArrowRight, LockKeyhole, MessageCircle } from "lucide-react";
 function AccessForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
+  const partnerCtx = searchParams.get("partner_ctx");
+  const partnerSig = searchParams.get("partner_sig");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -21,7 +23,7 @@ function AccessForm() {
     const response = await fetch("/api/access", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
+      body: JSON.stringify({ code, partner_ctx: partnerCtx, partner_sig: partnerSig }),
     });
 
     if (response.ok) {
@@ -49,7 +51,7 @@ function AccessForm() {
 
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Accès à la formation</h1>
           <p className="text-slate-400 text-sm leading-6 mb-6">
-            Entre le code reçu après confirmation de ton paiement pour ouvrir ton espace de cours.
+            Entre le code reçu après confirmation de ton paiement. Il sera lié à ton compte partenaire pour sécuriser ton accès.
           </p>
 
           <form onSubmit={submit} className="space-y-4">

@@ -29,6 +29,11 @@ type AccessCode = {
   last_used_at: string | null;
   expires_at: string | null;
   notes: string | null;
+  partner_code: string | null;
+  partner_email: string | null;
+  partner_name: string | null;
+  activated_at: string | null;
+  access_until: string | null;
   created_at: string;
   created_by_admin_email?: string | null;
 };
@@ -555,6 +560,11 @@ export default function AdminPage() {
                           <p className="mt-1 text-sm text-slate-400">{code.student_email || "Email non renseigné"}</p>
                           <p className="mt-2 text-sm text-slate-300">{code.label || "Formation"}</p>
                           {code.notes && <p className="mt-2 text-xs leading-5 text-slate-500">{code.notes}</p>}
+                          {code.partner_code && (
+                            <p className="mt-2 inline-flex rounded-lg border border-blue-400/20 bg-blue-500/10 px-2 py-1 font-mono text-xs text-blue-200">
+                              {code.partner_code}
+                            </p>
+                          )}
                         </div>
 
                         <div className="flex flex-wrap gap-2">
@@ -599,8 +609,12 @@ export default function AdminPage() {
                           <dd className="mt-1 font-semibold text-slate-200">{formatDate(code.last_used_at)}</dd>
                         </div>
                         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-                          <dt>Expiration</dt>
+                          <dt>Expiration code</dt>
                           <dd className="mt-1 font-semibold text-slate-200">{formatDate(code.expires_at)}</dd>
+                        </div>
+                        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                          <dt>Accès jusqu&apos;au</dt>
+                          <dd className="mt-1 font-semibold text-slate-200">{formatDate(code.access_until)}</dd>
                         </div>
                       </dl>
                     </article>
