@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { modulesAPI, notebookAPI } from "@/lib/api";
+import { moduleZeroCells, moduleZeroResources } from "@/lib/moduleZeroContent";
 import { useProgress } from "@/hooks/useProgress";
 import type { Module } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -33,6 +34,10 @@ const tabClasses = {
   active: "bg-white text-slate-950 shadow-lg shadow-slate-950/10",
   inactive: "text-slate-300 hover:bg-white/10 hover:text-white",
 };
+
+function isModuleZero(module: Module | null) {
+  return module?.order_index === 0;
+}
 
 function getYouTubeId(url: string) {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/))([^&?/\s]{11})/);
@@ -56,8 +61,11 @@ export default function ModuleDetailPage() {
     setLoadingNb(true);
     notebookAPI
       .getContent(id)
-      .then((response) => setCells(response.data.cells))
-      .catch(() => setCells([]))
+      .then((response) => {
+        const loadedCells = response.data.cells || [];
+        setCells(loadedCells.length > 0 ? loadedCells : isModuleZero(module) ? moduleZeroCells : []);
+      })
+      .catch(() => setCells(isModuleZero(module) ? moduleZeroCells : []))
       .finally(() => setLoadingNb(false));
   }, [module, id]);
 
@@ -78,6 +86,8 @@ export default function ModuleDetailPage() {
 
   const downloadUrl = notebookAPI.getDownloadUrl(id);
   const completed = isCompleted(id);
+  const hasFallbackModuleZero = isModuleZero(module) && cells === moduleZeroCells;
+  const resourcesCount = (module.resources?.length ?? 0) + (isModuleZero(module) ? moduleZeroResources.length : 0);
   const videos = module.resources?.filter((resource) => resource.type === "video") ?? [];
   const others = module.resources?.filter((resource) => resource.type !== "video") ?? [];
 
@@ -128,7 +138,7 @@ export default function ModuleDetailPage() {
                 <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur">
                   <Layers3 className="mb-3 h-5 w-5 text-emerald-300" />
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Ressources</p>
-                  <p className="mt-1 font-bold text-white">{module.resources?.length ?? 0} éléments</p>
+                  <p className="mt-1 font-bold text-white">{resourcesCount} éléments</p>
                 </div>
               </div>
             </div>
@@ -140,17 +150,19 @@ export default function ModuleDetailPage() {
                   Action recommandée
                 </p>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Télécharge le notebook puis termine le module après lecture complète.
+                  {hasFallbackModuleZero ? "Lis ce module fondateur, fais les exercices, puis passe au Module 1." : "Télécharge le notebook puis termine le module après lecture complète."}
                 </p>
               </div>
               <div className="mt-4 grid gap-3">
-                <a
-                  href={downloadUrl}
-                  download
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:bg-blue-500"
-                >
-                  <Download size={17} /> Télécharger .ipynb
-                </a>
+                {!hasFallbackModuleZero && (
+                  <a
+                    href={downloadUrl}
+                    download
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:bg-blue-500"
+                  >
+                    <Download size={17} /> Télécharger .ipynb
+                  </a>
+                )}
                 <ModuleProgress completed={completed} onComplete={() => markCompleted(id)} />
               </div>
             </aside>
@@ -265,6 +277,23 @@ export default function ModuleDetailPage() {
                       )}
                     </section>
                   )}
+
+                  {isModuleZero(module) && (
+                    <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl sm:p-6">
+                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-200">Ressources externes fiables</p>
+                      <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Pour installer, pratiquer et débloquer</h2>
+                      <div className="mt-6 grid gap-3 md:grid-cols-2">
+                        {moduleZeroResources.map((resource) => (
+                          <a key={resource.url} href={resource.url} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 transition hover:-translate-y-0.5 hover:border-blue-300/40 hover:bg-white/[0.08]">
+                            <Badge color={resource.type === "outil" ? "green" : "blue"} className="bg-blue-400/10 text-blue-200 ring-blue-300/20">{resource.type}</Badge>
+                            <p className="mt-3 font-black text-white">{resource.title}</p>
+                            <p className="mt-2 text-sm leading-6 text-slate-400">{resource.description}</p>
+                            <span className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-blue-200">Ouvrir <ExternalLink size={13} /></span>
+                          </a>
+                        ))}
+                      </div>
+                    </section>
+                  )}
                 </>
               ) : (() => {
                 const docResource = module.resources?.find(
@@ -293,25 +322,43 @@ export default function ModuleDetailPage() {
 
           {tab === "ressources" && (
             <div className="mx-auto max-w-3xl space-y-4">
-              {module.resources && module.resources.length > 0 ? (
-                module.resources.map((resource) => (
-                  <motion.a
-                    key={resource.id}
-                    href={resource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ x: 4 }}
-                    className="flex items-start gap-4 rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl transition hover:border-blue-300/40 hover:bg-white/[0.09]"
-                  >
-                    <Badge color={resource.type === "video" ? "orange" : "blue"}>{resource.type}</Badge>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-bold text-white">{resource.title}</span>
-                      {resource.description && <span className="mt-1 block text-sm leading-6 text-slate-400">{resource.description}</span>}
-                    </span>
-                    <ExternalLink size={18} className="mt-1 shrink-0 text-slate-400" />
-                  </motion.a>
-                ))
-              ) : (
+              {module.resources && module.resources.length > 0 && module.resources.map((resource) => (
+                <motion.a
+                  key={resource.id}
+                  href={resource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ x: 4 }}
+                  className="flex items-start gap-4 rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl transition hover:border-blue-300/40 hover:bg-white/[0.09]"
+                >
+                  <Badge color={resource.type === "video" ? "orange" : "blue"}>{resource.type}</Badge>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold text-white">{resource.title}</span>
+                    {resource.description && <span className="mt-1 block text-sm leading-6 text-slate-400">{resource.description}</span>}
+                  </span>
+                  <ExternalLink size={18} className="mt-1 shrink-0 text-slate-400" />
+                </motion.a>
+              ))}
+
+              {isModuleZero(module) && moduleZeroResources.map((resource) => (
+                <motion.a
+                  key={resource.url}
+                  href={resource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ x: 4 }}
+                  className="flex items-start gap-4 rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl transition hover:border-blue-300/40 hover:bg-white/[0.09]"
+                >
+                  <Badge color={resource.type === "outil" ? "green" : "blue"}>{resource.type}</Badge>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold text-white">{resource.title}</span>
+                    <span className="mt-1 block text-sm leading-6 text-slate-400">{resource.description}</span>
+                  </span>
+                  <ExternalLink size={18} className="mt-1 shrink-0 text-slate-400" />
+                </motion.a>
+              ))}
+
+              {(!module.resources || module.resources.length === 0) && !isModuleZero(module) && (
                 <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center text-slate-300 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
                   <Link2 size={38} className="mx-auto mb-4 text-blue-300" />
                   <p className="font-bold text-white">Aucune ressource pour ce module.</p>
