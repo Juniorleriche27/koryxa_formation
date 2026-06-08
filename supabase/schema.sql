@@ -173,8 +173,10 @@ ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Profil visible par son propriétaire" ON public.profiles;
 DROP POLICY IF EXISTS "Profil modifiable par son propriétaire" ON public.profiles;
 DROP POLICY IF EXISTS "Modules visibles par tous les connectés" ON public.modules;
+DROP POLICY IF EXISTS "Modules visibles par accès formation" ON public.modules;
 DROP POLICY IF EXISTS "Admin gère les modules" ON public.modules;
 DROP POLICY IF EXISTS "Ressources visibles par tous les connectés" ON public.resources;
+DROP POLICY IF EXISTS "Ressources visibles par accès formation" ON public.resources;
 DROP POLICY IF EXISTS "Admin gère les ressources" ON public.resources;
 DROP POLICY IF EXISTS "Progression visible par son propriétaire" ON public.progress;
 DROP POLICY IF EXISTS "Progression créée par son propriétaire" ON public.progress;
@@ -188,16 +190,23 @@ CREATE POLICY "Profil modifiable par son propriétaire"
     ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- Modules
-CREATE POLICY "Modules visibles par tous les connectés"
+CREATE POLICY "Modules visibles par accès formation"
     ON public.modules FOR SELECT
-    USING (auth.role() = 'authenticated' AND is_published = TRUE);
+    USING (is_published = TRUE);
 CREATE POLICY "Admin gère les modules"
     ON public.modules FOR ALL
     USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
 -- Resources
-CREATE POLICY "Ressources visibles par tous les connectés"
-    ON public.resources FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Ressources visibles par accès formation"
+    ON public.resources FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.modules
+            WHERE modules.id = resources.module_id
+              AND modules.is_published = TRUE
+        )
+    );
 CREATE POLICY "Admin gère les ressources"
     ON public.resources FOR ALL
     USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
