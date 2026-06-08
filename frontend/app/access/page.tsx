@@ -55,7 +55,7 @@ function AccessForm() {
           <form onSubmit={submit} className="space-y-4">
             <div>
               <label htmlFor="access-code" className="block text-sm font-medium text-slate-300 mb-2">
-                Code d'accès
+                Code d&apos;accès
               </label>
               <input
                 id="access-code"
