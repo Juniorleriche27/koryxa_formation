@@ -20,8 +20,8 @@ function base64UrlEncode(input: string | Uint8Array) {
   const bytes = typeof input === "string" ? new TextEncoder().encode(input) : input;
   let binary = "";
 
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
+  for (let index = 0; index < bytes.length; index += 1) {
+    binary += String.fromCharCode(bytes[index]);
   }
 
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
