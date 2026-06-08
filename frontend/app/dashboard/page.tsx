@@ -11,7 +11,7 @@ import ModuleCard from "@/components/modules/ModuleCard";
 
 export default function DashboardPage() {
   const [modules, setModules] = useState<Module[]>([]);
-  const { completion, isCompleted } = useProgress();
+  const { isCompleted } = useProgress();
 
   useEffect(() => {
     modulesAPI.getAll()
@@ -20,6 +20,7 @@ export default function DashboardPage() {
   }, []);
 
   const completedCount = modules.filter((m) => isCompleted(m.id)).length;
+  const completion = modules.length > 0 ? Math.round((completedCount / modules.length) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-[#050c1a] flex flex-col">

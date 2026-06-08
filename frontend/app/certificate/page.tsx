@@ -1,38 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { certificatesAPI } from "@/lib/api";
-import type { Certificate } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 
 export default function CertificatePage() {
-  const [certificate, setCertificate] = useState<Certificate | null>(null);
-  const [error, setError]             = useState("");
-
-  useEffect(() => {
-    certificatesAPI.getMy()
-      .then((r) => setCertificate(r.data))
-      .catch(() => setError("Certificat non disponible. Complète tous les modules."));
-  }, []);
-
-  if (error) return (
-    <div className="min-h-screen bg-[#050c1a] flex flex-col">
-      <Navbar />
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-5xl mb-4">🔒</div>
-          <p className="text-slate-400 text-lg">{error}</p>
-        </div>
-      </div>
-    </div>
-  );
-
-  if (!certificate) return (
-    <div className="min-h-screen bg-[#050c1a] flex items-center justify-center">
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full" />
-    </div>
-  );
+  const issuedAt = new Date().toISOString();
 
   return (
     <div className="min-h-screen bg-[#050c1a] flex flex-col relative overflow-hidden">
@@ -62,19 +33,13 @@ export default function CertificatePage() {
           </div>
           <p className="text-slate-500 text-sm">
             Délivré le{" "}
-            {new Date(certificate.issued_at).toLocaleDateString("fr-FR", {
+            {new Date(issuedAt).toLocaleDateString("fr-FR", {
               year: "numeric", month: "long", day: "numeric"
             })}
           </p>
-          {certificate.certificate_url && (
-            <motion.a
-              href={certificate.certificate_url} target="_blank" rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-              className="inline-block mt-8 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold px-8 py-3 rounded-xl"
-            >
-              Télécharger le certificat
-            </motion.a>
-          )}
+          <p className="mt-6 text-sm leading-6 text-slate-400">
+            Ce certificat sera formalisé après validation administrative de la progression complète.
+          </p>
         </motion.div>
       </div>
     </div>

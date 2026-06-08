@@ -1,9 +1,8 @@
 import json
 import os
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse
 from app.database import supabase
-from app.middleware.auth import get_current_user
 
 router = APIRouter()
 
@@ -21,7 +20,7 @@ def get_notebook_path(module_id: str) -> str:
 
 
 @router.get("/{module_id}/notebook")
-def get_notebook_content(module_id: str, user=Depends(get_current_user)):
+def get_notebook_content(module_id: str):
     """Retourne les cellules du notebook pour affichage dans le navigateur."""
     path = get_notebook_path(module_id)
 
@@ -52,7 +51,7 @@ def get_notebook_content(module_id: str, user=Depends(get_current_user)):
 
 
 @router.get("/{module_id}/download")
-def download_notebook(module_id: str, user=Depends(get_current_user)):
+def download_notebook(module_id: str):
     """Télécharge le fichier .ipynb original."""
     path = get_notebook_path(module_id)
     filename = os.path.basename(path)

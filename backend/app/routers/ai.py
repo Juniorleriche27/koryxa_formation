@@ -1,13 +1,12 @@
 import json
 import os
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 import cohere
 
 from app.config import settings
 from app.database import supabase
-from app.middleware.auth import get_current_user
 
 router = APIRouter()
 
@@ -56,7 +55,7 @@ class ChatRequest(BaseModel):
     history: list[ChatMessage] = []
 
 @router.post("/chat")
-def chat(req: ChatRequest, user=Depends(get_current_user)):
+def chat(req: ChatRequest):
     co = get_cohere_client()
     context = load_notebook_text(req.module_id)
 
@@ -87,7 +86,7 @@ class ExplainRequest(BaseModel):
     module_title: Optional[str] = ""
 
 @router.post("/explain")
-def explain_code(req: ExplainRequest, user=Depends(get_current_user)):
+def explain_code(req: ExplainRequest):
     co = get_cohere_client()
 
     prompt = f"""Tu es un professeur Python bienveillant. Explique le code suivant à un débutant complet, en français.
@@ -117,7 +116,7 @@ class QuizRequest(BaseModel):
     module_id: str
 
 @router.post("/quiz")
-def generate_quiz(req: QuizRequest, user=Depends(get_current_user)):
+def generate_quiz(req: QuizRequest):
     co = get_cohere_client()
     context = load_notebook_text(req.module_id, max_chars=6000)
 
