@@ -14,6 +14,7 @@ class Settings(BaseSettings):
         "http://localhost:3000"
     )
     COHERE_API_KEY: str = ""
+    COHERE_MODEL: str = "command-r-08-2024"
 
     @field_validator("CORS_ORIGINS")
     @classmethod
