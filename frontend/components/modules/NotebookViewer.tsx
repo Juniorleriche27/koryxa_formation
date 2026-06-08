@@ -37,10 +37,7 @@ function fixNotebookText(value: string) {
     .replace(/Â/g, "")
     .replace(/\uFFFD/g, "")
     .replace(/\n---\n/g, "\n\n---\n\n")
-    .replace(/
-{3,}/g, "
-
-");
+    .replace(/\n{3,}/g, "\n\n");
 }
 
 function normalizeMarkdown(source: string) {
