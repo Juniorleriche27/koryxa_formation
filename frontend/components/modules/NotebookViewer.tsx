@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Loader2, X, Lightbulb } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Lightbulb, Loader2, Sparkles, X } from "lucide-react";
 import { aiAPI, getApiErrorMessage } from "@/lib/api";
 
 export interface CellOutput {
@@ -24,7 +25,6 @@ interface NotebookViewerProps {
   moduleTitle?: string;
 }
 
-// Supprime les formules d'intro inutiles de l'IA
 function cleanAIResponse(text: string): string {
   return text
     .replace(/^(Bonjour\s*!?\s*|Pas de souci\s*!?\s*|Bien sûr\s*!?\s*|Avec plaisir\s*!?\s*|Bien entendu\s*!?\s*)/i, "")
@@ -33,111 +33,70 @@ function cleanAIResponse(text: string): string {
 
 function MarkdownCell({ source }: { source: string }) {
   return (
-    <div className="prose prose-invert prose-sm max-w-none
-      prose-headings:text-white prose-headings:font-bold
-      prose-h1:text-2xl prose-h1:border-b prose-h1:border-white/10 prose-h1:pb-3
-      prose-h2:text-xl prose-h2:text-blue-300
-      prose-h3:text-lg prose-h3:text-cyan-300
-      prose-p:text-slate-300 prose-p:leading-relaxed
-      prose-strong:text-white
-      prose-code:text-orange-300 prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-      prose-blockquote:border-blue-500 prose-blockquote:bg-blue-500/5 prose-blockquote:rounded-r-lg prose-blockquote:text-slate-300
-      prose-table:text-sm prose-th:text-white prose-th:bg-white/5 prose-td:text-slate-300 prose-td:border-white/10
-      prose-li:text-slate-300 prose-ul:marker:text-blue-400
-    ">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          a: ({ href, children }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
-              {children}
-            </a>
-          ),
-        }}
-      >
-        {source}
-      </ReactMarkdown>
-    </div>
+    <article className="rounded-3xl border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl sm:p-7">
+      <div className="prose prose-invert max-w-none
+        prose-headings:tracking-tight prose-headings:text-white prose-headings:font-black
+        prose-h1:border-b prose-h1:border-white/10 prose-h1:pb-4 prose-h1:text-3xl
+        prose-h2:text-2xl prose-h2:text-white
+        prose-h3:text-xl prose-h3:text-blue-100
+        prose-p:text-slate-100 prose-p:text-[1.02rem] prose-p:leading-8
+        prose-strong:text-white prose-strong:font-extrabold
+        prose-a:text-blue-300 prose-a:no-underline hover:prose-a:text-blue-200
+        prose-code:rounded-lg prose-code:bg-slate-950/70 prose-code:px-2 prose-code:py-1 prose-code:text-blue-100 prose-code:ring-1 prose-code:ring-white/10
+        prose-pre:border prose-pre:border-white/10 prose-pre:bg-slate-950/70
+        prose-blockquote:rounded-2xl prose-blockquote:border-l-blue-400 prose-blockquote:bg-blue-400/10 prose-blockquote:px-5 prose-blockquote:py-2 prose-blockquote:text-slate-100
+        prose-ul:space-y-1 prose-ol:space-y-1 prose-li:text-slate-100 prose-li:leading-8 prose-li:marker:text-blue-300
+        prose-table:text-sm prose-th:bg-white/10 prose-th:text-white prose-td:border-white/10 prose-td:text-slate-200">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            a: ({ href, children }) => (
+              <a href={href} target="_blank" rel="noopener noreferrer">
+                {children}
+              </a>
+            ),
+          }}
+        >
+          {source}
+        </ReactMarkdown>
+      </div>
+    </article>
   );
 }
 
-// Rendu markdown pour l'explication IA — styles soignés purple/dark
 function AIMarkdown({ text }: { text: string }) {
   return (
-    <div className="
-      prose prose-invert prose-sm max-w-none
-      prose-p:text-slate-200 prose-p:leading-[1.8] prose-p:my-2
-      prose-strong:text-white prose-strong:font-semibold
-      prose-em:text-purple-300 prose-em:not-italic prose-em:font-medium
-      prose-h1:text-white prose-h1:text-base prose-h1:font-bold prose-h1:mt-4 prose-h1:mb-1
-      prose-h2:text-white prose-h2:text-sm prose-h2:font-semibold prose-h2:mt-3 prose-h2:mb-1
-      prose-h3:text-purple-300 prose-h3:text-sm prose-h3:font-semibold prose-h3:mt-2 prose-h3:mb-1
-      prose-ul:my-2 prose-ul:space-y-1
-      prose-ol:my-2 prose-ol:space-y-1
-      prose-li:text-slate-200 prose-li:leading-relaxed
-      prose-ul:marker:text-purple-400
-      prose-ol:marker:text-purple-400
-      prose-code:text-amber-300 prose-code:bg-white/8 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:font-mono
-      prose-pre:bg-[#0d0d1a] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-pre:text-xs
-      prose-blockquote:border-l-purple-500 prose-blockquote:bg-purple-500/5 prose-blockquote:text-slate-300 prose-blockquote:rounded-r
-      prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-    ">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          a: ({ href, children }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
-              {children}
-            </a>
-          ),
-          code: ({ inline, className, children, ...props }: { inline?: boolean; className?: string; children?: React.ReactNode }) => {
-            const match = /language-(\w+)/.exec(className || "");
-            if (!inline && match) {
-              return (
-                <SyntaxHighlighter
-                  language={match[1]}
-                  style={vscDarkPlus}
-                  customStyle={{ margin: 0, borderRadius: "0.5rem", fontSize: "0.75rem", background: "#0d0d1a" }}
-                >
-                  {String(children).replace(/\n$/, "")}
-                </SyntaxHighlighter>
-              );
-            }
-            return (
-              <code className="text-amber-300 bg-white/8 px-1.5 py-0.5 rounded text-xs font-mono" {...props}>
-                {children}
-              </code>
-            );
-          },
-        }}
-      >
-        {text}
-      </ReactMarkdown>
+    <div className="prose prose-invert prose-sm max-w-none
+      prose-p:my-2 prose-p:text-slate-100 prose-p:leading-7
+      prose-strong:text-white prose-strong:font-bold
+      prose-em:text-purple-200 prose-em:not-italic prose-em:font-semibold
+      prose-h2:mt-4 prose-h2:text-base prose-h2:text-white
+      prose-h3:mt-3 prose-h3:text-sm prose-h3:text-purple-200
+      prose-li:text-slate-100 prose-li:leading-7 prose-ul:marker:text-purple-300
+      prose-code:rounded prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-amber-200
+      prose-blockquote:rounded-r-xl prose-blockquote:border-l-purple-400 prose-blockquote:bg-purple-400/10 prose-blockquote:text-slate-100">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
     </div>
   );
 }
 
 function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: CellOutput[]; moduleTitle?: string }) {
-  const [fullText, setFullText]       = useState("");
-  const [displayed, setDisplayed]     = useState("");
-  const [streaming, setStreaming]     = useState(false);
-  const [loading, setLoading]         = useState(false);
-  const [showExp, setShowExp]         = useState(false);
+  const [fullText, setFullText] = useState("");
+  const [displayed, setDisplayed] = useState("");
+  const [streaming, setStreaming] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showExp, setShowExp] = useState(false);
 
-  // Typewriter: reveal fullText char by char when it changes
   useEffect(() => {
     if (!fullText) return;
     setDisplayed("");
     setStreaming(true);
-    let i = 0;
-    // Faster for longer texts to avoid waiting forever
+    let index = 0;
     const delay = fullText.length > 600 ? 8 : fullText.length > 300 ? 12 : 18;
     const timer = setInterval(() => {
-      i++;
-      setDisplayed(fullText.slice(0, i));
-      if (i >= fullText.length) {
+      index += 1;
+      setDisplayed(fullText.slice(0, index));
+      if (index >= fullText.length) {
         clearInterval(timer);
         setStreaming(false);
       }
@@ -146,14 +105,17 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
   }, [fullText]);
 
   const explain = async () => {
-    if (fullText) { setShowExp(true); return; }
+    if (fullText) {
+      setShowExp(true);
+      return;
+    }
     setLoading(true);
     try {
-      const res = await aiAPI.explain(source, moduleTitle);
-      setFullText(cleanAIResponse(res.data.explanation));
+      const response = await aiAPI.explain(source, moduleTitle);
+      setFullText(cleanAIResponse(response.data.explanation));
       setShowExp(true);
-    } catch (err) {
-      setFullText(`Impossible de generer l'explication.\n\n${getApiErrorMessage(err)}`);
+    } catch (error) {
+      setFullText(`Impossible de générer l'explication.\n\n${getApiErrorMessage(error)}`);
       setShowExp(true);
     } finally {
       setLoading(false);
@@ -161,136 +123,106 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-white/8">
-      {/* Code header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#1e1e2e] border-b border-white/5">
+    <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#151827] shadow-2xl shadow-slate-950/30">
+      <div className="flex flex-col gap-3 border-b border-white/10 bg-white/[0.04] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
-            <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-            <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+          <div className="flex gap-1.5" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
           </div>
-          <span className="text-xs text-slate-500 font-mono">Python</span>
+          <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Python</span>
         </div>
         <motion.button
           onClick={explain}
           disabled={loading}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 disabled:opacity-50 transition border border-purple-500/30 hover:border-purple-400/50 bg-purple-500/5 hover:bg-purple-500/10 px-2.5 py-1 rounded-lg"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-purple-300/20 bg-purple-400/10 px-3 text-xs font-bold text-purple-100 transition hover:border-purple-200/40 hover:bg-purple-400/15 disabled:opacity-50"
         >
-          {loading
-            ? <><Loader2 size={12} className="animate-spin" /> Analyse en cours…</>
-            : <><Sparkles size={12} /> Expliquer ce code</>
-          }
+          {loading ? <><Loader2 size={13} className="animate-spin" /> Analyse…</> : <><Sparkles size={13} /> Expliquer ce code</>}
         </motion.button>
       </div>
 
-      {/* Code */}
       <SyntaxHighlighter
         language="python"
         style={vscDarkPlus}
-        customStyle={{ margin: 0, borderRadius: 0, fontSize: "0.82rem", background: "#1e1e2e" }}
+        customStyle={{ margin: 0, borderRadius: 0, fontSize: "0.88rem", background: "#151827", padding: "1.25rem" }}
         showLineNumbers
-        lineNumberStyle={{ color: "#4a5568", fontSize: "0.75rem" }}
+        lineNumberStyle={{ color: "#64748b", fontSize: "0.75rem", paddingRight: "1rem" }}
+        wrapLongLines
       >
         {source}
       </SyntaxHighlighter>
 
-      {/* ── Carte explication IA ── */}
       <AnimatePresence>
         {showExp && fullText && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.28, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="relative bg-gradient-to-b from-[#1a0f2e] to-[#130d24] border-t border-purple-500/25">
-
-              {/* Lueur subtile en haut */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-
-              <div className="px-5 py-4">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-purple-500/20 border border-purple-500/30">
-                      <Lightbulb size={13} className="text-purple-300" />
-                    </div>
-                    <span className="text-xs font-semibold text-purple-300 uppercase tracking-widest">
-                      Explication simplifiée
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-purple-500/70 font-mono">
-                      <Sparkles size={10} /> IA
-                    </span>
+            <div className="relative border-t border-purple-300/20 bg-gradient-to-br from-purple-950/75 via-slate-950/80 to-blue-950/70 px-5 py-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-2xl border border-purple-300/20 bg-purple-400/10 text-purple-100">
+                    <Lightbulb size={17} />
+                  </span>
+                  <div>
+                    <p className="text-sm font-black text-white">Explication simplifiée</p>
+                    <p className="text-xs text-purple-200/80">Comprendre avant de copier</p>
                   </div>
-                  <button
-                    onClick={() => setShowExp(false)}
-                    className="text-slate-600 hover:text-slate-300 transition rounded-lg hover:bg-white/5 p-1"
-                  >
-                    <X size={14} />
-                  </button>
                 </div>
-
-                {/* Corps markdown avec curseur pendant le streaming */}
-                <div className="pl-1">
-                  <AIMarkdown text={displayed + (streaming ? "▍" : "")} />
-                </div>
+                <button onClick={() => setShowExp(false)} className="rounded-xl p-2 text-slate-400 transition hover:bg-white/10 hover:text-white" aria-label="Fermer l'explication">
+                  <X size={16} />
+                </button>
               </div>
-
-              {/* Pied discret */}
-              <div className="px-5 pb-3 flex items-center gap-1.5">
-                <div className="h-px flex-1 bg-white/5" />
-                <span className="text-xs text-slate-600 font-mono">généré par IA · à vérifier</span>
-                <div className="h-px flex-1 bg-white/5" />
+              <AIMarkdown text={displayed + (streaming ? "▍" : "")} />
+              <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
+                <span className="h-px flex-1 bg-white/10" />
+                Généré par IA, à vérifier
+                <span className="h-px flex-1 bg-white/10" />
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Outputs */}
       {outputs.length > 0 && (
-        <div className="bg-[#141424] border-t border-white/5">
-          {outputs.map((out, i) => (
-            <div key={i} className="p-4">
-              {out.type === "image" && (
-                <img src={`data:image/png;base64,${out.data}`} alt="Graphique" className="max-w-full rounded-lg" />
+        <div className="border-t border-white/10 bg-slate-950/70">
+          {outputs.map((output, index) => (
+            <div key={index} className="p-5">
+              {output.type === "image" && (
+                <img src={`data:image/png;base64,${output.data}`} alt="Graphique généré par le notebook" className="max-w-full rounded-2xl border border-white/10 bg-white" />
               )}
-              {out.type === "text" && (
-                <pre className="text-green-300 text-xs font-mono whitespace-pre-wrap leading-relaxed">{out.data}</pre>
+              {output.type === "text" && (
+                <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl bg-emerald-400/10 p-4 text-sm leading-7 text-emerald-100 ring-1 ring-emerald-300/20">{output.data}</pre>
               )}
-              {out.type === "html" && (
-                <div className="text-slate-300 text-sm overflow-x-auto" dangerouslySetInnerHTML={{ __html: out.data }} />
+              {output.type === "html" && (
+                <div className="overflow-x-auto rounded-2xl bg-white p-4 text-sm text-slate-950" dangerouslySetInnerHTML={{ __html: output.data }} />
               )}
             </div>
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
 export default function NotebookViewer({ cells, moduleTitle }: NotebookViewerProps) {
   return (
-    <div className="space-y-6">
-      {cells.map((cell, i) => (
+    <div className="space-y-7">
+      {cells.map((cell, index) => (
         <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 16 }}
+          key={index}
+          initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.03 }}
+          transition={{ delay: index * 0.02 }}
         >
-          {cell.cell_type === "markdown" && cell.source.trim() && (
-            <div className="px-2">
-              <MarkdownCell source={cell.source} />
-            </div>
-          )}
-          {cell.cell_type === "code" && cell.source.trim() && (
-            <CodeCell source={cell.source} outputs={cell.outputs} moduleTitle={moduleTitle} />
-          )}
+          {cell.cell_type === "markdown" && cell.source.trim() && <MarkdownCell source={cell.source} />}
+          {cell.cell_type === "code" && cell.source.trim() && <CodeCell source={cell.source} outputs={cell.outputs} moduleTitle={moduleTitle} />}
         </motion.div>
       ))}
     </div>

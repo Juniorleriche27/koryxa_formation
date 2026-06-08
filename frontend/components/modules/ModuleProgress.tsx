@@ -1,3 +1,5 @@
+import { CheckCircle2 } from "lucide-react";
+
 interface ModuleProgressProps {
   completed: boolean;
   onComplete: () => void;
@@ -6,8 +8,8 @@ interface ModuleProgressProps {
 export default function ModuleProgress({ completed, onComplete }: ModuleProgressProps) {
   if (completed) {
     return (
-      <div className="flex items-center gap-2 text-green-600 font-semibold text-lg">
-        ✓ Module terminé
+      <div className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-emerald-300/25 bg-emerald-400/10 px-5 text-sm font-bold text-emerald-100">
+        <CheckCircle2 size={17} /> Module terminé
       </div>
     );
   }
@@ -15,7 +17,7 @@ export default function ModuleProgress({ completed, onComplete }: ModuleProgress
   return (
     <button
       onClick={onComplete}
-      className="bg-primary-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-primary-700 transition"
+      className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/10 bg-white px-5 text-sm font-black text-slate-950 shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-700"
     >
       Marquer comme terminé
     </button>
