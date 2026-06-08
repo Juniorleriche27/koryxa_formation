@@ -25,6 +25,37 @@ interface NotebookViewerProps {
   moduleTitle?: string;
 }
 
+
+function fixNotebookText(value: string) {
+  return value
+    .replace(/â€”/g, "—")
+    .replace(/â€“/g, "–")
+    .replace(/â€˜|â€™/g, "'")
+    .replace(/â€œ|â€�/g, '"')
+    .replace(/â€¦/g, "…")
+    .replace(/Â /g, " ")
+    .replace(/Â/g, "")
+    .replace(/\uFFFD/g, "")
+    .replace(/\n---\n/g, "\n\n---\n\n")
+    .replace(/
+{3,}/g, "
+
+");
+}
+
+function normalizeMarkdown(source: string) {
+  return fixNotebookText(source)
+    .replace(/^---\s*
+/m, "")
+    .replace(/
+---\s*
+/g, "
+
+---
+
+");
+}
+
 function cleanAIResponse(text: string): string {
   return text
     .replace(/^(Bonjour\s*!?\s*|Pas de souci\s*!?\s*|Bien sûr\s*!?\s*|Avec plaisir\s*!?\s*|Bien entendu\s*!?\s*)/i, "")
@@ -32,21 +63,27 @@ function cleanAIResponse(text: string): string {
 }
 
 function MarkdownCell({ source }: { source: string }) {
+  const normalizedSource = normalizeMarkdown(source);
+
   return (
-    <article className="rounded-3xl border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl sm:p-7">
-      <div className="prose prose-invert max-w-none
-        prose-headings:tracking-tight prose-headings:text-white prose-headings:font-black
-        prose-h1:border-b prose-h1:border-white/10 prose-h1:pb-4 prose-h1:text-3xl
-        prose-h2:text-2xl prose-h2:text-white
-        prose-h3:text-xl prose-h3:text-blue-100
-        prose-p:text-slate-100 prose-p:text-[1.02rem] prose-p:leading-8
-        prose-strong:text-white prose-strong:font-extrabold
-        prose-a:text-blue-300 prose-a:no-underline hover:prose-a:text-blue-200
-        prose-code:rounded-lg prose-code:bg-slate-950/70 prose-code:px-2 prose-code:py-1 prose-code:text-blue-100 prose-code:ring-1 prose-code:ring-white/10
-        prose-pre:border prose-pre:border-white/10 prose-pre:bg-slate-950/70
-        prose-blockquote:rounded-2xl prose-blockquote:border-l-blue-400 prose-blockquote:bg-blue-400/10 prose-blockquote:px-5 prose-blockquote:py-2 prose-blockquote:text-slate-100
-        prose-ul:space-y-1 prose-ol:space-y-1 prose-li:text-slate-100 prose-li:leading-8 prose-li:marker:text-blue-300
-        prose-table:text-sm prose-th:bg-white/10 prose-th:text-white prose-td:border-white/10 prose-td:text-slate-200">
+    <article className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-950 shadow-2xl shadow-slate-950/20 sm:p-7 lg:p-8">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-300" />
+      <div className="prose max-w-none
+        prose-headings:tracking-tight prose-headings:text-slate-950 prose-headings:font-black
+        prose-h1:mb-5 prose-h1:border-b prose-h1:border-slate-200 prose-h1:pb-5 prose-h1:text-3xl prose-h1:leading-tight sm:prose-h1:text-4xl
+        prose-h2:mt-10 prose-h2:rounded-2xl prose-h2:bg-slate-950 prose-h2:px-5 prose-h2:py-3 prose-h2:text-xl prose-h2:text-white sm:prose-h2:text-2xl
+        prose-h3:mt-7 prose-h3:text-lg prose-h3:text-blue-800 sm:prose-h3:text-xl
+        prose-p:text-slate-700 prose-p:text-[1.03rem] prose-p:leading-8
+        prose-strong:text-slate-950 prose-strong:font-extrabold
+        prose-a:text-blue-700 prose-a:font-bold prose-a:no-underline hover:prose-a:text-blue-600
+        prose-code:rounded-lg prose-code:bg-blue-50 prose-code:px-2 prose-code:py-1 prose-code:text-blue-800 prose-code:ring-1 prose-code:ring-blue-100
+        prose-pre:overflow-x-auto prose-pre:rounded-2xl prose-pre:border prose-pre:border-slate-200 prose-pre:bg-slate-950 prose-pre:text-slate-100
+        prose-hr:my-8 prose-hr:border-slate-200
+        prose-blockquote:rounded-2xl prose-blockquote:border-l-4 prose-blockquote:border-l-blue-600 prose-blockquote:bg-blue-50 prose-blockquote:px-5 prose-blockquote:py-3 prose-blockquote:text-slate-800
+        prose-ul:space-y-2 prose-ol:space-y-2 prose-li:text-slate-700 prose-li:leading-8 prose-li:marker:text-blue-600
+        prose-table:overflow-hidden prose-table:rounded-2xl prose-table:text-sm
+        prose-th:border prose-th:border-slate-200 prose-th:bg-slate-950 prose-th:px-4 prose-th:py-3 prose-th:text-left prose-th:text-white
+        prose-td:border prose-td:border-slate-200 prose-td:px-4 prose-td:py-3 prose-td:text-slate-700">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
@@ -55,9 +92,14 @@ function MarkdownCell({ source }: { source: string }) {
                 {children}
               </a>
             ),
+            table: ({ children }) => (
+              <div className="my-6 overflow-x-auto rounded-2xl border border-slate-200 shadow-sm">
+                <table className="m-0 w-full border-collapse">{children}</table>
+              </div>
+            ),
           }}
         >
-          {source}
+          {normalizedSource}
         </ReactMarkdown>
       </div>
     </article>
@@ -198,10 +240,10 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
                 <img src={`data:image/png;base64,${output.data}`} alt="Graphique généré par le notebook" className="max-w-full rounded-2xl border border-white/10 bg-white" />
               )}
               {output.type === "text" && (
-                <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl bg-emerald-400/10 p-4 text-sm leading-7 text-emerald-100 ring-1 ring-emerald-300/20">{output.data}</pre>
+                <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl bg-emerald-400/10 p-4 text-sm leading-7 text-emerald-100 ring-1 ring-emerald-300/20">{fixNotebookText(output.data)}</pre>
               )}
               {output.type === "html" && (
-                <div className="overflow-x-auto rounded-2xl bg-white p-4 text-sm text-slate-950" dangerouslySetInnerHTML={{ __html: output.data }} />
+                <div className="overflow-x-auto rounded-2xl bg-white p-4 text-sm text-slate-950" dangerouslySetInnerHTML={{ __html: fixNotebookText(output.data) }} />
               )}
             </div>
           ))}
