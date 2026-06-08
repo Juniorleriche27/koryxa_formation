@@ -66,6 +66,7 @@ Variables nécessaires côté Vercel :
 ```text
 NEXT_PUBLIC_API_URL
 NEXT_PUBLIC_APP_URL
+NEXT_PUBLIC_PARTNER_AUTH_URL
 NEXT_PUBLIC_SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
 KORYXA_FORMATION_ACCESS_SECRET
@@ -136,3 +137,5 @@ Après déploiement :
 Les policies publiques de lecture sur `modules` et `resources` sont volontaires : l’accès apprenant reste contrôlé par le cookie signé Formation côté frontend.
 
 Render doit définir `CORS_ORIGINS=https://formation.innovaplus.africa,https://koryxa-formation-jlr7.vercel.app,https://koryxa-formation.vercel.app,http://localhost:3000` pour autoriser le frontend Formation.
+
+- `NEXT_PUBLIC_PARTNER_AUTH_URL` pointe vers l’inscription/authentification partenaire utilisée par les CTA publics de la landing Formation.
