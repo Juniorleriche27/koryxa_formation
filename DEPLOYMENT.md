@@ -57,6 +57,8 @@ Endpoint de santé disponible :
 /health
 ```
 
+Les routes de cours du backend (`/modules`, `/modules/{id}`, `/modules/{id}/notebook`, `/ai/*`) sont protégées par la barrière d’accès Formation côté frontend. Elles ne dépendent plus de l’ancien token utilisateur externe.
+
 ## 3. Frontend Vercel
 
 Variables nécessaires côté Vercel :
