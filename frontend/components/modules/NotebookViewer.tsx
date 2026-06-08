@@ -42,15 +42,8 @@ function fixNotebookText(value: string) {
 
 function normalizeMarkdown(source: string) {
   return fixNotebookText(source)
-    .replace(/^---\s*
-/m, "")
-    .replace(/
----\s*
-/g, "
-
----
-
-");
+    .replace(/^---\s*\n/m, "")
+    .replace(/\n---\s*\n/g, "\n\n---\n\n");
 }
 
 function cleanAIResponse(text: string): string {
