@@ -1,7 +1,25 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
+
+export function getApiErrorMessage(error: unknown) {
+  const axiosError = error as AxiosError<{ detail?: string; message?: string }>;
+
+  if (axiosError?.response) {
+    const detail = axiosError.response.data?.detail || axiosError.response.data?.message;
+    return `API ${axiosError.response.status}${detail ? ` — ${detail}` : ""}`;
+  }
+
+  if (axiosError?.request) {
+    return `Réseau/CORS — aucune réponse depuis ${API_BASE_URL}`;
+  }
+
+  return axiosError?.message || "Erreur inconnue";
+}
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: API_BASE_URL,
   withCredentials: true,
 });
 
@@ -16,7 +34,7 @@ api.interceptors.response.use(
 );
 
 export const modulesAPI = {
-  getAll: () => api.get("/modules"),
+  getAll: () => api.get("/modules/"),
   getOne: (id: string) => api.get(`/modules/${id}`),
 };
 
@@ -32,18 +50,16 @@ export const certificatesAPI = {
 };
 
 export const notebookAPI = {
-  getContent:     (moduleId: string) => api.get(`/modules/${moduleId}/notebook`),
-  getDownloadUrl: (moduleId: string) =>
-    `${process.env.NEXT_PUBLIC_API_URL}/modules/${moduleId}/download`,
+  getContent: (moduleId: string) => api.get(`/modules/${moduleId}/notebook`),
+  getDownloadUrl: (moduleId: string) => `${API_BASE_URL}/modules/${moduleId}/download`,
 };
 
 export const aiAPI = {
-  chat:    (module_id: string, question: string, history: { role: string; message: string }[]) =>
+  chat: (module_id: string, question: string, history: { role: string; message: string }[]) =>
     api.post("/ai/chat", { module_id, question, history }),
   explain: (code: string, module_title?: string) =>
     api.post("/ai/explain", { code, module_title }),
-  quiz:    (module_id: string) =>
-    api.post("/ai/quiz", { module_id }),
+  quiz: (module_id: string) => api.post("/ai/quiz", { module_id }),
 };
 
 export default api;

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { modulesAPI } from "@/lib/api";
+import { getApiErrorMessage, modulesAPI } from "@/lib/api";
 import type { Module } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -18,7 +18,7 @@ export default function ModulesPage() {
       .then((r) => setModules(r.data))
       .catch((err) => {
         if (err?.response?.status !== 401) {
-          setError("Impossible de charger les modules. Réessaie plus tard.");
+          setError(`Impossible de charger les modules. ${getApiErrorMessage(err)}`);
         }
         // 401 handled globally by api interceptor
       })
