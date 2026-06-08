@@ -169,6 +169,18 @@ ALTER TABLE public.resources    ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.progress     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
 
+-- Policies idempotentes : on supprime seulement les anciennes policies avant de les recréer.
+DROP POLICY IF EXISTS "Profil visible par son propriétaire" ON public.profiles;
+DROP POLICY IF EXISTS "Profil modifiable par son propriétaire" ON public.profiles;
+DROP POLICY IF EXISTS "Modules visibles par tous les connectés" ON public.modules;
+DROP POLICY IF EXISTS "Admin gère les modules" ON public.modules;
+DROP POLICY IF EXISTS "Ressources visibles par tous les connectés" ON public.resources;
+DROP POLICY IF EXISTS "Admin gère les ressources" ON public.resources;
+DROP POLICY IF EXISTS "Progression visible par son propriétaire" ON public.progress;
+DROP POLICY IF EXISTS "Progression créée par son propriétaire" ON public.progress;
+DROP POLICY IF EXISTS "Progression modifiable par son propriétaire" ON public.progress;
+DROP POLICY IF EXISTS "Certificat visible par son propriétaire" ON public.certificates;
+
 -- Profiles
 CREATE POLICY "Profil visible par son propriétaire"
     ON public.profiles FOR SELECT USING (auth.uid() = id);
