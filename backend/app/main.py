@@ -23,3 +23,7 @@ app.include_router(ai.router,           prefix="/ai",           tags=["AI"])
 @app.get("/")
 def health_check():
     return {"status": "ok", "app": "KORYXA Formation API"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "koryxa-formation-api"}

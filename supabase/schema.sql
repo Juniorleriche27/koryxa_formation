@@ -201,3 +201,121 @@ CREATE POLICY "Progression modifiable par son propriétaire"
 -- Certificates
 CREATE POLICY "Certificat visible par son propriétaire"
     ON public.certificates FOR SELECT USING (auth.uid() = user_id);
+
+
+-- ============================================================
+-- FORMATION ACCESS CODES
+-- ============================================================
+-- Objectif : donner un code individuel à chaque apprenant sans service externe.
+-- Les codes réels ne doivent pas être stockés en clair : on stocke uniquement leur SHA-256.
+-- Le frontend appelle une route serveur Next.js qui vérifie/réclame le code avec la clé service role.
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE OR REPLACE FUNCTION public.sha256_hex(p_value TEXT)
+RETURNS TEXT AS $$
+BEGIN
+    RETURN encode(digest(trim(p_value), 'sha256'), 'hex');
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE TABLE IF NOT EXISTS public.formation_access_codes (
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code_hash     TEXT NOT NULL UNIQUE,
+    student_name  TEXT NOT NULL,
+    student_email TEXT,
+    label         TEXT,
+    status        TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'used', 'revoked', 'expired')),
+    max_uses      INT  NOT NULL DEFAULT 1 CHECK (max_uses > 0),
+    used_count    INT  NOT NULL DEFAULT 0 CHECK (used_count >= 0),
+    first_used_at TIMESTAMPTZ,
+    last_used_at  TIMESTAMPTZ,
+    expires_at    TIMESTAMPTZ,
+    notes         TEXT,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE OR REPLACE TRIGGER formation_access_codes_updated_at
+    BEFORE UPDATE ON public.formation_access_codes
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+CREATE INDEX IF NOT EXISTS idx_formation_access_codes_hash
+    ON public.formation_access_codes(code_hash);
+
+CREATE INDEX IF NOT EXISTS idx_formation_access_codes_status
+    ON public.formation_access_codes(status);
+
+ALTER TABLE public.formation_access_codes ENABLE ROW LEVEL SECURITY;
+
+-- Pas de policy publique volontairement : cette table est lue uniquement côté serveur
+-- avec SUPABASE_SERVICE_ROLE_KEY. Ne jamais exposer la clé service role côté navigateur.
+
+CREATE OR REPLACE FUNCTION public.redeem_formation_access_code(p_code_hash TEXT)
+RETURNS JSONB AS $$
+DECLARE
+    v_code public.formation_access_codes%ROWTYPE;
+BEGIN
+    SELECT * INTO v_code
+    FROM public.formation_access_codes
+    WHERE code_hash = p_code_hash
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RETURN jsonb_build_object('ok', false, 'reason', 'invalid');
+    END IF;
+
+    IF v_code.status <> 'active' THEN
+        RETURN jsonb_build_object('ok', false, 'reason', v_code.status);
+    END IF;
+
+    IF v_code.expires_at IS NOT NULL AND v_code.expires_at < NOW() THEN
+        UPDATE public.formation_access_codes
+        SET status = 'expired'
+        WHERE id = v_code.id;
+
+        RETURN jsonb_build_object('ok', false, 'reason', 'expired');
+    END IF;
+
+    IF v_code.used_count >= v_code.max_uses THEN
+        UPDATE public.formation_access_codes
+        SET status = 'used'
+        WHERE id = v_code.id;
+
+        RETURN jsonb_build_object('ok', false, 'reason', 'used');
+    END IF;
+
+    UPDATE public.formation_access_codes
+    SET
+        used_count = used_count + 1,
+        first_used_at = COALESCE(first_used_at, NOW()),
+        last_used_at = NOW(),
+        status = CASE WHEN used_count + 1 >= max_uses THEN 'used' ELSE 'active' END
+    WHERE id = v_code.id
+    RETURNING * INTO v_code;
+
+    RETURN jsonb_build_object(
+        'ok', true,
+        'id', v_code.id,
+        'student_name', v_code.student_name,
+        'student_email', v_code.student_email,
+        'used_count', v_code.used_count,
+        'max_uses', v_code.max_uses
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT) FROM anon;
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.redeem_formation_access_code(TEXT) TO service_role;
+
+-- Exemple à exécuter dans Supabase pour créer les codes de juin.
+-- Remplace les valeurs O-JUIN-CLIENT-1 / O-JUIN-CLIENT-2 par les vrais codes envoyés aux apprenants.
+-- Les vrais codes ne seront pas visibles dans la table : seul le hash sera stocké.
+--
+-- INSERT INTO public.formation_access_codes (code_hash, student_name, student_email, label, max_uses, expires_at, notes)
+-- VALUES
+--   (public.sha256_hex('O-JUIN-CLIENT-1'), 'Apprenant 1', 'client1@example.com', 'Juin 2026', 2, '2026-07-31 23:59:59+00', 'Accès formation Python Data'),
+--   (public.sha256_hex('O-JUIN-CLIENT-2'), 'Apprenant 2', 'client2@example.com', 'Juin 2026', 2, '2026-07-31 23:59:59+00', 'Accès formation Python Data')
+-- ON CONFLICT (code_hash) DO NOTHING;
