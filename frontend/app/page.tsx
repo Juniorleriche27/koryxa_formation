@@ -1,338 +1,738 @@
 "use client";
-
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
-  ArrowRight,
-  Award,
-  BarChart3,
-  BookOpen,
-  CheckCircle2,
-  Clock3,
-  Code2,
-  Database,
-  FileCode2,
-  GraduationCap,
-  Layers3,
-  LineChart,
-  LockKeyhole,
-  PlayCircle,
-  Sparkles,
-  Star,
-  TrendingUp,
+  BookOpen, BarChart2, Code2, Award, ChevronDown, Play,
+  CheckCircle, Users, Clock, Star, ArrowRight, Zap,
+  Database, TrendingUp, Terminal, GitBranch,
 } from "lucide-react";
 
-const PARTNER_AUTH_URL = process.env.NEXT_PUBLIC_PARTNER_AUTH_URL || "https://partenaires.innovaplus.africa/inscription";
+// ── Animated counter (loops) ───────────────────────────────────
+function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: false });
 
-const program = [
-  { title: "Installation & environnement", desc: "Anaconda, Jupyter, notebooks et premiers réflexes de travail.", icon: FileCode2 },
-  { title: "Python pour la data", desc: "Variables, conditions, boucles, fonctions et logique de programmation.", icon: Code2 },
-  { title: "NumPy & calcul", desc: "Tableaux, opérations rapides et bases du calcul numérique.", icon: Database },
-  { title: "Pandas professionnel", desc: "Importer, nettoyer, transformer et analyser des données réelles.", icon: Layers3 },
-  { title: "Visualisation & EDA", desc: "Graphiques lisibles, exploration et interprétation business.", icon: BarChart3 },
-  { title: "Projet portfolio", desc: "Un cas pratique complet pour montrer tes compétences.", icon: Award },
-];
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const step = Math.ceil(to / 60);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= to) { setCount(to); clearInterval(timer); }
+      else setCount(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [inView, to]);
 
-const benefits = [
-  "Apprendre avec des explications simples, pas du jargon compliqué.",
-  "Construire une vraie logique métier autour des données.",
-  "Travailler sur notebooks, datasets, quiz et exercices guidés.",
-  "Avancer à ton rythme avec un accès attribué à ton compte partenaire.",
-];
+  return <span ref={ref}>{count}{suffix}</span>;
+}
 
-const stats = [
-  { label: "Modules guidés", value: "8", icon: BookOpen },
-  { label: "Heures de contenu", value: "21h", icon: Clock3 },
-  { label: "Exercices & cellules", value: "120+", icon: Code2 },
-  { label: "Certificat inclus", value: "Oui", icon: Award },
-];
-
-const steps = [
-  { title: "Inscription partenaire", desc: "Tu passes par l’espace partenaire KORYXA pour sécuriser ton accès." },
-  { title: "Activation formation", desc: "Après validation, ton accès est attribué directement à ton compte." },
-  { title: "Apprentissage guidé", desc: "Tu avances module par module avec notebooks, ressources et IA d’aide." },
-  { title: "Projet & certificat", desc: "Tu termines avec un projet portfolio et un certificat de complétion." },
-];
-
-const faqs = [
-  {
-    q: "Est-ce adapté si je débute complètement ?",
-    a: "Oui. Le parcours commence par l’installation et les bases de Python avant d’aller progressivement vers Pandas, la visualisation et le projet final.",
-  },
-  {
-    q: "Est-ce que j’ai besoin d’un ordinateur puissant ?",
-    a: "Non. Un ordinateur standard suffit pour suivre les notebooks, pratiquer les exercices et réaliser le projet.",
-  },
-  {
-    q: "Comment l’accès est activé ?",
-    a: "Après inscription et validation, l’accès est attribué à ton compte partenaire. Tu peux ensuite entrer directement dans la formation sans code WhatsApp.",
-  },
-  {
-    q: "Est-ce qu’il y a un certificat ?",
-    a: "Oui. Le certificat est prévu après progression et complétion du parcours.",
-  },
-];
-
-function ProductPreview() {
+// ── Floating particle ──────────────────────────────────────────
+function Particle({ x, y, delay, size }: { x: number; y: number; delay: number; size: number }) {
   return (
-    <div className="relative mx-auto max-w-5xl">
-      <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-r from-blue-500/20 via-cyan-400/10 to-emerald-400/20 blur-3xl" />
-      <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.08] shadow-2xl shadow-blue-950/40 backdrop-blur-xl">
-        <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4">
-          <span className="h-3 w-3 rounded-full bg-red-400/80" />
-          <span className="h-3 w-3 rounded-full bg-amber-400/80" />
-          <span className="h-3 w-3 rounded-full bg-emerald-400/80" />
-          <span className="ml-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">KORYXA Learning OS</span>
-        </div>
-        <div className="grid gap-0 lg:grid-cols-[1fr_21rem]">
-          <div className="p-5 sm:p-8">
-            <div className="mb-5 flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-blue-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-blue-200 ring-1 ring-blue-300/20">Module 3</span>
-              <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-200 ring-1 ring-emerald-300/20">52% complété</span>
-            </div>
-            <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl">Analyse de ventes avec Pandas</h3>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
-              Nettoie un dataset réel, trouve les produits performants, visualise les tendances et prépare une conclusion business claire.
-            </p>
+    <motion.div
+      className="absolute rounded-full bg-blue-400/20"
+      style={{ left: `${x}%`, top: `${y}%`, width: size, height: size }}
+      animate={{
+        y: [0, -40, 20, -20, 0],
+        x: [0, 15, -10, 5, 0],
+        opacity: [0.15, 0.6, 0.2, 0.7, 0.15],
+        scale: [1, 1.4, 0.8, 1.2, 1],
+      }}
+      transition={{ duration: 5 + delay * 2, repeat: Infinity, delay, ease: "easeInOut" }}
+    />
+  );
+}
 
-            <div className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80">
-              <div className="border-b border-white/10 px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Notebook interactif</div>
-              <pre className="overflow-x-auto p-5 text-xs leading-7 text-slate-200 sm:text-sm"><code>{`import pandas as pd
+// ── Glowing orb (always moving) ────────────────────────────────
+function Orb({ color, size, x, y, dur }: { color: string; size: number; x: number; y: number; dur: number }) {
+  return (
+    <motion.div
+      className={`absolute rounded-full blur-[80px] ${color}`}
+      style={{ width: size, height: size, left: `${x}%`, top: `${y}%` }}
+      animate={{ x: [0, 60, -40, 30, 0], y: [0, -50, 30, -20, 0], scale: [1, 1.3, 0.8, 1.1, 1] }}
+      transition={{ duration: dur, repeat: Infinity, ease: "easeInOut" }}
+    />
+  );
+}
 
-ventes = pd.read_csv("ventes_koryxa.csv")
-ca_par_produit = ventes.groupby("produit")["total"].sum()
+// ── Typing text animation ──────────────────────────────────────
+const words = ["Data Analyst", "Analyste métier", "Professionnel de la donnée", "Portfolio data"];
+function TypingText() {
+  const [idx, setIdx] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
-ca_par_produit.sort_values().plot(kind="barh")`}</code></pre>
-              <div className="border-t border-white/10 bg-emerald-400/10 px-5 py-4 text-sm font-bold text-emerald-100">✓ Graphique généré · 3 insights détectés</div>
-            </div>
-          </div>
-          <div className="border-t border-white/10 bg-white/[0.04] p-5 lg:border-l lg:border-t-0">
-            <p className="text-sm font-black text-white">Aujourd’hui</p>
-            <div className="mt-4 space-y-3">
-              {["Lire le cours", "Exécuter le notebook", "Répondre au quiz", "Marquer terminé"].map((item, index) => (
-                <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-3">
-                  <span className={`flex h-8 w-8 items-center justify-center rounded-full ${index < 2 ? "bg-emerald-400/15 text-emerald-200" : "bg-white/10 text-slate-300"}`}>
-                    {index < 2 ? <CheckCircle2 size={16} /> : index + 1}
-                  </span>
-                  <span className="text-sm font-semibold text-slate-200">{item}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-3xl bg-white p-4 text-slate-950 shadow-soft">
-              <p className="flex items-center gap-2 text-sm font-black"><Sparkles size={16} className="text-blue-600" /> Assistant IA</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">“Explique-moi ce code comme si je débutais.”</p>
-            </div>
-          </div>
-        </div>
-      </div>
+  useEffect(() => {
+    const word = words[idx];
+    if (!deleting && displayed.length < word.length) {
+      const t = setTimeout(() => setDisplayed(word.slice(0, displayed.length + 1)), 80);
+      return () => clearTimeout(t);
+    }
+    if (!deleting && displayed.length === word.length) {
+      const t = setTimeout(() => setDeleting(true), 1800);
+      return () => clearTimeout(t);
+    }
+    if (deleting && displayed.length > 0) {
+      const t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 45);
+      return () => clearTimeout(t);
+    }
+    if (deleting && displayed.length === 0) {
+      setDeleting(false);
+      setIdx((i) => (i + 1) % words.length);
+    }
+  }, [displayed, deleting, idx]);
+
+  return (
+    <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+      {displayed}<motion.span animate={{ opacity: [1, 0] }} transition={{ duration: 0.5, repeat: Infinity }}>|</motion.span>
+    </span>
+  );
+}
+
+// ── Scrolling ticker ───────────────────────────────────────────
+const tickerItems = ["Python", "Pandas", "NumPy", "Matplotlib", "Seaborn", "EDA", "Data Cleaning", "Visualisation", "Machine Learning", "Certificat"];
+function Ticker() {
+  return (
+    <div className="overflow-hidden py-3 border-y border-white/5 bg-white/2">
+      <motion.div
+        className="flex gap-8 whitespace-nowrap"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+      >
+        {[...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems].map((item, i) => (
+          <span key={i} className="text-slate-400 text-sm font-medium flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block" />
+            {item}
+          </span>
+        ))}
+      </motion.div>
     </div>
   );
 }
 
-export default function LandingPage() {
+// ── Live bar chart animation ────────────────────────────────────
+const barData = [
+  { label: "Paris",     value: 85, color: "bg-blue-400" },
+  { label: "Lyon",      value: 62, color: "bg-cyan-400" },
+  { label: "Marseille", value: 48, color: "bg-purple-400" },
+  { label: "Bordeaux",  value: 71, color: "bg-pink-400" },
+  { label: "Toulouse",  value: 55, color: "bg-orange-400" },
+];
+function LiveChart() {
+  const [vals, setVals] = useState(barData.map((b) => b.value));
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVals(barData.map((b) => { const v = b.value + (Math.random() - 0.5) * 20; return Math.max(20, Math.min(95, v)); }));
+    }, 1800);
+    return () => clearInterval(t);
+  }, []);
+
   return (
-    <main className="kx-dark-page">
-      <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#07111f]/78 backdrop-blur-2xl">
-        <div className="kx-container flex h-16 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 text-sm font-black text-white shadow-lg shadow-blue-500/25">K</span>
-            <span>
-              <span className="block text-sm font-black text-white sm:text-base">KORYXA Formation</span>
-              <span className="hidden text-xs font-medium text-slate-400 sm:block">Python Data Academy</span>
-            </span>
-          </Link>
-          <div className="hidden items-center gap-6 text-sm font-bold text-slate-300 lg:flex">
-            <a href="#programme" className="transition hover:text-white">Programme</a>
-            <a href="#experience" className="transition hover:text-white">Expérience</a>
-            <a href="#prix" className="transition hover:text-white">Prix</a>
-            <a href="#faq" className="transition hover:text-white">FAQ</a>
+    <div className="space-y-3 p-5">
+      <p className="text-slate-400 text-xs font-mono mb-4">📊 Ventes par ville — live</p>
+      {barData.map((b, i) => (
+        <div key={b.label} className="flex items-center gap-3">
+          <span className="text-slate-400 text-xs w-16 shrink-0">{b.label}</span>
+          <div className="flex-1 bg-white/5 rounded-full h-2 overflow-hidden">
+            <motion.div
+              className={`h-2 rounded-full ${b.color}`}
+              animate={{ width: `${vals[i]}%` }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
+            />
           </div>
-          <Link href={PARTNER_AUTH_URL} className="inline-flex h-10 items-center justify-center rounded-2xl bg-white px-4 text-sm font-black text-slate-950 shadow-lg shadow-white/10 transition hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-700">
-            Commencer
-          </Link>
+          <motion.span
+            className="text-xs text-slate-300 w-8 text-right font-mono"
+            animate={{ opacity: [1, 0.4, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.2 }}
+          >
+            {Math.round(vals[i])}%
+          </motion.span>
         </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Typewriter code block ──────────────────────────────────────
+const codeLines = [
+  { text: "import pandas as pd", delay: 0 },
+  { text: "import matplotlib.pyplot as plt", delay: 0.3 },
+  { text: "", delay: 0.5 },
+  { text: "df = pd.read_csv('ventes_koryxa.csv')", delay: 0.7 },
+  { text: "df = df.drop_duplicates()", delay: 1.0 },
+  { text: "", delay: 1.2 },
+  { text: "ca = df.groupby('produit')['total']", delay: 1.4 },
+  { text: "    .sum().sort_values()", delay: 1.6 },
+  { text: "", delay: 1.8 },
+  { text: "ca.plot(kind='barh', color='steelblue')", delay: 2.0 },
+  { text: "plt.title('CA par produit')", delay: 2.3 },
+  { text: "plt.show()  ✓", delay: 2.6 },
+];
+
+const particles = Array.from({ length: 25 }, (_, i) => ({
+  x: (i * 17) % 100, y: (i * 13 + 7) % 100,
+  delay: (i * 0.4) % 3, size: 4 + (i % 3) * 3, id: i,
+}));
+
+const modules = [
+  { icon: Terminal,   num: 0, title: "Introduction & Installation", desc: "Anaconda, Jupyter, Python",     color: "from-violet-500 to-purple-600" },
+  { icon: Code2,      num: 1, title: "Bases de Python",             desc: "Variables, boucles, fonctions", color: "from-blue-500 to-cyan-600" },
+  { icon: Database,   num: 2, title: "NumPy",                       desc: "Calcul numérique vectorisé",    color: "from-cyan-500 to-teal-600" },
+  { icon: Database,   num: 3, title: "Pandas",                      desc: "Manipulation de données",       color: "from-teal-500 to-green-600" },
+  { icon: Zap,        num: 4, title: "Nettoyage de Données",        desc: "Valeurs manquantes, outliers",  color: "from-green-500 to-emerald-600" },
+  { icon: BarChart2,  num: 5, title: "Visualisation",               desc: "Matplotlib & Seaborn",          color: "from-orange-500 to-amber-600" },
+  { icon: TrendingUp, num: 6, title: "Analyse EDA",                 desc: "Insights & corrélations",       color: "from-red-500 to-pink-600" },
+  { icon: Award,      num: 7, title: "Projet Final",                desc: "Portfolio + Certificat",        color: "from-pink-500 to-rose-600" },
+];
+
+const kpis = [
+  { icon: BookOpen, label: "Modules",           value: 8,   suffix: "",   color: "text-blue-400",   glow: "shadow-blue-500/40" },
+  { icon: Clock,    label: "Heures de contenu", value: 21,  suffix: "h",  color: "text-cyan-400",   glow: "shadow-cyan-500/40" },
+  { icon: Code2,    label: "Exercices",         value: 120, suffix: "+",  color: "text-purple-400", glow: "shadow-purple-500/40" },
+  { icon: Users,    label: "Apprenants",        value: 500, suffix: "+",  color: "text-green-400",  glow: "shadow-green-500/40" },
+  { icon: Star,     label: "Note /5",           value: 5,   suffix: "⭐", color: "text-yellow-400", glow: "shadow-yellow-500/40" },
+  { icon: Award,    label: "Certificat",        value: 100, suffix: "%",  color: "text-orange-400", glow: "shadow-orange-500/40" },
+];
+
+const PARTNER_AUTH_URL = process.env.NEXT_PUBLIC_PARTNER_AUTH_URL || "https://partenaires.innovaplus.africa/inscription";
+
+const features = [
+  "Notebooks Jupyter interactifs exécutables",
+  "Dataset réel d'une boutique tech",
+  "Vidéos YouTube par module",
+  "Suivi de progression en temps réel",
+  "Certificat de complétion officiel",
+  "Accès à vie, à ton rythme",
+];
+
+export default function LandingPage() {
+  const [activeModule, setActiveModule] = useState<number | null>(null);
+
+  return (
+    <div className="bg-[#050c1a] text-white overflow-x-hidden">
+
+      {/* ── NAVBAR ── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-4 bg-[#050c1a]/80 backdrop-blur-md border-b border-white/5">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          className="text-lg sm:text-xl font-bold"
+        >
+          <motion.span
+            animate={{ color: ["#60a5fa", "#a78bfa", "#34d399", "#60a5fa"] }}
+            transition={{ duration: 4, repeat: Infinity }}
+          >KORYXA</motion.span>{" "}
+          <span className="text-white">Formation</span>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 sm:gap-4">
+          <Link href={PARTNER_AUTH_URL} className="hidden sm:block text-slate-300 hover:text-white transition text-sm font-medium">Espace partenaire</Link>
+          <Link href={PARTNER_AUTH_URL}>
+            <motion.span
+              animate={{ boxShadow: ["0 0 0px #3b82f6", "0 0 20px #3b82f6", "0 0 0px #3b82f6"] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="inline-block bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-3 sm:px-5 py-2 rounded-xl transition"
+            >
+              Commencer →
+            </motion.span>
+          </Link>
+        </motion.div>
       </nav>
 
-      <section className="relative overflow-hidden px-4 pb-16 pt-28 sm:px-6 sm:pb-20 sm:pt-32 lg:px-8 lg:pb-28">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:72px_72px]" />
-        <div className="kx-container relative">
-          <div className="mx-auto max-w-4xl text-center">
-            <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="kx-dark-eyebrow">
-              Formation Python Data · projet portfolio · certificat
-            </motion.div>
-            <motion.h1 initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="mt-6 text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
-              Apprends la data avec Python dans une plateforme qui donne envie d’avancer.
-            </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }} className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-300 sm:text-xl">
-              Un parcours clair pour passer des bases de Python à l’analyse de données réelle : notebooks, vidéos, quiz, assistant IA, projet portfolio et certificat.
-            </motion.p>
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link href={PARTNER_AUTH_URL} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-7 py-4 text-base font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-blue-500">
-                Commencer le parcours <ArrowRight size={19} />
-              </Link>
-              <a href="#experience" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-7 py-4 text-base font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10">
-                <PlayCircle size={19} /> Voir l’expérience
-              </a>
-            </motion.div>
-            <div className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-semibold text-slate-400">
-              <span className="inline-flex items-center gap-2"><LockKeyhole size={15} className="text-emerald-300" /> Accès sécurisé</span>
-              <span className="inline-flex items-center gap-2"><CheckCircle2 size={15} className="text-emerald-300" /> Certificat inclus</span>
-              <span className="inline-flex items-center gap-2"><Star size={15} className="text-amber-300" /> 29 000 FCFA</span>
-            </div>
-          </div>
+      {/* ── HERO ── */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 overflow-hidden">
+        {/* Animated orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <Orb color="bg-blue-600/25"   size={500} x={30} y={10}  dur={8} />
+          <Orb color="bg-purple-600/20" size={350} x={60} y={40}  dur={11} />
+          <Orb color="bg-cyan-600/20"   size={300} x={10} y={50}  dur={9} />
+          <Orb color="bg-pink-600/15"   size={250} x={75} y={20}  dur={13} />
+          {particles.map((p) => <Particle key={p.id} x={p.x} y={p.y} delay={p.delay} size={p.size} />)}
+          {/* Grid overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        </div>
 
-          <div className="mt-14">
-            <ProductPreview />
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative z-10 text-center max-w-4xl"
+        >
+          {/* Badge promo */}
+          <motion.div
+            animate={{ scale: [1, 1.04, 1], boxShadow: ["0 0 0px #f97316", "0 0 24px #f9731640", "0 0 0px #f97316"] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/40 text-orange-300 text-sm font-semibold px-5 py-2 rounded-full mb-4"
+          >
+            <motion.span animate={{ rotate: [0, 20, -20, 0] }} transition={{ duration: 1.2, repeat: Infinity }}>
+              🔥
+            </motion.span>
+            Offre de lancement — Places limitées
+          </motion.div>
+
+          {/* Prix hero */}
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+            className="flex items-center justify-center gap-3 mb-6"
+          >
+            <span className="text-slate-500 line-through text-lg sm:text-xl font-medium">55 000 F</span>
+            <motion.span
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="bg-gradient-to-r from-orange-400 to-pink-400 text-white font-extrabold text-2xl sm:text-3xl px-4 py-1 rounded-xl"
+            >
+              29 000 FCFA
+            </motion.span>
+            <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-2 py-1 rounded-lg">−47%</span>
+          </motion.div>
+
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+            De{" "}
+            <motion.span
+              animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent bg-[length:200%]"
+            >
+              zéro
+            </motion.span>{" "}
+            à{" "}
+            <TypingText />
+          </h1>
+
+          <p className="text-base sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Apprends à analyser des données réelles avec Python, Pandas, NumPy, Matplotlib et une vraie logique métier en{" "}
+            <motion.span
+              animate={{ color: ["#fff", "#60a5fa", "#a78bfa", "#fff"] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="font-semibold"
+            >
+              8 modules progressifs
+            </motion.span>{" "}
+            — du débutant au projet portfolio professionnel.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href={PARTNER_AUTH_URL} className="w-full sm:w-auto">
+              <motion.button
+                animate={{ boxShadow: ["0 0 10px #3b82f6", "0 0 35px #3b82f6", "0 0 10px #3b82f6"] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                whileHover={{ scale: 1.07 }}
+                whileTap={{ scale: 0.96 }}
+                className="w-full sm:w-auto flex flex-col items-center justify-center gap-0.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold px-7 sm:px-9 py-3 rounded-2xl text-base sm:text-lg"
+              >
+                <span className="flex items-center gap-2">
+                  Commencer le parcours
+                  <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1, repeat: Infinity }}>
+                    <ArrowRight size={20} />
+                  </motion.span>
+                </span>
+                <span className="text-xs font-normal text-blue-100 opacity-90">29 000 FCFA · Accès à vie</span>
+              </motion.button>
+            </Link>
+            <motion.button
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.08)" }}
+              whileTap={{ scale: 0.96 }}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 border border-white/20 text-white font-semibold px-7 sm:px-9 py-4 rounded-2xl text-base sm:text-lg transition"
+            >
+              <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                <Play size={18} fill="white" />
+              </motion.span>
+              Voir le programme
+            </motion.button>
           </div>
+          <p className="text-slate-500 text-xs mt-4">✓ Paiement sécurisé &nbsp;·&nbsp; ✓ Accès immédiat &nbsp;·&nbsp; ✓ Certificat inclus</p>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          animate={{ y: [0, 12, 0], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.8, repeat: Infinity }}
+          className="absolute bottom-8 text-slate-500"
+        >
+          <ChevronDown size={28} />
+        </motion.div>
+      </section>
+
+      {/* ── TICKER ── */}
+      <Ticker />
+
+      {/* ── VIDEO MODULE 0 ── */}
+      <section className="py-24 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-blue-600/10 rounded-full blur-[100px]" />
+        </div>
+        <div className="max-w-4xl mx-auto relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <motion.p
+              animate={{ opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-blue-400 font-semibold text-sm uppercase tracking-widest mb-3"
+            >
+              Aperçu gratuit
+            </motion.p>
+            <h2 className="text-4xl font-bold mb-4">Regarde le premier cours</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">
+              Module 0 — Introduction & Installation. Découvre la formation avant de t&apos;inscrire.
+            </p>
+          </motion.div>
+
+          {/* Video player */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            animate={{ boxShadow: ["0 0 20px rgba(59,130,246,0.15)", "0 0 50px rgba(59,130,246,0.35)", "0 0 20px rgba(59,130,246,0.15)"] }}
+            transition={{ boxShadow: { duration: 3, repeat: Infinity } }}
+            className="rounded-2xl overflow-hidden border border-white/10 bg-black"
+          >
+            <iframe
+              src="https://www.youtube.com/embed/EWy_CcxHyxc"
+              title="Analyse de Données avec Python — Module 0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full aspect-video"
+            />
+          </motion.div>
+
+          {/* CTA sous la vidéo */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="text-center mt-8"
+          >
+            <p className="text-slate-400 mb-2">Tu veux construire ton portfolio data ? Accède au parcours complet.</p>
+            <div className="flex items-center justify-center gap-2 mb-5">
+              <span className="text-slate-500 line-through text-sm">55 000 F</span>
+              <span className="text-white font-bold text-xl">29 000 FCFA</span>
+              <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-2 py-0.5 rounded-lg">−47%</span>
+            </div>
+            <Link href={PARTNER_AUTH_URL}>
+              <motion.button
+                animate={{ boxShadow: ["0 0 10px #3b82f6", "0 0 30px #3b82f6", "0 0 10px #3b82f6"] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold px-10 py-4 rounded-2xl text-lg"
+              >
+                Commencer le parcours →
+              </motion.button>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-white/[0.04] py-6">
-        <div className="kx-container grid grid-cols-2 gap-4 md:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} className="rounded-3xl border border-white/10 bg-white/[0.05] p-4 text-center backdrop-blur">
-              <stat.icon className="mx-auto mb-3 h-5 w-5 text-blue-200" />
-              <p className="text-2xl font-black text-white">{stat.value}</p>
-              <p className="mt-1 text-xs font-semibold text-slate-400">{stat.label}</p>
-            </div>
+      {/* ── KPIs ── */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+          {kpis.map((kpi, i) => (
+            <motion.div
+              key={kpi.label}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              animate={{ borderColor: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.15)", "rgba(255,255,255,0.05)"] }}
+              whileHover={{ scale: 1.08, y: -4 }}
+              className="flex flex-col items-center text-center p-5 rounded-2xl border cursor-default"
+              style={{ background: "rgba(255,255,255,0.02)" }}
+            >
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.15, 1] }}
+                transition={{ duration: 3 + i * 0.5, repeat: Infinity }}
+              >
+                <kpi.icon className={`mb-3 ${kpi.color}`} size={28} />
+              </motion.div>
+              <p className={`text-3xl font-extrabold ${kpi.color}`}>
+                <Counter to={kpi.value} suffix={kpi.suffix} />
+              </p>
+              <p className="text-slate-400 text-xs mt-1 font-medium">{kpi.label}</p>
+            </motion.div>
           ))}
         </div>
       </section>
 
-      <section id="experience" className="kx-section">
-        <div className="kx-container grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <span className="kx-dark-eyebrow">Pourquoi c’est différent</span>
-            <h2 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl">Une formation pensée pour apprendre, pratiquer et finir.</h2>
-            <p className="mt-5 text-base leading-8 text-slate-300">
-              La plateforme ne te jette pas juste des vidéos. Elle te guide avec une progression claire, des notebooks exploitables, des ressources utiles et des actions concrètes à chaque étape.
-            </p>
-            <div className="mt-7 space-y-3">
-              {benefits.map((benefit) => (
-                <div key={benefit} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-4">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
-                  <p className="text-sm font-semibold leading-6 text-slate-200">{benefit}</p>
+      {/* ── MODULES ── */}
+      <section className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.p
+              animate={{ opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-blue-400 font-semibold text-sm uppercase tracking-widest mb-3"
+            >
+              Parcours complet
+            </motion.p>
+            <h2 className="text-3xl sm:text-4xl font-bold">8 modules pour devenir Data Analyst opérationnel</h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {modules.map((mod, i) => (
+              <motion.div
+                key={mod.num}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+                animate={{ y: [0, -4, 0] }}
+                whileHover={{ y: -10, scale: 1.04 }}
+                onHoverStart={() => setActiveModule(mod.num)}
+                onHoverEnd={() => setActiveModule(null)}
+                className="relative p-5 rounded-2xl border border-white/8 cursor-pointer overflow-hidden group"
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  animationDelay: `${i * 0.3}s`,
+                  transition: "border-color 0.3s",
+                }}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${mod.color} opacity-0 group-hover:opacity-15 transition-opacity duration-300`} />
+                <motion.div
+                  animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }}
+                  transition={{ duration: 4 + i * 0.3, repeat: Infinity }}
+                  className={`inline-flex w-10 h-10 rounded-xl bg-gradient-to-br ${mod.color} items-center justify-center mb-4`}
+                >
+                  <mod.icon size={18} className="text-white" />
+                </motion.div>
+                <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Module {mod.num}</p>
+                <h3 className="font-bold text-white text-sm mb-1">{mod.title}</h3>
+                <p className="text-slate-400 text-xs">{mod.desc}</p>
+                <AnimatePresence>
+                  {activeModule === mod.num && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 10 }}
+                      className="absolute top-4 right-4"
+                    >
+                      <motion.div animate={{ x: [0, 4, 0] }} transition={{ duration: 0.6, repeat: Infinity }}>
+                        <ArrowRight size={16} className="text-white" />
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── LIVE DEMO ── */}
+      <section className="py-24 px-6 bg-gradient-to-b from-transparent via-blue-950/10 to-transparent">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+
+          {/* Features list */}
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <motion.p
+              animate={{ opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-blue-400 font-semibold text-sm uppercase tracking-widest mb-3"
+            >
+              Pourquoi KORYXA ?
+            </motion.p>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8">Une formation qui fait la différence</h2>
+            <div className="space-y-4">
+              {features.map((f, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  whileHover={{ x: 6 }}
+                  className="flex items-center gap-3 cursor-default"
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.3, 1], rotate: [0, 10, 0] }}
+                    transition={{ duration: 2 + i * 0.4, repeat: Infinity }}
+                  >
+                    <CheckCircle size={20} className="text-green-400 shrink-0" />
+                  </motion.div>
+                  <span className="text-slate-300">{f}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Two live cards */}
+          <div className="space-y-4">
+            {/* Live bar chart */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-[#0d1a2e] rounded-2xl border border-white/10 overflow-hidden"
+            >
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
+                <motion.div animate={{ scale: [1, 1.4, 1] }} transition={{ duration: 1, repeat: Infinity }} className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                <span className="text-slate-400 text-xs font-mono">dashboard_live.py</span>
+              </div>
+              <LiveChart />
+            </motion.div>
+
+            {/* Code snippet */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-[#0d1a2e] rounded-2xl border border-white/10 overflow-hidden"
+            >
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
+                <span className="text-slate-500 text-xs ml-1 font-mono">analyse_ventes.ipynb</span>
+              </div>
+              <div className="p-4 font-mono text-xs space-y-1 leading-relaxed overflow-x-auto">
+                {codeLines.map((line, i) => (
+                  <motion.p
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: line.delay }}
+                  >
+                    {line.text.includes("import") && (
+                      <><span className="text-blue-400">import</span>{" "}<span className="text-green-300">{line.text.replace("import ", "").replace(" as pd", "").replace(" as plt", "")}</span>{line.text.includes(" as ") && <><span className="text-blue-400"> as</span> <span className="text-white">{line.text.split(" as ")[1]}</span></>}</>
+                    )}
+                    {line.text.includes("read_csv") && <><span className="text-white">df = pd.</span><span className="text-yellow-300">read_csv</span><span className="text-white">(</span><span className="text-orange-300">&apos;ventes_koryxa.csv&apos;</span><span className="text-white">)</span></>}
+                    {line.text.includes("drop_dup") && <><span className="text-white">df = df.</span><span className="text-yellow-300">drop_duplicates</span><span className="text-white">()</span></>}
+                    {line.text.includes("groupby") && <><span className="text-white">ca = df.</span><span className="text-yellow-300">groupby</span><span className="text-white">(</span><span className="text-orange-300">&apos;produit&apos;</span><span className="text-white">)[</span><span className="text-orange-300">&apos;total&apos;</span><span className="text-white">]</span></>}
+                    {line.text.includes(".sum") && <><span className="text-white pl-4">.</span><span className="text-yellow-300">sum</span><span className="text-white">().</span><span className="text-yellow-300">sort_values</span><span className="text-white">()</span></>}
+                    {line.text.includes("barh") && <><span className="text-white">ca.</span><span className="text-yellow-300">plot</span><span className="text-white">(kind=</span><span className="text-orange-300">&apos;barh&apos;</span><span className="text-white">)</span></>}
+                    {line.text.includes("title") && <><span className="text-white">plt.</span><span className="text-yellow-300">title</span><span className="text-white">(</span><span className="text-orange-300">&apos;CA par produit&apos;</span><span className="text-white">)</span></>}
+                    {line.text.includes("show") && (
+                      <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
+                        <span className="text-white">plt.</span><span className="text-yellow-300">show</span><span className="text-white">() </span>
+                        <span className="text-green-400">✓ Graphique généré</span>
+                      </motion.span>
+                    )}
+                    {!line.text && "\u00A0"}
+                  </motion.p>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING / CTA FINAL ── */}
+      <section className="py-24 px-4 sm:px-6 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <Orb color="bg-blue-600/20"   size={400} x={30} y={20} dur={7} />
+          <Orb color="bg-purple-600/15" size={300} x={60} y={50} dur={10} />
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative max-w-lg mx-auto text-center"
+        >
+          <motion.h2
+            animate={{ scale: [1, 1.015, 1] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3"
+          >
+            Prêt à devenir{" "}
+            <motion.span
+              animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent bg-[length:200%]"
+            >
+              Data Analyst opérationnel ?
+            </motion.span>
+          </motion.h2>
+          <p className="text-slate-400 text-base sm:text-lg mb-8">
+            Rejoins KORYXA Formation et construis des compétences data utiles, visibles et exploitables.
+          </p>
+
+          {/* Pricing card */}
+          <motion.div
+            animate={{ boxShadow: ["0 0 20px rgba(59,130,246,0.15)", "0 0 50px rgba(59,130,246,0.35)", "0 0 20px rgba(59,130,246,0.15)"] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8"
+          >
+            {/* Offre badge */}
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="inline-block bg-orange-500/20 border border-orange-500/40 text-orange-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6"
+            >
+              🔥 Offre de lancement
+            </motion.div>
+
+            {/* Prix */}
+            <div className="mb-6">
+              <p className="text-slate-500 line-through text-lg mb-1">Valeur réelle : 55 000 FCFA</p>
+              <motion.p
+                animate={{ scale: [1, 1.03, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-5xl sm:text-6xl font-extrabold text-white"
+              >
+                29 000
+                <span className="text-2xl text-slate-300 ml-2">FCFA</span>
+              </motion.p>
+              <p className="text-green-400 font-semibold mt-2">Tu économises 26 000 FCFA · −47%</p>
+            </div>
+
+            {/* Inclus */}
+            <div className="text-left space-y-2.5 mb-8">
+              {[
+                "8 modules complets avec notebooks Jupyter",
+                "Vidéos explicatives par module",
+                "Dataset réel d'une boutique tech",
+                "Assistant IA intégré dans chaque module",
+                "Quiz génératif pour valider tes acquis",
+                "Certificat officiel de complétion",
+                "Accès à vie · À ton rythme",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2.5 text-sm text-slate-300">
+                  <CheckCircle size={16} className="text-green-400 shrink-0" />
+                  {item}
                 </div>
               ))}
             </div>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              { icon: GraduationCap, title: "Débutant accepté", desc: "Tu démarres avec les bases et tu avances sans te perdre." },
-              { icon: LineChart, title: "Logique métier", desc: "Chaque notion sert à résoudre un vrai problème de données." },
-              { icon: Sparkles, title: "IA pédagogique", desc: "Tu peux demander une explication claire du code dans les modules." },
-              { icon: TrendingUp, title: "Progression visible", desc: "Tu sais où tu es, quoi faire et ce qui reste à terminer." },
-            ].map((item) => (
-              <div key={item.title} className="rounded-3xl border border-white/10 bg-white/[0.06] p-6 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
-                <item.icon className="h-7 w-7 text-blue-200" />
-                <h3 className="mt-5 text-lg font-black text-white">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+
+            <Link href={PARTNER_AUTH_URL} className="block">
+              <motion.button
+                animate={{ boxShadow: ["0 0 10px #3b82f6", "0 0 50px #3b82f6", "0 0 10px #3b82f6"] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-2xl text-lg"
+              >
+                Je m&apos;inscris maintenant →
+              </motion.button>
+            </Link>
+
+            <p className="text-slate-500 text-xs mt-4">✓ Accès immédiat après inscription &nbsp;·&nbsp; ✓ Paiement sécurisé</p>
+          </motion.div>
+        </motion.div>
       </section>
 
-      <section id="programme" className="kx-section border-y border-white/10 bg-white/[0.03]">
-        <div className="kx-container">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="kx-dark-eyebrow">Programme</span>
-            <h2 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl">Un parcours progressif, pas une liste de cours dispersés.</h2>
-          </div>
-          <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {program.map((item, index) => (
-              <div key={item.title} className="group rounded-3xl border border-white/10 bg-white/[0.06] p-6 shadow-2xl shadow-slate-950/20 backdrop-blur-xl transition hover:-translate-y-1 hover:border-blue-300/30 hover:bg-white/[0.08]">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-400/10 text-blue-200 ring-1 ring-blue-300/20">
-                    <item.icon size={22} />
-                  </span>
-                  <span className="text-sm font-black text-slate-500">0{index + 1}</span>
-                </div>
-                <h3 className="mt-6 text-xl font-black text-white">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-400">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="kx-section">
-        <div className="kx-container">
-          <div className="grid gap-8 lg:grid-cols-4">
-            {steps.map((step, index) => (
-              <div key={step.title} className="relative rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-xl">
-                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-sm font-black text-slate-950">{index + 1}</span>
-                <h3 className="mt-5 text-lg font-black text-white">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="prix" className="kx-section">
-        <div className="kx-container">
-          <div className="mx-auto max-w-4xl overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-blue-950/30 backdrop-blur-xl sm:p-8 lg:p-10">
-            <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-center">
-              <div>
-                <span className="kx-dark-eyebrow">Offre de lancement</span>
-                <h2 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl">Formation Python Data complète.</h2>
-                <p className="mt-4 text-base leading-8 text-slate-300">Accès au parcours, notebooks, ressources, assistant IA, quiz et certificat. Une fondation sérieuse pour entrer dans l’analyse de données.</p>
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {["Accès formation", "Notebooks inclus", "Assistant IA", "Certificat"].map((item) => (
-                    <p key={item} className="flex items-center gap-2 text-sm font-bold text-slate-200"><CheckCircle2 size={16} className="text-emerald-300" /> {item}</p>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-3xl bg-white p-6 text-slate-950 shadow-soft">
-                <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Prix actuel</p>
-                <p className="mt-4 text-5xl font-black tracking-tight">29 000<span className="ml-1 text-xl text-slate-500">FCFA</span></p>
-                <p className="mt-2 text-sm font-semibold text-slate-500">Offre claire, accès attribué après validation.</p>
-                <Link href={PARTNER_AUTH_URL} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-4 text-sm font-black text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:bg-blue-500">
-                  Activer mon accès <ArrowRight size={17} />
-                </Link>
-                <p className="mt-4 text-center text-xs font-semibold text-slate-500">Inscription via l’espace partenaire KORYXA.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="faq" className="kx-section border-t border-white/10">
-        <div className="kx-container grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <span className="kx-dark-eyebrow">FAQ</span>
-            <h2 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl">Les questions avant de commencer.</h2>
-          </div>
-          <div className="space-y-4">
-            {faqs.map((faq) => (
-              <details key={faq.q} className="group rounded-3xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl">
-                <summary className="cursor-pointer list-none text-base font-black text-white marker:hidden">
-                  <span className="flex items-center justify-between gap-4">{faq.q}<span className="text-blue-200 transition group-open:rotate-45">+</span></span>
-                </summary>
-                <p className="mt-4 text-sm leading-7 text-slate-400">{faq.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="kx-container rounded-[2rem] border border-white/10 bg-gradient-to-br from-blue-600 to-cyan-500 p-8 text-center shadow-glow sm:p-12">
-          <h2 className="text-3xl font-black tracking-tight text-white sm:text-5xl">Prêt à apprendre autrement ?</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-blue-50">Entre dans une formation propre, guidée et pensée pour t’aider à terminer le parcours, pas seulement à t’inscrire.</p>
-          <Link href={PARTNER_AUTH_URL} className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-7 py-4 text-base font-black text-blue-700 shadow-lg shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-50">
-            Commencer maintenant <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
-
-      <footer className="border-t border-white/10 px-4 py-8 text-sm text-slate-400 sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row">
-          <p className="font-black text-white">KORYXA Formation</p>
-          <p>© {new Date().getFullYear()} KORYXA Tech Store — Python Data Academy.</p>
-        </div>
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-white/5 py-6 px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500 text-sm">
+        <motion.span
+          animate={{ color: ["#60a5fa", "#a78bfa", "#34d399", "#60a5fa"] }}
+          transition={{ duration: 4, repeat: Infinity }}
+          className="font-semibold"
+        >
+          KORYXA
+        </motion.span>
+        <span className="text-slate-600">© {new Date().getFullYear()} KORYXA Tech Store</span>
       </footer>
-    </main>
+    </div>
   );
 }
