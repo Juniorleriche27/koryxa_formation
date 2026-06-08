@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Loader2, X, Lightbulb } from "lucide-react";
-import { aiAPI } from "@/lib/api";
+import { aiAPI, getApiErrorMessage } from "@/lib/api";
 
 export interface CellOutput {
   type: "image" | "text" | "html";
@@ -152,8 +152,8 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
       const res = await aiAPI.explain(source, moduleTitle);
       setFullText(cleanAIResponse(res.data.explanation));
       setShowExp(true);
-    } catch {
-      setFullText("Impossible de générer l'explication.");
+    } catch (err) {
+      setFullText(`Impossible de generer l'explication.\n\n${getApiErrorMessage(err)}`);
       setShowExp(true);
     } finally {
       setLoading(false);

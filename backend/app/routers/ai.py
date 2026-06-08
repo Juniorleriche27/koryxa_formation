@@ -1,9 +1,10 @@
 import json
 import os
+from typing import Optional
+
+import cohere
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
-import cohere
 
 from app.config import settings
 from app.database import supabase
@@ -12,21 +13,44 @@ router = APIRouter()
 
 CONTENT_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "..", "content")
 
-SYSTEM_PROMPT = """Tu es un assistant pédagogique expert pour la formation "Analyse de Données avec Python" de KORYXA Tech Store.
-Tu aides des étudiants débutants à comprendre Python, NumPy, Pandas, Matplotlib et la data analyse.
-Réponds toujours en français, de façon claire, simple et encourageante.
-Utilise des exemples concrets. Si tu donnes du code, garde-le minimal et commenté.
-Ne réponds qu'aux questions liées à la formation ou à la data science."""
+SYSTEM_PROMPT = """Tu es un assistant pedagogique expert pour la formation "Analyse de Donnees avec Python" de KORYXA Tech Store.
+Tu aides des etudiants debutants a comprendre Python, NumPy, Pandas, Matplotlib et la data analyse.
+Reponds toujours en francais, de facon claire, simple et encourageante.
+Utilise des exemples concrets. Si tu donnes du code, garde-le minimal et commente.
+Ne reponds qu'aux questions liees a la formation ou a la data science."""
 
 
 def get_cohere_client() -> cohere.Client:
     if not settings.COHERE_API_KEY:
-        raise HTTPException(status_code=503, detail="Clé API Cohere non configurée.")
+        raise HTTPException(status_code=503, detail="Cle API Cohere non configuree.")
     return cohere.Client(settings.COHERE_API_KEY)
 
 
+def cohere_chat_text(
+    co: cohere.Client,
+    prompt: str,
+    system: str,
+    temperature: float,
+    max_tokens: int,
+) -> str:
+    try:
+        response = co.chat(
+            model="command-r",
+            preamble=system,
+            message=prompt,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Erreur Cohere: {str(exc)[:300]}") from exc
+
+    text = getattr(response, "text", "")
+    if not text:
+        raise HTTPException(status_code=502, detail="Cohere n'a retourne aucun texte.")
+    return text.strip()
+
+
 def load_notebook_text(module_id: str, max_chars: int = 8000) -> str:
-    """Charge le contenu textuel du notebook pour le contexte RAG."""
     result = supabase.table("modules").select("notebook_path, title").eq("id", module_id).single().execute()
     if not result.data or not result.data.get("notebook_path"):
         return ""
@@ -43,16 +67,16 @@ def load_notebook_text(module_id: str, max_chars: int = 8000) -> str:
     return "\n\n".join(parts)[:max_chars]
 
 
-# ── A. ASSISTANT PÉDAGOGIQUE ────────────────────────────────────────────────
-
 class ChatMessage(BaseModel):
-    role: str   # "user" | "assistant"
+    role: str
     message: str
+
 
 class ChatRequest(BaseModel):
     module_id: str
     question: str
     history: list[ChatMessage] = []
+
 
 @router.post("/chat")
 def chat(req: ChatRequest):
@@ -61,59 +85,63 @@ def chat(req: ChatRequest):
 
     system = SYSTEM_PROMPT
     if context:
-        system += f"\n\nContenu du module actuel (utilise-le comme référence):\n---\n{context}\n---"
+        system += f"\n\nContenu du module actuel (utilise-le comme reference):\n---\n{context}\n---"
 
     history = [
         {"role": msg.role, "message": msg.message}
-        for msg in req.history[-10:]  # max 10 messages d'historique
+        for msg in req.history[-10:]
     ]
 
-    response = co.chat(
-        model="command-r",
-        preamble=system,
-        chat_history=history,
-        message=req.question,
-        temperature=0.4,
-    )
+    try:
+        response = co.chat(
+            model="command-r",
+            preamble=system,
+            chat_history=history,
+            message=req.question,
+            temperature=0.4,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Erreur Cohere: {str(exc)[:300]}") from exc
 
     return {"answer": response.text}
 
-
-# ── B. EXPLICATION DE CODE ──────────────────────────────────────────────────
 
 class ExplainRequest(BaseModel):
     code: str
     module_title: Optional[str] = ""
 
+
 @router.post("/explain")
 def explain_code(req: ExplainRequest):
     co = get_cohere_client()
 
-    prompt = f"""Tu es un professeur Python bienveillant. Explique le code suivant à un débutant complet, en français.
-Sois simple, clair, et explique chaque ligne importante. Maximum 200 mots.
-{f"Contexte : ce code vient du module '{req.module_title}'." if req.module_title else ""}
+    system = """Tu es un professeur Python bienveillant.
+Explique le code a un debutant complet, en francais.
+Sois simple, clair, et explique chaque ligne importante. Maximum 200 mots."""
 
-Code à expliquer:
+    prompt = f"""{f"Contexte : ce code vient du module '{req.module_title}'." if req.module_title else ""}
+
+Code a expliquer:
 ```python
 {req.code[:3000]}
 ```
 
 Explication:"""
 
-    response = co.generate(
-        model="command-r",
+    explanation = cohere_chat_text(
+        co=co,
         prompt=prompt,
-        max_tokens=400,
+        system=system,
         temperature=0.3,
+        max_tokens=400,
     )
 
-    return {"explanation": response.generations[0].text.strip()}
+    return {"explanation": explanation}
 
-
-# ── C. QUIZ GÉNÉRATIF ───────────────────────────────────────────────────────
 
 class QuizRequest(BaseModel):
     module_id: str
+
 
 @router.post("/quiz")
 def generate_quiz(req: QuizRequest):
@@ -123,14 +151,17 @@ def generate_quiz(req: QuizRequest):
     if not context:
         raise HTTPException(status_code=404, detail="Contenu du module introuvable.")
 
-    prompt = f"""Tu es un créateur de quiz pédagogique. Génère exactement 5 questions QCM en français basées sur ce contenu de cours Python.
+    system = """Tu es un createur de quiz pedagogique.
+Tu reponds uniquement avec un JSON valide, sans texte avant ni apres."""
+
+    prompt = f"""Genere exactement 5 questions QCM en francais basees sur ce contenu de cours Python.
 
 Contenu du cours:
 ---
 {context}
 ---
 
-Génère un JSON valide UNIQUEMENT, sans texte avant ou après, avec ce format exact:
+Format JSON exact:
 {{
   "questions": [
     {{
@@ -141,22 +172,20 @@ Génère un JSON valide UNIQUEMENT, sans texte avant ou après, avec ce format e
   ]
 }}
 
-Les questions doivent tester la compréhension réelle. La bonne réponse doit être dans "answer" (A, B, C ou D).
-JSON:"""
+Les questions doivent tester la comprehension reelle. La bonne reponse doit etre dans "answer" (A, B, C ou D)."""
 
-    response = co.generate(
-        model="command-r",
+    raw = cohere_chat_text(
+        co=co,
         prompt=prompt,
-        max_tokens=1200,
+        system=system,
         temperature=0.2,
+        max_tokens=1200,
     )
 
-    raw = response.generations[0].text.strip()
-    # Extraire le JSON même si du texte parasite est présent
     start = raw.find("{")
-    end   = raw.rfind("}") + 1
+    end = raw.rfind("}") + 1
     if start == -1 or end == 0:
-        raise HTTPException(status_code=500, detail="Impossible de générer le quiz.")
+        raise HTTPException(status_code=500, detail="Impossible de generer le quiz.")
 
     try:
         quiz = json.loads(raw[start:end])
