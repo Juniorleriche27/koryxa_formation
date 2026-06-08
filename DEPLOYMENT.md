@@ -132,3 +132,5 @@ Après déploiement :
 - Ne jamais partager `SUPABASE_SERVICE_ROLE_KEY` côté frontend client.
 - Ne jamais partager `KORYXA_ADMIN_SECRET` aux apprenants.
 - Révoquer un code depuis `/admin` quand l'accès doit être coupé.
+
+Les policies publiques de lecture sur `modules` et `resources` sont volontaires : l’accès apprenant reste contrôlé par le cookie signé Formation côté frontend.
