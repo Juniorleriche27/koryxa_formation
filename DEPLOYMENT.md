@@ -139,3 +139,5 @@ Les policies publiques de lecture sur `modules` et `resources` sont volontaires 
 Render doit définir `CORS_ORIGINS=https://formation.innovaplus.africa,https://koryxa-formation-jlr7.vercel.app,https://koryxa-formation.vercel.app,http://localhost:3000` pour autoriser le frontend Formation.
 
 - `NEXT_PUBLIC_PARTNER_AUTH_URL` pointe vers l’inscription/authentification partenaire utilisée par les CTA publics de la landing Formation.
+
+Revoked partner-linked formation access is enforced on protected frontend routes by checking the signed session grant against Supabase.
