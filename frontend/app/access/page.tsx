@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +14,39 @@ function AccessForm() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [checkingPartnerAccess, setCheckingPartnerAccess] = useState(Boolean(partnerCtx && partnerSig));
+
+  useEffect(() => {
+    if (!partnerCtx || !partnerSig) {
+      setCheckingPartnerAccess(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function checkPartnerAccess() {
+      const response = await fetch("/api/access/partner", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ partner_ctx: partnerCtx, partner_sig: partnerSig }),
+      }).catch(() => null);
+
+      if (cancelled) return;
+
+      if (response?.ok) {
+        window.location.href = redirect.startsWith("/") ? redirect : "/dashboard";
+        return;
+      }
+
+      setCheckingPartnerAccess(false);
+    }
+
+    void checkPartnerAccess();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [partnerCtx, partnerSig, redirect]);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -51,10 +84,17 @@ function AccessForm() {
 
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Accès à la formation</h1>
           <p className="text-slate-400 text-sm leading-6 mb-6">
-            Entre le code reçu après confirmation de ton paiement. Il sera lié à ton compte partenaire pour sécuriser ton accès.
+            {checkingPartnerAccess
+              ? "Vérification de ton accès partenaire..."
+              : "Entre le code reçu après confirmation de ton paiement. Il sera lié à ton compte partenaire pour sécuriser ton accès."}
           </p>
 
           <form onSubmit={submit} className="space-y-4">
+            {checkingPartnerAccess && (
+              <div className="rounded-xl border border-blue-400/20 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
+                Accès partenaire en cours de vérification. Si aucun accès n’est encore attribué, le champ code restera disponible.
+              </div>
+            )}
             <div>
               <label htmlFor="access-code" className="block text-sm font-medium text-slate-300 mb-2">
                 Code d&apos;accès
