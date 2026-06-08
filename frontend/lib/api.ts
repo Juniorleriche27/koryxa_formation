@@ -5,17 +5,27 @@ export const API_BASE_URL =
 
 export function getApiErrorMessage(error: unknown) {
   const axiosError = error as AxiosError<{ detail?: string; message?: string }>;
+  const method = axiosError.config?.method?.toUpperCase() || "GET";
+  const url = buildRequestUrl(axiosError.config?.url);
 
   if (axiosError?.response) {
     const detail = axiosError.response.data?.detail || axiosError.response.data?.message;
-    return `API ${axiosError.response.status}${detail ? ` — ${detail}` : ""}`;
+    return `API ${axiosError.response.status} sur ${method} ${url}${detail ? ` - ${detail}` : ""}`;
   }
 
   if (axiosError?.request) {
-    return `Réseau/CORS — aucune réponse depuis ${API_BASE_URL}`;
+    return `Reseau/CORS sur ${method} ${url}. Verifie NEXT_PUBLIC_API_URL cote Vercel et CORS_ORIGINS cote Render.`;
   }
 
   return axiosError?.message || "Erreur inconnue";
+}
+
+function buildRequestUrl(url?: string) {
+  try {
+    return new URL(url || "", API_BASE_URL).toString();
+  } catch {
+    return `${API_BASE_URL}${url || ""}`;
+  }
 }
 
 const api = axios.create({

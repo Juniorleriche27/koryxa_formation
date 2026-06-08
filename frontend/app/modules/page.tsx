@@ -11,14 +11,16 @@ import { BookOpen, Clock, ChevronRight } from "lucide-react";
 export default function ModulesPage() {
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState("");
+  const [error, setError] = useState("");
+  const [errorDetails, setErrorDetails] = useState("");
 
   useEffect(() => {
     modulesAPI.getAll()
       .then((r) => setModules(r.data))
       .catch((err) => {
         if (err?.response?.status !== 401) {
-          setError(`Impossible de charger les modules. ${getApiErrorMessage(err)}`);
+          setError("Impossible de charger les modules. Reessaie plus tard.");
+          setErrorDetails(getApiErrorMessage(err));
         }
         // 401 handled globally by api interceptor
       })
@@ -46,8 +48,13 @@ export default function ModulesPage() {
         )}
 
         {error && (
-          <div className="text-center py-20 text-slate-500">
+          <div className="text-center py-20 text-slate-500 space-y-4">
             <p className="text-red-400">{error}</p>
+            {errorDetails && (
+              <pre className="mx-auto max-w-3xl whitespace-pre-wrap rounded-xl border border-red-500/20 bg-red-950/20 p-4 text-left text-xs text-red-100">
+                {errorDetails}
+              </pre>
+            )}
           </div>
         )}
 
