@@ -232,9 +232,13 @@ CREATE TABLE IF NOT EXISTS public.formation_access_codes (
     last_used_at  TIMESTAMPTZ,
     expires_at    TIMESTAMPTZ,
     notes         TEXT,
+    created_by_admin_email TEXT,
     created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE public.formation_access_codes
+    ADD COLUMN IF NOT EXISTS created_by_admin_email TEXT;
 
 CREATE OR REPLACE TRIGGER formation_access_codes_updated_at
     BEFORE UPDATE ON public.formation_access_codes

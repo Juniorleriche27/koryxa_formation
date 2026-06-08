@@ -8,6 +8,7 @@ Remettre la plateforme en service rapidement avec :
 - backend FastAPI sur Render ;
 - nouvelle base Supabase ;
 - codes d'accès individuels pour les apprenants ;
+- écran admin pour créer, suivre, réactiver et révoquer les codes ;
 - réactivation douce du backend Render gratuit quand un apprenant ouvre le site.
 
 ## 1. Supabase
@@ -28,7 +29,7 @@ Le schéma crée :
 - la table des codes individuels `formation_access_codes` ;
 - la fonction sécurisée de validation des codes.
 
-Après le schéma, créer les deux codes apprenants depuis Supabase SQL Editor en utilisant la fonction `public.sha256_hex(...)`. Les vrais codes ne doivent pas être committés dans GitHub.
+Les vrais codes ne doivent pas être committés dans GitHub. Depuis l'écran `/admin`, les codes sont générés côté serveur, puis seul leur hash est stocké dans Supabase.
 
 ## 2. Backend Render
 
@@ -37,8 +38,6 @@ Créer ou reconnecter un service Render depuis le dossier :
 ```text
 backend
 ```
-
-Render peut utiliser `backend/render.yaml`.
 
 Variables nécessaires côté Render :
 
@@ -69,37 +68,65 @@ NEXT_PUBLIC_KORYXA_SITE_URL
 NEXT_PUBLIC_SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
 KORYXA_FORMATION_ACCESS_SECRET
+KORYXA_ADMIN_EMAIL
+KORYXA_ADMIN_SECRET
+KORYXA_ACCESS_CODE_PREFIX
 ```
 
 Notes :
 
 - `NEXT_PUBLIC_API_URL` doit pointer vers l'URL Render du backend.
 - `NEXT_PUBLIC_APP_URL` doit pointer vers l'URL Vercel de la plateforme formation.
+- `NEXT_PUBLIC_KORYXA_SITE_URL` peut pointer vers la même URL que `NEXT_PUBLIC_APP_URL` si le login est sur cette plateforme.
 - `NEXT_PUBLIC_SUPABASE_URL` est public.
 - `SUPABASE_SERVICE_ROLE_KEY` reste serveur uniquement. Ne jamais l'exposer côté navigateur.
-- `KORYXA_FORMATION_ACCESS_SECRET` sert à signer le cookie d'accès. Utiliser une valeur longue et privée.
+- `KORYXA_FORMATION_ACCESS_SECRET` sert à signer le cookie d'accès apprenant. Utiliser une valeur longue et privée.
+- `KORYXA_ADMIN_EMAIL` est l'email autorisé pour ouvrir `/admin`.
+- `KORYXA_ADMIN_SECRET` est la clé privée admin à saisir sur `/admin`.
+- `KORYXA_ACCESS_CODE_PREFIX` peut être `O` pour générer des codes qui commencent par O.
 
-## 4. Réactivation Render gratuit
+## 4. Écran admin
+
+URL :
+
+```text
+/admin
+```
+
+Fonctions disponibles :
+
+- connexion admin par email + clé privée ;
+- création d'un code unique pour un apprenant ;
+- code généré automatiquement avec le préfixe configuré ;
+- affichage du code une seule fois après création ;
+- suivi des statuts : actif, utilisé, révoqué, expiré ;
+- réactivation d'un code ;
+- révocation d'un code.
+
+## 5. Réactivation Render gratuit
 
 Le frontend appelle `/health` quand un apprenant ouvre le site.
 
 Si Render dort, l'utilisateur voit un message clair pendant la réactivation. Tant que la page reste ouverte, le frontend relance un ping léger environ toutes les 8 minutes.
 
-## 5. Vérification rapide
+## 6. Vérification rapide
 
 Après déploiement :
 
 1. ouvrir la page publique ;
-2. aller sur `/access` ;
-3. tester un code apprenant ;
-4. vérifier l'accès au dashboard ;
-5. ouvrir `/modules` ;
-6. vérifier que le backend Render répond sur `/health` ;
-7. vérifier dans Supabase que `used_count` évolue pour le code testé.
+2. aller sur `/admin` ;
+3. se connecter avec l'email admin et la clé admin ;
+4. créer un code apprenant ;
+5. copier le code généré ;
+6. aller sur `/access` ;
+7. tester le code ;
+8. vérifier l'accès au dashboard ;
+9. vérifier dans `/admin` que `used_count` évolue.
 
-## 6. Règles sécurité
+## 7. Règles sécurité
 
 - Ne jamais mettre de vrais codes apprenants dans GitHub.
 - Ne jamais mettre de clés Supabase ou Render dans GitHub.
 - Ne jamais partager `SUPABASE_SERVICE_ROLE_KEY` côté frontend client.
-- Révoquer un code en mettant `status = 'revoked'` dans Supabase.
+- Ne jamais partager `KORYXA_ADMIN_SECRET` aux apprenants.
+- Révoquer un code depuis `/admin` quand l'accès doit être coupé.
