@@ -6,9 +6,6 @@ import {
   isValidAccessSession,
 } from "@/lib/accessControl";
 
-const KORYXA_LOGIN = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -26,17 +23,6 @@ export async function middleware(request: NextRequest) {
       accessUrl.searchParams.set("redirect", pathname + request.nextUrl.search);
       return NextResponse.redirect(accessUrl);
     }
-  }
-
-  if (pathname === "/login" || pathname === "/register") {
-    return NextResponse.next();
-  }
-
-  const session = request.cookies.get("innova_session")?.value;
-  if (!session) {
-    const returnUrl = APP_URL + pathname;
-    const loginUrl = `${KORYXA_LOGIN}?redirect=${encodeURIComponent(returnUrl)}`;
-    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

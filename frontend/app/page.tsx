@@ -225,8 +225,8 @@ export default function LandingPage() {
           <span className="text-white">Formation</span>
         </motion.div>
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 sm:gap-4">
-          <Link href="/login" className="hidden sm:block text-slate-300 hover:text-white transition text-sm font-medium">Se connecter</Link>
-          <Link href="/register">
+          <Link href="/access?redirect=/dashboard" className="hidden sm:block text-slate-300 hover:text-white transition text-sm font-medium">Accès apprenant</Link>
+          <Link href="/access?redirect=/dashboard">
             <motion.span
               animate={{ boxShadow: ["0 0 0px #3b82f6", "0 0 20px #3b82f6", "0 0 0px #3b82f6"] }}
               transition={{ duration: 2, repeat: Infinity }}
@@ -311,7 +311,7 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register" className="w-full sm:w-auto">
+            <Link href="/access?redirect=/dashboard" className="w-full sm:w-auto">
               <motion.button
                 animate={{ boxShadow: ["0 0 10px #3b82f6", "0 0 35px #3b82f6", "0 0 10px #3b82f6"] }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -412,7 +412,7 @@ export default function LandingPage() {
               <span className="text-white font-bold text-xl">29 000 FCFA</span>
               <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-2 py-0.5 rounded-lg">−47%</span>
             </div>
-            <Link href="/register">
+            <Link href="/access?redirect=/dashboard">
               <motion.button
                 animate={{ boxShadow: ["0 0 10px #3b82f6", "0 0 30px #3b82f6", "0 0 10px #3b82f6"] }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -703,7 +703,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <Link href="/register" className="block">
+            <Link href="/access?redirect=/dashboard" className="block">
               <motion.button
                 animate={{ boxShadow: ["0 0 10px #3b82f6", "0 0 50px #3b82f6", "0 0 10px #3b82f6"] }}
                 transition={{ duration: 2, repeat: Infinity }}

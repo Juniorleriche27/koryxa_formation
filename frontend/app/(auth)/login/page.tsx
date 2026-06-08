@@ -2,16 +2,14 @@
 import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { safeReturnUrl } from "@/lib/redirectUtils";
 
-function RedirectToKoryxa() {
+function RedirectToAccess() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const raw         = searchParams.get("redirect");
-    const returnUrl   = safeReturnUrl(raw);
-    const koryxaLogin = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
-    window.location.href = `${koryxaLogin}?redirect=${encodeURIComponent(returnUrl)}`;
+    const redirect = searchParams.get("redirect") || "/dashboard";
+    const safeRedirect = redirect.startsWith("/") ? redirect : "/dashboard";
+    window.location.href = `/access?redirect=${encodeURIComponent(safeRedirect)}`;
   }, [searchParams]);
 
   return null;
@@ -21,7 +19,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#050c1a] flex items-center justify-center px-4">
       <Suspense>
-        <RedirectToKoryxa />
+        <RedirectToAccess />
       </Suspense>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -38,7 +36,7 @@ export default function LoginPage() {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"
           />
-          Redirection vers KORYXA...
+          Redirection vers l&apos;accès formation...
         </div>
       </motion.div>
     </div>

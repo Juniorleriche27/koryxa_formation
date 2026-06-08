@@ -1,13 +1,10 @@
 "use client";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { safeReturnUrl } from "@/lib/redirectUtils";
 
 export default function RegisterPage() {
   useEffect(() => {
-    const returnUrl    = safeReturnUrl(null); // always /dashboard
-    const koryxaSignup = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/signup";
-    window.location.href = `${koryxaSignup}?redirect=${encodeURIComponent(returnUrl)}`;
+    window.location.href = "/access?redirect=/dashboard";
   }, []);
 
   return (
@@ -27,7 +24,7 @@ export default function RegisterPage() {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"
           />
-          Redirection vers KORYXA...
+          Redirection vers l&apos;accès formation...
         </div>
       </motion.div>
     </div>

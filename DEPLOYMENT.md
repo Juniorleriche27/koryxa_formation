@@ -64,7 +64,6 @@ Variables nécessaires côté Vercel :
 ```text
 NEXT_PUBLIC_API_URL
 NEXT_PUBLIC_APP_URL
-NEXT_PUBLIC_KORYXA_SITE_URL
 NEXT_PUBLIC_SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
 KORYXA_FORMATION_ACCESS_SECRET
@@ -78,7 +77,6 @@ Notes :
 
 - `NEXT_PUBLIC_API_URL` doit pointer vers l'URL Render du backend.
 - `NEXT_PUBLIC_APP_URL` doit pointer vers l'URL Vercel de la plateforme formation.
-- `NEXT_PUBLIC_KORYXA_SITE_URL` peut pointer vers la même URL que `NEXT_PUBLIC_APP_URL` si le login est sur cette plateforme.
 - `NEXT_PUBLIC_SUPABASE_URL` est public.
 - `SUPABASE_SERVICE_ROLE_KEY` reste serveur uniquement. Ne jamais l'exposer côté navigateur.
 - `KORYXA_FORMATION_ACCESS_SECRET` sert à signer le cookie d'accès apprenant. Utiliser une valeur longue et privée.

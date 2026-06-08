@@ -9,8 +9,7 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err?.response?.status === 401 && typeof window !== "undefined") {
-      const koryxaLogin = process.env.NEXT_PUBLIC_KORYXA_SITE_URL + "/login";
-      window.location.href = `${koryxaLogin}?redirect=${encodeURIComponent(window.location.href)}`;
+      window.location.href = `/access?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
     }
     return Promise.reject(err);
   }
