@@ -36,10 +36,9 @@ export async function GET() {
   ]);
 
   if (!modulesResponse.ok) return jsonError("Impossible de charger les modules.", 502);
-  if (!progressResponse.ok) return jsonError("Impossible de charger la progression certifiante.", 502);
 
   const modules = (await modulesResponse.json()) as ModuleRow[];
-  const progress = (await progressResponse.json()) as ProgressRow[];
+  const progress = progressResponse.ok ? ((await progressResponse.json()) as ProgressRow[]) : [];
   const progressByModule = new Map(progress.map((row) => [row.module_id, row]));
 
   const result = modules.map((module) => {
