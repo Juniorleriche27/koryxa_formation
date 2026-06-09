@@ -71,11 +71,11 @@ CREATE OR REPLACE TRIGGER modules_updated_at
 CREATE INDEX IF NOT EXISTS idx_modules_order ON public.modules(order_index);
 
 INSERT INTO public.modules (title, description, order_index, duration, notebook_path, is_published) VALUES
-('Introduction & Installation',        'Mise en place de l''environnement Python, Anaconda et Jupyter Notebook.',          0, '1h00', NULL,                                          TRUE),
-('Les Bases de Python pour la Data',   'Variables, types, boucles et fonctions expliqués pas à pas.',                       1, '3h00', 'MODULE_1_Bases_Python_Data.ipynb',           TRUE),
-('NumPy : Calcul Numérique',           'Arrays, opérations vectorisées, indexation et slicing.',                            2, '2h30', 'MODULE_2_NumPy_Calcul_Numerique.ipynb',      TRUE),
-('Pandas : Manipulation de Données',   'DataFrames, lecture CSV, filtres, tris et groupby.',                                3, '3h00', 'MODULE_3_Pandas_Manipulation_Donnees.ipynb', TRUE),
-('Nettoyage de Données',               'Valeurs manquantes, doublons, formats incorrects et outliers.',                     4, '2h30', 'MODULE_4_Nettoyage_Donnees.ipynb',           TRUE),
+('Démarrage professionnel',           'Orientation, méthode KORYXA, premiers repères Python et préparation au parcours.',  0, '1h00', NULL,                                          TRUE),
+('Installation & premier projet Data', 'Anaconda, Jupyter, Colab, VS Code, terminal, venv et mini-projet analyse_ventes.',   1, '3h00', 'MODULE_1_Bases_Python_Data.ipynb',           TRUE),
+('Bases Python pour la Data',          'Variables, types, listes, dictionnaires, conditions, boucles et fonctions.',         2, '3h00', 'MODULE_2_NumPy_Calcul_Numerique.ipynb',      TRUE),
+('Structures, CSV & premières données','Listes de dictionnaires, fichiers CSV, lecture de données et première introduction Pandas.', 3, '3h00', 'MODULE_3_Pandas_Manipulation_Donnees.ipynb', TRUE),
+('Nettoyage de Données',               'Valeurs manquantes, doublons, formats incorrects, types et pipeline de nettoyage.',  4, '2h30', 'MODULE_4_Nettoyage_Donnees.ipynb',           TRUE),
 ('Visualisation de Données',           'Graphiques professionnels avec Matplotlib et Seaborn.',                             5, '2h30', 'MODULE_5_Visualisation_Donnees.ipynb',       TRUE),
 ('Analyse Exploratoire (EDA)',          'Méthodologie complète d''exploration d''un dataset.',                               6, '3h00', 'MODULE_6_Analyse_Exploratoire_EDA.ipynb',    TRUE),
 ('Projet Final Professionnel',         'Analyse complète des ventes KORYXA de A à Z — ton premier projet portfolio.',       7, '4h00', 'MODULE_7_Projet_Final_Professionnel.ipynb',  TRUE)
