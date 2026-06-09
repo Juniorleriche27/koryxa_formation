@@ -9,12 +9,14 @@ import {
   Copy,
   KeyRound,
   Loader2,
+  NotebookPen,
   LockKeyhole,
   LogOut,
   RefreshCw,
   RotateCcw,
   Search,
   ShieldCheck,
+  Star,
   UserPlus,
   XCircle,
 } from "lucide-react";
@@ -38,6 +40,33 @@ type AccessCode = {
   access_until: string | null;
   created_at: string;
   created_by_admin_email?: string | null;
+};
+
+type FinalProject = {
+  id: string;
+  user_id: string;
+  status: "not_started" | "submitted" | "needs_revision" | "graded" | "validated" | "rejected";
+  submission_url: string | null;
+  submission_notes: string | null;
+  submitted_at: string | null;
+  reviewed_at: string | null;
+  graded_at: string | null;
+  score_points: number | null;
+  feedback: string | null;
+  admin_notes: string | null;
+  created_at: string;
+  updated_at: string;
+  profiles?: {
+    full_name?: string | null;
+    email?: string | null;
+  } | null;
+};
+
+type ProjectGradeState = {
+  score_points: string;
+  status: "needs_revision" | "graded" | "validated" | "rejected";
+  feedback: string;
+  admin_notes: string;
 };
 
 type CreateFormState = {
@@ -74,6 +103,24 @@ const statusStyles: Record<AccessCode["status"], string> = {
   expired: "border-orange-300/25 bg-orange-400/10 text-orange-100",
 };
 
+const projectStatusLabels: Record<FinalProject["status"], string> = {
+  not_started: "Non démarré",
+  submitted: "Soumis",
+  needs_revision: "À corriger",
+  graded: "Noté",
+  validated: "Validé",
+  rejected: "Refusé",
+};
+
+const projectStatusStyles: Record<FinalProject["status"], string> = {
+  not_started: "border-slate-300/20 bg-slate-400/10 text-slate-200",
+  submitted: "border-blue-300/25 bg-blue-400/10 text-blue-100",
+  needs_revision: "border-amber-300/25 bg-amber-400/10 text-amber-100",
+  graded: "border-purple-300/25 bg-purple-400/10 text-purple-100",
+  validated: "border-emerald-300/25 bg-emerald-400/10 text-emerald-100",
+  rejected: "border-red-300/25 bg-red-400/10 text-red-100",
+};
+
 function toInputDate(value: Date) {
   return value.toISOString().slice(0, 10);
 }
@@ -93,12 +140,17 @@ function StatusBadge({ status }: { status: AccessCode["status"] }) {
   return <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-black ${statusStyles[status]}`}>{statusLabels[status]}</span>;
 }
 
+function ProjectStatusBadge({ status }: { status: FinalProject["status"] }) {
+  return <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-black ${projectStatusStyles[status]}`}>{projectStatusLabels[status]}</span>;
+}
+
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [adminEmail, setAdminEmail] = useState("");
   const [adminSecret, setAdminSecret] = useState("");
   const [sessionEmail, setSessionEmail] = useState("");
   const [codes, setCodes] = useState<AccessCode[]>([]);
+  const [projects, setProjects] = useState<FinalProject[]>([]);
   const [query, setQuery] = useState("");
   const [createForm, setCreateForm] = useState<CreateFormState>({ ...initialCreateForm, expires_at: defaultExpirationDate() });
   const [newCode, setNewCode] = useState("");
@@ -106,13 +158,16 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [projectForms, setProjectForms] = useState<Record<string, ProjectGradeState>>({});
 
   const stats = useMemo(() => ({
     total: codes.length,
     active: codes.filter((code) => code.status === "active").length,
     used: codes.filter((code) => code.status === "used").length,
     revoked: codes.filter((code) => code.status === "revoked").length,
-  }), [codes]);
+    projectsSubmitted: projects.filter((project) => project.status === "submitted").length,
+    projectsGraded: projects.filter((project) => project.status === "graded" || project.status === "validated").length,
+  }), [codes, projects]);
 
   const filteredCodes = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -127,6 +182,36 @@ export default function AdminPage() {
       code.status,
     ].some((value) => (value || "").toLowerCase().includes(needle)));
   }, [codes, query]);
+
+  const loadProjects = async () => {
+    const response = await fetch("/api/admin/final-projects", { cache: "no-store" });
+    if (response.status === 401) {
+      setAuthenticated(false);
+      return;
+    }
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null);
+      setError(payload?.message || "Impossible de charger les projets finaux.");
+      return;
+    }
+    const payload = await response.json();
+    const loadedProjects = (payload.projects || []) as FinalProject[];
+    setProjects(loadedProjects);
+    setProjectForms((current) => {
+      const next = { ...current };
+      loadedProjects.forEach((project) => {
+        if (!next[project.id]) {
+          next[project.id] = {
+            score_points: project.score_points != null ? String(project.score_points) : "",
+            status: project.status === "validated" ? "validated" : project.status === "rejected" ? "rejected" : project.status === "needs_revision" ? "needs_revision" : "graded",
+            feedback: project.feedback || "",
+            admin_notes: project.admin_notes || "",
+          };
+        }
+      });
+      return next;
+    });
+  };
 
   const loadCodes = async () => {
     setError("");
@@ -145,6 +230,7 @@ export default function AdminPage() {
     const payload = await response.json();
     setCodes(payload.codes || []);
     setAuthenticated(true);
+    await loadProjects();
     setLoading(false);
   };
 
@@ -190,6 +276,7 @@ export default function AdminPage() {
     await fetch("/api/admin/session", { method: "DELETE" });
     setAuthenticated(false);
     setCodes([]);
+    setProjects([]);
     setSessionEmail("");
   };
 
@@ -237,6 +324,51 @@ export default function AdminPage() {
     }
     setMessage("Code mis à jour.");
     await loadCodes();
+    setSaving(false);
+  };
+
+  const updateProjectForm = (projectId: string, patch: Partial<ProjectGradeState>) => {
+    setProjectForms((current) => ({
+      ...current,
+      [projectId]: {
+        score_points: current[projectId]?.score_points || "",
+        status: current[projectId]?.status || "graded",
+        feedback: current[projectId]?.feedback || "",
+        admin_notes: current[projectId]?.admin_notes || "",
+        ...patch,
+      },
+    }));
+  };
+
+  const gradeProject = async (project: FinalProject) => {
+    const form = projectForms[project.id];
+    if (!form) return;
+
+    setSaving(true);
+    setError("");
+    setMessage("");
+
+    const response = await fetch("/api/admin/final-projects", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: project.id,
+        status: form.status,
+        score_points: Number(form.score_points || 0),
+        feedback: form.feedback,
+        admin_notes: form.admin_notes,
+      }),
+    });
+
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      setError(payload?.message || "Impossible de corriger ce projet final.");
+      setSaving(false);
+      return;
+    }
+
+    setMessage("Projet final mis à jour.");
+    await loadProjects();
     setSaving(false);
   };
 
@@ -320,12 +452,14 @@ export default function AdminPage() {
           </div>
         </header>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
           {[
             ["Total codes", stats.total, "border-white/10 bg-white/[0.06] text-white"],
             ["Actifs", stats.active, "border-emerald-300/20 bg-emerald-400/10 text-emerald-100"],
             ["Utilisés", stats.used, "border-blue-300/20 bg-blue-400/10 text-blue-100"],
             ["Révoqués", stats.revoked, "border-red-300/20 bg-red-400/10 text-red-100"],
+            ["Projets soumis", stats.projectsSubmitted, "border-amber-300/20 bg-amber-400/10 text-amber-100"],
+            ["Projets notés", stats.projectsGraded, "border-purple-300/20 bg-purple-400/10 text-purple-100"],
           ].map(([label, value, classes]) => (
             <div key={label as string} className={`rounded-3xl border p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl ${classes as string}`}>
               <p className="text-sm font-bold opacity-80">{label as string}</p>
@@ -333,6 +467,87 @@ export default function AdminPage() {
             </div>
           ))}
         </div>
+
+
+
+        <section className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-slate-950/25 backdrop-blur-xl sm:p-6">
+          <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-purple-300/20 bg-purple-400/10 text-purple-100"><NotebookPen className="h-5 w-5" /></div>
+              <div>
+                <h2 className="text-2xl font-black tracking-tight text-white">Projets finaux à corriger</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-400">Note sur 60, feedback formateur et statut certificat.</p>
+              </div>
+            </div>
+            <button type="button" onClick={loadProjects} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm font-black text-slate-100 transition hover:bg-white/10"><RefreshCw size={16} /> Actualiser projets</button>
+          </div>
+
+          {projects.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-white/15 p-10 text-center">
+              <NotebookPen className="mx-auto h-9 w-9 text-slate-500" />
+              <p className="mt-4 text-lg font-black text-white">Aucun projet final soumis</p>
+              <p className="mt-2 text-sm text-slate-400">Les projets soumis par les apprenants apparaîtront ici.</p>
+            </div>
+          ) : (
+            <div className="grid gap-4 xl:grid-cols-2">
+              {projects.map((project) => {
+                const form = projectForms[project.id] || { score_points: project.score_points != null ? String(project.score_points) : "", status: "graded", feedback: project.feedback || "", admin_notes: project.admin_notes || "" };
+                const studentName = project.profiles?.full_name || "Apprenant";
+                const studentEmail = project.profiles?.email || "Email non disponible";
+                return (
+                  <article key={project.id} className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 transition hover:bg-slate-950/65">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-lg font-black text-white">{studentName}</h3>
+                          <ProjectStatusBadge status={project.status} />
+                        </div>
+                        <p className="mt-1 text-sm font-semibold text-slate-400">{studentEmail}</p>
+                        <p className="mt-2 text-xs font-bold text-slate-500">Soumis le {formatDate(project.submitted_at || project.created_at)}</p>
+                      </div>
+                      {project.score_points != null && (
+                        <div className="rounded-2xl border border-purple-300/20 bg-purple-400/10 px-4 py-3 text-center text-purple-100">
+                          <Star className="mx-auto mb-1 h-4 w-4" />
+                          <p className="text-xl font-black">{project.score_points}/60</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {project.submission_url && (
+                      <a href={project.submission_url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-2xl border border-blue-300/20 bg-blue-400/10 px-4 py-3 text-sm font-black text-blue-100 transition hover:bg-blue-400/15">
+                        Ouvrir le livrable <ArrowRight size={15} />
+                      </a>
+                    )}
+                    {project.submission_notes && <p className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-sm leading-6 text-slate-300">{project.submission_notes}</p>}
+
+                    <div className="mt-5 grid gap-3 sm:grid-cols-[8rem_1fr]">
+                      <div>
+                        <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-slate-400">Note /60</label>
+                        <input type="number" min="0" max="60" value={form.score_points} onChange={(event) => updateProjectForm(project.id, { score_points: event.target.value })} className="h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-sm font-semibold text-white outline-none transition focus:border-purple-300 focus:ring-4 focus:ring-purple-400/10" />
+                      </div>
+                      <div>
+                        <label className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-slate-400">Statut</label>
+                        <select value={form.status} onChange={(event) => updateProjectForm(project.id, { status: event.target.value as ProjectGradeState["status"] })} className="h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-sm font-semibold text-white outline-none transition focus:border-purple-300 focus:ring-4 focus:ring-purple-400/10">
+                          <option value="graded">Noté</option>
+                          <option value="validated">Validé</option>
+                          <option value="needs_revision">À corriger</option>
+                          <option value="rejected">Refusé</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                      <textarea rows={3} value={form.feedback} onChange={(event) => updateProjectForm(project.id, { feedback: event.target.value })} placeholder="Feedback apprenant" className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-slate-600 focus:border-purple-300 focus:ring-4 focus:ring-purple-400/10" />
+                      <textarea rows={3} value={form.admin_notes} onChange={(event) => updateProjectForm(project.id, { admin_notes: event.target.value })} placeholder="Notes internes" className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-slate-600 focus:border-purple-300 focus:ring-4 focus:ring-purple-400/10" />
+                    </div>
+                    <button type="button" onClick={() => gradeProject(project)} disabled={saving} className="mt-4 inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-purple-600 px-5 text-sm font-black text-white shadow-lg shadow-purple-600/20 transition hover:-translate-y-0.5 hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-60">
+                      {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 size={16} />} Enregistrer la correction
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
         <div className="grid gap-6 lg:grid-cols-[25rem_1fr]">
           <form onSubmit={createCode} className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-slate-950/25 backdrop-blur-xl sm:p-6">
