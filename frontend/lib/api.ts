@@ -47,6 +47,10 @@ const api = axios.create({
   withCredentials: true,
 });
 
+const internalApi = axios.create({
+  withCredentials: true,
+});
+
 api.interceptors.response.use(
   (res) => res,
   (err) => Promise.reject(err)
@@ -65,18 +69,18 @@ export const progressAPI = {
 };
 
 export const certificatesAPI = {
-  getMy: () => api.get("/certificates/me"),
-  issue: () => api.post("/certificates/issue"),
+  getMy: () => internalApi.get("/api/certificates/me"),
+  issue: () => internalApi.post("/api/certificates/issue"),
 };
 
 export const validationAPI = {
-  getModuleStatuses: () => api.get("/validation/modules/status"),
-  getQuiz: (module_id: string) => api.get(`/validation/quiz/${module_id}`),
+  getModuleStatuses: () => internalApi.get("/api/validation/modules/status"),
+  getQuiz: (module_id: string) => internalApi.get(`/api/validation/quiz/${module_id}`),
   submitQuiz: (module_id: string, answers: Record<string, string>) =>
-    api.post(`/validation/quiz/${module_id}/submit`, { answers }),
-  getCertificationStatus: () => api.get("/validation/certification/me"),
+    internalApi.post(`/api/validation/quiz/${module_id}/submit`, { answers }),
+  getCertificationStatus: () => internalApi.get("/api/validation/certification/me"),
   submitFinalProject: (submission_url?: string, submission_notes?: string) =>
-    api.post("/validation/final-project/submit", { submission_url, submission_notes }),
+    internalApi.post("/api/validation/final-project/submit", { submission_url, submission_notes }),
 };
 
 export const notebookAPI = {

@@ -919,3 +919,135 @@ REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEX
 REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM anon;
 REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM authenticated;
 GRANT EXECUTE ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) TO service_role;
+
+
+-- ============================================================
+-- FORMATION ACCESS VALIDATION TABLES — COOKIE SESSION MODEL
+-- ============================================================
+-- Ces tables respectent la logique produit existante :
+-- accès donné depuis l'admin/partenaire -> lien formation -> cookie formation.
+-- Elles ne dépendent pas d'un compte auth.users côté apprenant.
+
+CREATE TABLE IF NOT EXISTS public.formation_module_progress (
+    id                       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    access_code_id           UUID NOT NULL REFERENCES public.formation_access_codes(id) ON DELETE CASCADE,
+    module_id                UUID NOT NULL REFERENCES public.modules(id) ON DELETE CASCADE,
+    completed                BOOLEAN NOT NULL DEFAULT FALSE,
+    completed_at             TIMESTAMPTZ,
+    status                   TEXT NOT NULL DEFAULT 'available' CHECK (status IN ('locked', 'available', 'in_progress', 'quiz_failed', 'validated')),
+    started_at               TIMESTAMPTZ,
+    last_seen_at             TIMESTAMPTZ,
+    validated_at             TIMESTAMPTZ,
+    quiz_best_score          INT CHECK (quiz_best_score BETWEEN 0 AND 20),
+    platform_points_awarded  NUMERIC(5,2) NOT NULL DEFAULT 0,
+    validation_source        TEXT CHECK (validation_source IS NULL OR validation_source IN ('quiz', 'admin', 'system')),
+    created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (access_code_id, module_id)
+);
+
+CREATE OR REPLACE TRIGGER formation_module_progress_updated_at
+    BEFORE UPDATE ON public.formation_module_progress
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+CREATE INDEX IF NOT EXISTS idx_formation_module_progress_access
+    ON public.formation_module_progress(access_code_id, status);
+CREATE INDEX IF NOT EXISTS idx_formation_module_progress_module
+    ON public.formation_module_progress(module_id);
+
+CREATE TABLE IF NOT EXISTS public.formation_quiz_attempts (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    access_code_id  UUID NOT NULL REFERENCES public.formation_access_codes(id) ON DELETE CASCADE,
+    module_id       UUID NOT NULL REFERENCES public.modules(id) ON DELETE CASCADE,
+    score           INT NOT NULL CHECK (score BETWEEN 0 AND 20),
+    max_score       INT NOT NULL DEFAULT 20 CHECK (max_score = 20),
+    passed          BOOLEAN NOT NULL DEFAULT FALSE,
+    answers         JSONB NOT NULL DEFAULT '{}'::jsonb,
+    correct_count   INT CHECK (correct_count IS NULL OR correct_count >= 0),
+    total_questions INT CHECK (total_questions IS NULL OR total_questions > 0),
+    review_sections JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(review_sections) = 'array'),
+    feedback        TEXT,
+    attempted_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_formation_quiz_attempts_access_module
+    ON public.formation_quiz_attempts(access_code_id, module_id, attempted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_formation_quiz_attempts_passed
+    ON public.formation_quiz_attempts(access_code_id, module_id, passed);
+
+ALTER TABLE public.formation_module_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.formation_quiz_attempts ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role gère progression formation" ON public.formation_module_progress;
+DROP POLICY IF EXISTS "Service role gère tentatives formation" ON public.formation_quiz_attempts;
+
+CREATE POLICY "Service role gère progression formation"
+    ON public.formation_module_progress FOR ALL
+    USING (auth.role() = 'service_role')
+    WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "Service role gère tentatives formation"
+    ON public.formation_quiz_attempts FOR ALL
+    USING (auth.role() = 'service_role')
+    WITH CHECK (auth.role() = 'service_role');
+
+
+-- ============================================================
+-- FORMATION ACCESS PROJECT AND CERTIFICATE TABLES — COOKIE SESSION MODEL
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS public.formation_final_projects (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    access_code_id   UUID NOT NULL REFERENCES public.formation_access_codes(id) ON DELETE CASCADE UNIQUE,
+    status           TEXT NOT NULL DEFAULT 'not_started' CHECK (status IN ('not_started', 'submitted', 'needs_revision', 'graded', 'validated', 'rejected')),
+    submission_url   TEXT,
+    submission_notes TEXT,
+    submitted_at     TIMESTAMPTZ,
+    reviewed_at      TIMESTAMPTZ,
+    graded_at        TIMESTAMPTZ,
+    score_points     NUMERIC(5,2) CHECK (score_points IS NULL OR (score_points >= 0 AND score_points <= 60)),
+    feedback         TEXT,
+    admin_notes      TEXT,
+    reviewed_by      TEXT,
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE OR REPLACE TRIGGER formation_final_projects_updated_at
+    BEFORE UPDATE ON public.formation_final_projects
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+CREATE INDEX IF NOT EXISTS idx_formation_final_projects_access
+    ON public.formation_final_projects(access_code_id);
+CREATE INDEX IF NOT EXISTS idx_formation_final_projects_status
+    ON public.formation_final_projects(status);
+
+CREATE TABLE IF NOT EXISTS public.formation_certificates (
+    id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    access_code_id        UUID NOT NULL REFERENCES public.formation_access_codes(id) ON DELETE CASCADE UNIQUE,
+    issued_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    certificate_url       TEXT,
+    platform_score        NUMERIC(5,2) CHECK (platform_score IS NULL OR (platform_score >= 0 AND platform_score <= 40)),
+    project_score         NUMERIC(5,2) CHECK (project_score IS NULL OR (project_score >= 0 AND project_score <= 60)),
+    final_score           NUMERIC(5,2) CHECK (final_score IS NULL OR (final_score >= 0 AND final_score <= 100)),
+    eligibility_snapshot  JSONB
+);
+
+CREATE INDEX IF NOT EXISTS idx_formation_certificates_access
+    ON public.formation_certificates(access_code_id);
+
+ALTER TABLE public.formation_final_projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.formation_certificates ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role gère projets finaux formation" ON public.formation_final_projects;
+DROP POLICY IF EXISTS "Service role gère certificats formation" ON public.formation_certificates;
+
+CREATE POLICY "Service role gère projets finaux formation"
+    ON public.formation_final_projects FOR ALL
+    USING (auth.role() = 'service_role')
+    WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "Service role gère certificats formation"
+    ON public.formation_certificates FOR ALL
+    USING (auth.role() = 'service_role')
+    WITH CHECK (auth.role() = 'service_role');
