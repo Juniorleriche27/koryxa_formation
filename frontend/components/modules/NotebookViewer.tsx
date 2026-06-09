@@ -576,7 +576,7 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
 
         <div className="bg-slate-50 p-4 sm:p-5">
           <div className="mb-3 flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
-            <Flag size={14} /> Console d'exécution
+            <Flag size={14} /> Console d’exécution
           </div>
           {runOutput || runError ? (
             <div className="space-y-3">
@@ -692,7 +692,7 @@ export default function NotebookViewer({ cells, moduleTitle }: NotebookViewerPro
             </p>
             <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{moduleTitle || "Cours interactif KORYXA"}</h2>
             <p className="mt-2 max-w-2xl text-sm font-medium leading-6 text-slate-600">
-              Avance section par section : lis, observe le code, compare le résultat, puis pratique jusqu'à validation.
+              Avance section par section : lis, observe le code, compare le résultat, puis pratique jusqu’à validation.
             </p>
           </div>
           <div className="inline-flex items-center gap-2 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-black text-emerald-800 shadow-sm">
