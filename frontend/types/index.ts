@@ -14,6 +14,29 @@ export interface Module {
   is_published: boolean;
   notebook_path?: string;
   resources?: Resource[];
+  estimated_hours?: number;
+  platform_points?: number;
+  requires_quiz?: boolean;
+  quiz_pass_score?: number;
+}
+
+export type ModuleValidationStatus = "locked" | "available" | "in_progress" | "quiz_failed" | "validated";
+
+export interface ModuleStatus {
+  module_id: string;
+  order_index: number;
+  title: string;
+  duration?: string;
+  estimated_hours?: number;
+  platform_points?: number;
+  requires_quiz?: boolean;
+  quiz_pass_score?: number;
+  status: ModuleValidationStatus;
+  is_accessible: boolean;
+  is_validated: boolean;
+  quiz_best_score?: number | null;
+  validated_at?: string | null;
+  platform_points_awarded?: number;
 }
 
 export interface Resource {

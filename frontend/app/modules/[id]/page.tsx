@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -14,17 +14,18 @@ import {
   FileText,
   Layers3,
   Link2,
+  Lock,
   PlayCircle,
+  RefreshCw,
   Sparkles,
+  Trophy,
 } from "lucide-react";
-import { modulesAPI, notebookAPI } from "@/lib/api";
+import { modulesAPI, notebookAPI, validationAPI } from "@/lib/api";
 import { moduleZeroCells, moduleZeroResources } from "@/lib/moduleZeroContent";
-import { useProgress } from "@/hooks/useProgress";
-import type { Module } from "@/types";
+import type { Module, ModuleStatus } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Badge from "@/components/ui/Badge";
-import ModuleProgress from "@/components/modules/ModuleProgress";
 import NotebookViewer, { NotebookCell } from "@/components/modules/NotebookViewer";
 import AIAssistant from "@/components/modules/AIAssistant";
 import QuizBlock from "@/components/modules/QuizBlock";
@@ -50,11 +51,22 @@ export default function ModuleDetailPage() {
   const [cells, setCells] = useState<NotebookCell[]>([]);
   const [loadingNb, setLoadingNb] = useState(false);
   const [tab, setTab] = useState<"cours" | "ressources">("cours");
-  const { isCompleted, markCompleted } = useProgress();
+  const [moduleStatus, setModuleStatus] = useState<ModuleStatus | null>(null);
+
+  const refreshModuleStatus = useCallback(async () => {
+    try {
+      const response = await validationAPI.getModuleStatuses();
+      const statuses = (response.data.modules || []) as ModuleStatus[];
+      setModuleStatus(statuses.find((status) => status.module_id === id) || null);
+    } catch {
+      setModuleStatus(null);
+    }
+  }, [id]);
 
   useEffect(() => {
     modulesAPI.getOne(id).then((response) => setModule(response.data));
-  }, [id]);
+    refreshModuleStatus();
+  }, [id, refreshModuleStatus]);
 
   useEffect(() => {
     if (!module) return;
@@ -85,7 +97,8 @@ export default function ModuleDetailPage() {
   }
 
   const downloadUrl = notebookAPI.getDownloadUrl(id);
-  const completed = isCompleted(id);
+  const completed = Boolean(moduleStatus?.is_validated);
+  const isLocked = moduleStatus?.status === "locked" || moduleStatus?.is_accessible === false;
   const hasFallbackModuleZero = isModuleZero(module) && cells === moduleZeroCells;
   const resourcesCount = (module.resources?.length ?? 0) + (isModuleZero(module) ? moduleZeroResources.length : 0);
   const videos = module.resources?.filter((resource) => resource.type === "video") ?? [];
@@ -112,7 +125,17 @@ export default function ModuleDetailPage() {
                 <Badge color="blue" className="bg-white text-blue-700 ring-white/70">Module {module.order_index}</Badge>
                 {completed && (
                   <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-200">
-                    <CheckCircle2 size={14} /> Terminé
+                    <CheckCircle2 size={14} /> Validé
+                  </span>
+                )}
+                {moduleStatus?.status === "quiz_failed" && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/25 bg-amber-400/10 px-3 py-1 text-xs font-bold text-amber-200">
+                    <RefreshCw size={14} /> QCM à refaire
+                  </span>
+                )}
+                {isLocked && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-slate-300">
+                    <Lock size={14} /> Bloqué
                   </span>
                 )}
               </div>
@@ -150,7 +173,11 @@ export default function ModuleDetailPage() {
                   Action recommandée
                 </p>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {hasFallbackModuleZero ? "Lis ce module fondateur, fais les exercices, puis passe au Module 1." : "Télécharge le notebook puis termine le module après lecture complète."}
+                  {isLocked
+                    ? "Ce module est verrouillé. Valide d’abord le module précédent."
+                    : completed
+                    ? "Module validé. Tu peux continuer vers l’étape suivante."
+                    : "Lis le cours, pratique, puis valide le QCM avec au moins 12/20."}
                 </p>
               </div>
               <div className="mt-4 grid gap-3">
@@ -163,7 +190,17 @@ export default function ModuleDetailPage() {
                     <Download size={17} /> Télécharger .ipynb
                   </a>
                 )}
-                <ModuleProgress completed={completed} onComplete={() => markCompleted(id)} />
+                <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4 text-sm text-slate-200">
+                  <p className="flex items-center gap-2 font-black text-white">
+                    {completed ? <CheckCircle2 size={16} className="text-emerald-300" /> : <Trophy size={16} className="text-purple-300" />}
+                    Validation certifiante
+                  </p>
+                  <p className="mt-2 leading-6 text-slate-400">
+                    {completed
+                      ? `QCM validé${moduleStatus?.quiz_best_score != null ? ` avec ${moduleStatus.quiz_best_score}/20` : ""}.`
+                      : `QCM obligatoire : minimum ${moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}/20.`}
+                  </p>
+                </div>
               </div>
             </aside>
           </div>
@@ -194,7 +231,18 @@ export default function ModuleDetailPage() {
         <div className="kx-container py-8 sm:py-12">
           {tab === "cours" && (
             <div className="mx-auto max-w-5xl">
-              {loadingNb ? (
+              {isLocked ? (
+                <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center text-slate-300 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
+                  <Lock size={42} className="mx-auto mb-4 text-slate-400" />
+                  <p className="text-xl font-black text-white">Module verrouillé</p>
+                  <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-400">
+                    Tu dois valider le module précédent avant d’ouvrir cette étape. Retourne au parcours pour voir ta progression et les QCM à refaire.
+                  </p>
+                  <Link href="/modules" className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-blue-600 hover:text-white">
+                    Voir le parcours <ChevronRight size={16} />
+                  </Link>
+                </div>
+              ) : loadingNb ? (
                 <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center text-slate-300 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
                   <motion.div
                     animate={{ rotate: 360 }}
@@ -207,7 +255,12 @@ export default function ModuleDetailPage() {
                 <>
                   <NotebookViewer cells={cells} moduleTitle={module.title} />
                   <div className="mt-8">
-                    <QuizBlock moduleId={id} onComplete={() => markCompleted(id)} />
+                    <QuizBlock
+                      moduleId={id}
+                      passScore={moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}
+                      isValidated={completed}
+                      onValidated={refreshModuleStatus}
+                    />
                   </div>
 
                   {module.resources && module.resources.length > 0 && (
@@ -304,7 +357,12 @@ export default function ModuleDetailPage() {
                     <>
                       <DocumentViewer resource={docResource} />
                       <div className="mt-8">
-                        <QuizBlock moduleId={id} onComplete={() => markCompleted(id)} />
+                        <QuizBlock
+                      moduleId={id}
+                      passScore={moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}
+                      isValidated={completed}
+                      onValidated={refreshModuleStatus}
+                    />
                       </div>
                     </>
                   );

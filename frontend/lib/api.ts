@@ -59,6 +59,16 @@ export const certificatesAPI = {
   getMy: () => api.get("/certificates/me"),
 };
 
+export const validationAPI = {
+  getModuleStatuses: () => api.get("/validation/modules/status"),
+  getQuiz: (module_id: string) => api.get(`/validation/quiz/${module_id}`),
+  submitQuiz: (module_id: string, answers: Record<string, string>) =>
+    api.post(`/validation/quiz/${module_id}/submit`, { answers }),
+  getCertificationStatus: () => api.get("/validation/certification/me"),
+  submitFinalProject: (submission_url?: string, submission_notes?: string) =>
+    api.post("/validation/final-project/submit", { submission_url, submission_notes }),
+};
+
 export const notebookAPI = {
   getContent: (moduleId: string) => api.get(`/modules/${moduleId}/notebook`),
   getDownloadUrl: (moduleId: string) => `${API_BASE_URL}/modules/${moduleId}/download`,
