@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Brain, Loader2, CheckCircle2, XCircle, RefreshCw, Trophy } from "lucide-react";
-import { aiAPI } from "@/lib/api";
+import { aiAPI, getApiErrorMessage } from "@/lib/api";
 
 interface QuizQuestion {
   question: string;
   options: string[];
   answer: string;
+  difficulty?: "debutant" | "intermediaire" | "avance";
+  explanation?: string;
 }
 
 interface QuizBlockProps {
@@ -31,8 +33,8 @@ export default function QuizBlock({ moduleId, onComplete }: QuizBlockProps) {
     try {
       const res = await aiAPI.quiz(moduleId);
       setQuestions(res.data.questions || []);
-    } catch {
-      setError("Impossible de générer le quiz. Réessaie.");
+    } catch (err) {
+      setError(`Impossible de générer le quiz. ${getApiErrorMessage(err)}`);
     } finally {
       setLoading(false);
     }
@@ -47,7 +49,7 @@ export default function QuizBlock({ moduleId, onComplete }: QuizBlockProps) {
         <Brain size={24} className="text-purple-400" />
         <div>
           <h3 className="text-xl font-bold text-white">Quiz du module</h3>
-          <p className="text-slate-400 text-sm">Teste tes connaissances — généré par IA</p>
+          <p className="text-slate-400 text-sm">20 à 50 QCM selon le contenu — généré par IA</p>
         </div>
       </div>
 
@@ -98,9 +100,14 @@ export default function QuizBlock({ moduleId, onComplete }: QuizBlockProps) {
                   className="bg-white/3 border border-white/10 rounded-2xl p-6"
                 >
                   <p className="text-white font-medium mb-4">
-                    <span className="text-purple-400 font-bold mr-2">{qi + 1}.</span>
+                    <span className="text-purple-400 font-bold mr-2">{qi + 1}/{questions.length}.</span>
                     {q.question}
                   </p>
+                  {q.difficulty && (
+                    <p className="mb-3 text-xs uppercase tracking-widest text-slate-500">
+                      Niveau : {q.difficulty}
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {q.options.map((opt) => {
                       const letter = opt.charAt(0);
@@ -130,6 +137,11 @@ export default function QuizBlock({ moduleId, onComplete }: QuizBlockProps) {
                       {isCorrect ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                       {isCorrect ? "Bonne réponse !" : `La bonne réponse était ${q.answer}`}
                     </motion.div>
+                  )}
+                  {submitted && q.explanation && (
+                    <p className="mt-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm leading-relaxed text-slate-300">
+                      {q.explanation}
+                    </p>
                   )}
                 </motion.div>
               );
