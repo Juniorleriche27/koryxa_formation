@@ -602,3 +602,320 @@ GRANT EXECUTE ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, 
 --   (public.sha256_hex('O-JUIN-CLIENT-1'), 'Apprenant 1', 'client1@example.com', 'Juin 2026', 2, '2026-07-31 23:59:59+00', 'Accès formation Python Data'),
 --   (public.sha256_hex('O-JUIN-CLIENT-2'), 'Apprenant 2', 'client2@example.com', 'Juin 2026', 2, '2026-07-31 23:59:59+00', 'Accès formation Python Data')
 -- ON CONFLICT (code_hash) DO NOTHING;
+
+
+-- ============================================================
+-- KORYXA CERTIFICATION VALIDATION MODEL — CHANTIER 2
+-- ============================================================
+-- Référence produit : docs/CERTIFICATION_RULES.md
+-- Règles structurantes :
+-- - Accès plateforme : 2 mois.
+-- - Délai certificat : 21 jours minimum après activation, uniquement pour le certificat.
+-- - QCM module : validation à partir de 12/20.
+-- - Plateforme : 40 points.
+-- - Projet final : 60 points.
+-- - Réussite : 60/100 minimum.
+
+-- MODULE METADATA / WEIGHTS
+ALTER TABLE public.modules
+    ADD COLUMN IF NOT EXISTS estimated_hours NUMERIC(5,2),
+    ADD COLUMN IF NOT EXISTS platform_points NUMERIC(5,2) NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS requires_quiz BOOLEAN NOT NULL DEFAULT TRUE,
+    ADD COLUMN IF NOT EXISTS quiz_pass_score INT NOT NULL DEFAULT 12 CHECK (quiz_pass_score BETWEEN 0 AND 20);
+
+UPDATE public.modules SET estimated_hours = 2,  platform_points = 3, requires_quiz = TRUE,  quiz_pass_score = 12 WHERE order_index = 0;
+UPDATE public.modules SET estimated_hours = 6,  platform_points = 7, requires_quiz = TRUE,  quiz_pass_score = 12 WHERE order_index = 1;
+UPDATE public.modules SET estimated_hours = 8,  platform_points = 6, requires_quiz = TRUE,  quiz_pass_score = 12 WHERE order_index = 2;
+UPDATE public.modules SET estimated_hours = 7,  platform_points = 6, requires_quiz = TRUE,  quiz_pass_score = 12 WHERE order_index = 3;
+UPDATE public.modules SET estimated_hours = 7,  platform_points = 6, requires_quiz = TRUE,  quiz_pass_score = 12 WHERE order_index = 4;
+UPDATE public.modules SET estimated_hours = 6,  platform_points = 6, requires_quiz = TRUE,  quiz_pass_score = 12 WHERE order_index = 5;
+UPDATE public.modules SET estimated_hours = 8,  platform_points = 6, requires_quiz = TRUE,  quiz_pass_score = 12 WHERE order_index = 6;
+UPDATE public.modules SET estimated_hours = 15, platform_points = 0, requires_quiz = FALSE, quiz_pass_score = 12 WHERE order_index = 7;
+UPDATE public.modules SET title = 'Démarrage professionnel', description = 'Orientation, méthode KORYXA, premiers repères Python et préparation au parcours.', duration = '2h' WHERE order_index = 0;
+UPDATE public.modules SET title = 'Installation & premier projet Data', description = 'Anaconda, Jupyter, Colab, VS Code, terminal, venv et mini-projet analyse_ventes.', duration = '6h' WHERE order_index = 1;
+UPDATE public.modules SET title = 'Bases Python pour la Data', description = 'Variables, types, listes, dictionnaires, conditions, boucles et fonctions.', duration = '8h' WHERE order_index = 2;
+UPDATE public.modules SET title = 'Structures, CSV & premières données', description = 'Listes de dictionnaires, fichiers CSV, lecture de données et première introduction Pandas.', duration = '7h' WHERE order_index = 3;
+UPDATE public.modules SET title = 'Nettoyage de Données', description = 'Valeurs manquantes, doublons, formats incorrects, types et pipeline de nettoyage.', duration = '7h' WHERE order_index = 4;
+UPDATE public.modules SET title = 'Visualisation de Données', description = 'Graphiques avec Matplotlib, choix visuel, interprétation et conclusion business.', duration = '6h' WHERE order_index = 5;
+UPDATE public.modules SET title = 'Analyse Exploratoire (EDA)', description = 'KPIs, exploration, groupby, tendances et recommandations actionnables.', duration = '8h' WHERE order_index = 6;
+UPDATE public.modules SET title = 'Projet Final Professionnel', description = 'Rapport complet : nettoyage, KPIs, visualisation, conclusions et recommandations.', duration = '12h à 15h' WHERE order_index = 7;
+UPDATE public.progress SET status = 'validated', validated_at = COALESCE(validated_at, completed_at, NOW()), validation_source = COALESCE(validation_source, 'system') WHERE completed = TRUE AND status <> 'validated';
+
+-- PROGRESS EXTENSIONS
+ALTER TABLE public.progress
+    ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'available' CHECK (status IN ('locked', 'available', 'in_progress', 'quiz_failed', 'validated')),
+    ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS validated_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS quiz_best_score INT CHECK (quiz_best_score BETWEEN 0 AND 20),
+    ADD COLUMN IF NOT EXISTS platform_points_awarded NUMERIC(5,2) NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS validation_source TEXT CHECK (validation_source IS NULL OR validation_source IN ('quiz', 'admin', 'system')),
+    ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+
+CREATE OR REPLACE TRIGGER progress_updated_at
+    BEFORE UPDATE ON public.progress
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+CREATE INDEX IF NOT EXISTS idx_progress_user_status ON public.progress(user_id, status);
+
+-- QUIZ ATTEMPTS
+CREATE TABLE IF NOT EXISTS public.quiz_attempts (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    module_id       UUID NOT NULL REFERENCES public.modules(id) ON DELETE CASCADE,
+    score           INT NOT NULL CHECK (score BETWEEN 0 AND 20),
+    max_score       INT NOT NULL DEFAULT 20 CHECK (max_score = 20),
+    passed          BOOLEAN NOT NULL DEFAULT FALSE,
+    answers         JSONB NOT NULL DEFAULT '{}'::jsonb,
+    correct_count   INT CHECK (correct_count IS NULL OR correct_count >= 0),
+    total_questions INT CHECK (total_questions IS NULL OR total_questions > 0),
+    review_sections JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(review_sections) = 'array'),
+    feedback        TEXT,
+    attempted_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_quiz_attempts_user_module
+    ON public.quiz_attempts(user_id, module_id, attempted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_quiz_attempts_passed
+    ON public.quiz_attempts(user_id, module_id, passed);
+
+-- FINAL PROJECT EVALUATION
+CREATE TABLE IF NOT EXISTS public.final_projects (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id          UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
+    status           TEXT NOT NULL DEFAULT 'not_started' CHECK (status IN ('not_started', 'submitted', 'needs_revision', 'graded', 'validated', 'rejected')),
+    submission_url   TEXT,
+    submission_notes TEXT,
+    submitted_at     TIMESTAMPTZ,
+    reviewed_at      TIMESTAMPTZ,
+    graded_at        TIMESTAMPTZ,
+    score_points     NUMERIC(5,2) CHECK (score_points IS NULL OR (score_points >= 0 AND score_points <= 60)),
+    feedback         TEXT,
+    admin_notes      TEXT,
+    reviewed_by      UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE OR REPLACE TRIGGER final_projects_updated_at
+    BEFORE UPDATE ON public.final_projects
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+CREATE INDEX IF NOT EXISTS idx_final_projects_user ON public.final_projects(user_id);
+CREATE INDEX IF NOT EXISTS idx_final_projects_status ON public.final_projects(status);
+
+-- CERTIFICATION RULES
+CREATE TABLE IF NOT EXISTS public.certification_rules (
+    id                         BOOLEAN PRIMARY KEY DEFAULT TRUE CHECK (id = TRUE),
+    platform_max_points         NUMERIC(5,2) NOT NULL DEFAULT 40 CHECK (platform_max_points = 40),
+    project_max_points          NUMERIC(5,2) NOT NULL DEFAULT 60 CHECK (project_max_points = 60),
+    passing_score               NUMERIC(5,2) NOT NULL DEFAULT 60 CHECK (passing_score = 60),
+    quiz_pass_score             INT NOT NULL DEFAULT 12 CHECK (quiz_pass_score = 12),
+    certificate_min_days        INT NOT NULL DEFAULT 21 CHECK (certificate_min_days = 21),
+    platform_access_months      INT NOT NULL DEFAULT 2 CHECK (platform_access_months = 2),
+    updated_at                  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO public.certification_rules (id)
+VALUES (TRUE)
+ON CONFLICT (id) DO UPDATE SET updated_at = NOW();
+
+-- CERTIFICATION SNAPSHOTS
+CREATE TABLE IF NOT EXISTS public.certification_snapshots (
+    id                        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id                   UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    platform_score            NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (platform_score >= 0 AND platform_score <= 40),
+    project_score             NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (project_score >= 0 AND project_score <= 60),
+    final_score               NUMERIC(5,2) NOT NULL DEFAULT 0 CHECK (final_score >= 0 AND final_score <= 100),
+    modules_validated         INT NOT NULL DEFAULT 0 CHECK (modules_validated >= 0),
+    modules_required          INT NOT NULL DEFAULT 7 CHECK (modules_required = 7),
+    access_activated_at       TIMESTAMPTZ,
+    access_until              TIMESTAMPTZ,
+    certificate_eligible_from TIMESTAMPTZ,
+    is_eligible               BOOLEAN NOT NULL DEFAULT FALSE,
+    blocking_reasons          JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(blocking_reasons) = 'array'),
+    calculated_at             TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_certification_snapshots_user
+    ON public.certification_snapshots(user_id, calculated_at DESC);
+
+-- ACCESS CODE EXTENSION: 21 DAYS ONLY FOR CERTIFICATE
+ALTER TABLE public.formation_access_codes
+    ADD COLUMN IF NOT EXISTS certificate_eligible_from TIMESTAMPTZ;
+
+-- CERTIFICATE SCORE TRACE
+ALTER TABLE public.certificates
+    ADD COLUMN IF NOT EXISTS platform_score NUMERIC(5,2) CHECK (platform_score IS NULL OR (platform_score >= 0 AND platform_score <= 40)),
+    ADD COLUMN IF NOT EXISTS project_score NUMERIC(5,2) CHECK (project_score IS NULL OR (project_score >= 0 AND project_score <= 60)),
+    ADD COLUMN IF NOT EXISTS final_score NUMERIC(5,2) CHECK (final_score IS NULL OR (final_score >= 0 AND final_score <= 100)),
+    ADD COLUMN IF NOT EXISTS eligibility_snapshot JSONB;
+
+-- SECURITY: DO NOT AUTO-ISSUE CERTIFICATES FROM SIMPLE PROGRESS
+CREATE OR REPLACE FUNCTION public.check_and_issue_certificate()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Le certificat ne doit pas être émis automatiquement sur simple progression.
+    -- La logique complète sera appliquée par le backend/service : 21 jours minimum,
+    -- modules 0 à 6 validés, QCM >= 12/20, projet final noté sur 60,
+    -- score final >= 60/100.
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- RLS FOR NEW TABLES
+ALTER TABLE public.quiz_attempts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.final_projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.certification_rules ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.certification_snapshots ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Tentatives QCM visibles par son propriétaire" ON public.quiz_attempts;
+DROP POLICY IF EXISTS "Tentatives QCM créées par son propriétaire" ON public.quiz_attempts;
+DROP POLICY IF EXISTS "Admin gère les tentatives QCM" ON public.quiz_attempts;
+DROP POLICY IF EXISTS "Projet final visible par son propriétaire" ON public.final_projects;
+DROP POLICY IF EXISTS "Projet final créé par son propriétaire" ON public.final_projects;
+DROP POLICY IF EXISTS "Projet final modifiable par son propriétaire avant correction" ON public.final_projects;
+DROP POLICY IF EXISTS "Admin gère les projets finaux" ON public.final_projects;
+DROP POLICY IF EXISTS "Règles certification visibles par les connectés" ON public.certification_rules;
+DROP POLICY IF EXISTS "Snapshots certification visibles par son propriétaire" ON public.certification_snapshots;
+DROP POLICY IF EXISTS "Admin gère les snapshots certification" ON public.certification_snapshots;
+
+CREATE POLICY "Tentatives QCM visibles par son propriétaire"
+    ON public.quiz_attempts FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Tentatives QCM créées par son propriétaire"
+    ON public.quiz_attempts FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Admin gère les tentatives QCM"
+    ON public.quiz_attempts FOR ALL
+    USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "Projet final visible par son propriétaire"
+    ON public.final_projects FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Projet final créé par son propriétaire"
+    ON public.final_projects FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Projet final modifiable par son propriétaire avant correction"
+    ON public.final_projects FOR UPDATE
+    USING (auth.uid() = user_id AND status IN ('not_started', 'submitted', 'needs_revision'));
+CREATE POLICY "Admin gère les projets finaux"
+    ON public.final_projects FOR ALL
+    USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "Règles certification visibles par les connectés"
+    ON public.certification_rules FOR SELECT USING (auth.uid() IS NOT NULL);
+CREATE POLICY "Snapshots certification visibles par son propriétaire"
+    ON public.certification_snapshots FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Admin gère les snapshots certification"
+    ON public.certification_snapshots FOR ALL
+    USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- ACCESS CODE RPC UPDATED FOR CERTIFICATE DATE
+CREATE OR REPLACE FUNCTION public.redeem_formation_access_code(
+    p_code_hash TEXT,
+    p_partner_code TEXT DEFAULT NULL,
+    p_partner_email TEXT DEFAULT NULL,
+    p_partner_name TEXT DEFAULT NULL
+)
+RETURNS JSONB AS $$
+DECLARE
+    v_code public.formation_access_codes%ROWTYPE;
+    v_partner_code TEXT;
+    v_partner_email TEXT;
+    v_partner_name TEXT;
+    v_access_until TIMESTAMPTZ;
+BEGIN
+    v_partner_code := NULLIF(TRIM(COALESCE(p_partner_code, '')), '');
+    v_partner_email := NULLIF(LOWER(TRIM(COALESCE(p_partner_email, ''))), '');
+    v_partner_name := NULLIF(TRIM(COALESCE(p_partner_name, '')), '');
+
+    SELECT * INTO v_code
+    FROM public.formation_access_codes
+    WHERE code_hash = p_code_hash
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RETURN jsonb_build_object('ok', false, 'reason', 'invalid');
+    END IF;
+
+    IF v_code.expires_at IS NOT NULL AND v_code.expires_at < NOW() THEN
+        UPDATE public.formation_access_codes SET status = 'expired' WHERE id = v_code.id;
+        RETURN jsonb_build_object('ok', false, 'reason', 'expired');
+    END IF;
+
+    IF v_code.access_until IS NOT NULL AND v_code.access_until < NOW() THEN
+        UPDATE public.formation_access_codes SET status = 'expired' WHERE id = v_code.id;
+        RETURN jsonb_build_object('ok', false, 'reason', 'expired');
+    END IF;
+
+    IF v_code.status IN ('revoked', 'expired') THEN
+        RETURN jsonb_build_object('ok', false, 'reason', v_code.status);
+    END IF;
+
+    IF v_code.partner_code IS NOT NULL THEN
+        IF v_partner_code IS NULL OR v_code.partner_code <> v_partner_code THEN
+            RETURN jsonb_build_object('ok', false, 'reason', 'bound_to_another_partner');
+        END IF;
+
+        UPDATE public.formation_access_codes
+        SET last_used_at = NOW(),
+            certificate_eligible_from = COALESCE(certificate_eligible_from, COALESCE(activated_at, NOW()) + INTERVAL '21 days')
+        WHERE id = v_code.id RETURNING * INTO v_code;
+
+        RETURN jsonb_build_object(
+            'ok', true,
+            'id', v_code.id,
+            'student_name', COALESCE(v_code.student_name, v_code.partner_name),
+            'student_email', COALESCE(v_code.student_email, v_code.partner_email),
+            'partner_code', v_code.partner_code,
+            'partner_email', v_code.partner_email,
+            'access_until', v_code.access_until,
+            'certificate_eligible_from', v_code.certificate_eligible_from,
+            'used_count', v_code.used_count,
+            'max_uses', v_code.max_uses
+        );
+    END IF;
+
+    IF v_code.status <> 'active' THEN
+        RETURN jsonb_build_object('ok', false, 'reason', v_code.status);
+    END IF;
+
+    IF v_code.used_count >= v_code.max_uses THEN
+        UPDATE public.formation_access_codes SET status = 'used' WHERE id = v_code.id;
+        RETURN jsonb_build_object('ok', false, 'reason', 'used');
+    END IF;
+
+    v_access_until := COALESCE(v_code.expires_at, NOW() + INTERVAL '2 months');
+
+    UPDATE public.formation_access_codes
+    SET
+        used_count = used_count + 1,
+        first_used_at = COALESCE(first_used_at, NOW()),
+        last_used_at = NOW(),
+        activated_at = COALESCE(activated_at, NOW()),
+        access_until = COALESCE(access_until, v_access_until),
+        certificate_eligible_from = COALESCE(certificate_eligible_from, COALESCE(activated_at, NOW()) + INTERVAL '21 days'),
+        partner_code = COALESCE(v_code.partner_code, v_partner_code),
+        partner_email = COALESCE(v_code.partner_email, v_partner_email),
+        partner_name = COALESCE(v_code.partner_name, v_partner_name),
+        status = CASE WHEN v_partner_code IS NOT NULL THEN 'used' WHEN used_count + 1 >= max_uses THEN 'used' ELSE 'active' END
+    WHERE id = v_code.id
+    RETURNING * INTO v_code;
+
+    RETURN jsonb_build_object(
+        'ok', true,
+        'id', v_code.id,
+        'student_name', COALESCE(v_code.student_name, v_code.partner_name),
+        'student_email', COALESCE(v_code.student_email, v_code.partner_email),
+        'partner_code', v_code.partner_code,
+        'partner_email', v_code.partner_email,
+        'access_until', v_code.access_until,
+        'certificate_eligible_from', v_code.certificate_eligible_from,
+        'used_count', v_code.used_count,
+        'max_uses', v_code.max_uses
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM anon;
+REVOKE ALL ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.redeem_formation_access_code(TEXT, TEXT, TEXT, TEXT) TO service_role;
