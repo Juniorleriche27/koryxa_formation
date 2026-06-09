@@ -56,9 +56,34 @@ export interface Progress {
   completed_at?: string;
 }
 
+export interface CertificationStatus {
+  user_id: string;
+  platform_score: number;
+  project_score: number;
+  final_score: number;
+  modules_validated: number;
+  modules_required: number;
+  access_activated_at?: string | null;
+  access_until?: string | null;
+  certificate_eligible_from?: string | null;
+  is_eligible: boolean;
+  blocking_reasons: string[];
+  days_elapsed_since_activation?: number;
+  days_remaining_for_certificate?: number;
+  final_project?: {
+    status?: string;
+    score_points?: number | null;
+    feedback?: string | null;
+  } | null;
+}
+
 export interface Certificate {
   id: string;
   user_id: string;
   issued_at: string;
   certificate_url?: string;
+  platform_score?: number;
+  project_score?: number;
+  final_score?: number;
+  certification_status?: CertificationStatus;
 }

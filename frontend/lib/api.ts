@@ -3,13 +3,27 @@ import axios, { AxiosError } from "axios";
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
 
+function stringifyApiDetail(detail: unknown) {
+  if (!detail) return "";
+  if (typeof detail === "string") return detail;
+  if (typeof detail === "object" && detail && "message" in detail) {
+    const value = (detail as { message?: unknown }).message;
+    return typeof value === "string" ? value : JSON.stringify(value);
+  }
+  try {
+    return JSON.stringify(detail);
+  } catch {
+    return String(detail);
+  }
+}
+
 export function getApiErrorMessage(error: unknown) {
-  const axiosError = error as AxiosError<{ detail?: string; message?: string }>;
+  const axiosError = error as AxiosError<{ detail?: unknown; message?: unknown }>;
   const method = axiosError.config?.method?.toUpperCase() || "GET";
   const url = buildRequestUrl(axiosError.config?.url);
 
   if (axiosError?.response) {
-    const detail = axiosError.response.data?.detail || axiosError.response.data?.message;
+    const detail = stringifyApiDetail(axiosError.response.data?.detail || axiosError.response.data?.message);
     return `API ${axiosError.response.status} sur ${method} ${url}${detail ? ` - ${detail}` : ""}`;
   }
 
@@ -57,6 +71,7 @@ export const progressAPI = {
 
 export const certificatesAPI = {
   getMy: () => api.get("/certificates/me"),
+  issue: () => api.post("/certificates/issue"),
 };
 
 export const validationAPI = {
