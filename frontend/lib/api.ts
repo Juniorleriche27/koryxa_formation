@@ -35,6 +35,7 @@ export function getApiErrorMessage(error: unknown) {
 }
 
 function buildRequestUrl(url?: string) {
+  if (url?.startsWith("/api/")) return url;
   try {
     return new URL(url || "", API_BASE_URL).toString();
   } catch {

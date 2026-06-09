@@ -245,13 +245,8 @@ def get_modules_status(user=Depends(get_current_user)):
 
 
 @router.get("/quiz/{module_id}")
-def get_module_quiz(module_id: str, user=Depends(get_current_user)):
+def get_module_quiz(module_id: str):
     module = fetch_module(module_id)
-    modules = fetch_modules()
-    by_module = progress_map(user.id)
-    if not module_accessible(module, modules, by_module):
-        raise HTTPException(status_code=403, detail="Module bloqué. Valide le module précédent avant de passer au QCM.")
-
     response = (
         supabase.table("quiz_questions")
         .select("id, order_index, question, options, difficulty, skill")
