@@ -76,9 +76,9 @@ INSERT INTO public.modules (title, description, order_index, duration, notebook_
 ('Bases Python pour la Data',          'Variables, types, listes, dictionnaires, conditions, boucles et fonctions.',         2, '3h00', 'MODULE_2_NumPy_Calcul_Numerique.ipynb',      TRUE),
 ('Structures, CSV & premières données','Listes de dictionnaires, fichiers CSV, lecture de données et première introduction Pandas.', 3, '3h00', 'MODULE_3_Pandas_Manipulation_Donnees.ipynb', TRUE),
 ('Nettoyage de Données',               'Valeurs manquantes, doublons, formats incorrects, types et pipeline de nettoyage.',  4, '2h30', 'MODULE_4_Nettoyage_Donnees.ipynb',           TRUE),
-('Visualisation de Données',           'Graphiques professionnels avec Matplotlib et Seaborn.',                             5, '2h30', 'MODULE_5_Visualisation_Donnees.ipynb',       TRUE),
-('Analyse Exploratoire (EDA)',          'Méthodologie complète d''exploration d''un dataset.',                               6, '3h00', 'MODULE_6_Analyse_Exploratoire_EDA.ipynb',    TRUE),
-('Projet Final Professionnel',         'Analyse complète des ventes KORYXA de A à Z — ton premier projet portfolio.',       7, '4h00', 'MODULE_7_Projet_Final_Professionnel.ipynb',  TRUE)
+('Visualisation de Données',           'Graphiques avec Matplotlib, choix visuel, interprétation et conclusion business.', 5, '2h30', 'MODULE_5_Visualisation_Donnees.ipynb',       TRUE),
+('Analyse Exploratoire (EDA)',          'KPIs, exploration, groupby, tendances et recommandations actionnables.',             6, '3h00', 'MODULE_6_Analyse_Exploratoire_EDA.ipynb',    TRUE),
+('Projet Final Professionnel',         'Rapport complet : nettoyage, KPIs, visualisation, conclusions et recommandations.',  7, '4h00', 'MODULE_7_Projet_Final_Professionnel.ipynb',  TRUE)
 ON CONFLICT (order_index) DO NOTHING;
 
 
