@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -183,7 +183,7 @@ export default function AdminPage() {
     ].some((value) => (value || "").toLowerCase().includes(needle)));
   }, [codes, query]);
 
-  const loadProjects = async () => {
+  const loadProjects = useCallback(async () => {
     const response = await fetch("/api/admin/final-projects", { cache: "no-store" });
     if (response.status === 401) {
       setAuthenticated(false);
@@ -211,9 +211,9 @@ export default function AdminPage() {
       });
       return next;
     });
-  };
+  }, []);
 
-  const loadCodes = async () => {
+  const loadCodes = useCallback(async () => {
     setError("");
     const response = await fetch("/api/admin/access-codes", { cache: "no-store" });
     if (response.status === 401) {
@@ -232,7 +232,7 @@ export default function AdminPage() {
     setAuthenticated(true);
     await loadProjects();
     setLoading(false);
-  };
+  }, [loadProjects]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -247,7 +247,7 @@ export default function AdminPage() {
       setLoading(false);
     };
     checkSession();
-  }, []);
+  }, [loadCodes]);
 
   const login = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

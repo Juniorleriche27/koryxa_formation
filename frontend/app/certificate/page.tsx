@@ -90,6 +90,7 @@ export default function CertificatePage() {
 
   const isEligible = Boolean(status?.is_eligible);
   const certificateIssued = Boolean(certificate);
+  const validatedFinalScore = certificate?.final_score ?? status?.final_score ?? 0;
   const formattedIssuedAt = certificate?.issued_at ? formatDate(certificate.issued_at) : "—";
   const blockingReasons = status?.blocking_reasons || [];
   const scoreRows = useMemo(() => [
@@ -161,11 +162,11 @@ export default function CertificatePage() {
                       </div>
                     </div>
 
-                    {certificateIssued && (
+                    {certificate && (
                       <div className="mt-8 rounded-3xl border border-emerald-100 bg-emerald-50 p-5 text-left">
                         <p className="font-black text-emerald-950">Numéro certificat : {getCertificateNumber(certificate)}</p>
                         <p className="mt-2 text-sm leading-6 text-emerald-800">
-                          Émis le {formattedIssuedAt}. Score validé : {certificate.final_score ?? status?.final_score ?? 0}/100.
+                          Émis le {formattedIssuedAt}. Score validé : {validatedFinalScore}/100.
                         </p>
                       </div>
                     )}
