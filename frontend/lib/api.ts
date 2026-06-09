@@ -49,12 +49,7 @@ const api = axios.create({
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
-    if (err?.response?.status === 401 && typeof window !== "undefined") {
-      window.location.href = `/access?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-    }
-    return Promise.reject(err);
-  }
+  (err) => Promise.reject(err)
 );
 
 export const modulesAPI = {
