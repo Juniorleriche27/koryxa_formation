@@ -1,16 +1,15 @@
 "use client";
 
-import { Children, isValidElement, ReactNode, useEffect, useMemo, useState } from "react";
+import { isValidElement, ReactNode, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertTriangle,
   BookOpenCheck,
   CheckCircle2,
   Code2,
+  Copy,
   FileText,
   Flag,
   GraduationCap,
@@ -18,6 +17,7 @@ import {
   Loader2,
   PlayCircle,
   RefreshCw,
+  RotateCcw,
   Sparkles,
   Target,
   TerminalSquare,
@@ -39,6 +39,20 @@ export interface NotebookCell {
 interface NotebookViewerProps {
   cells: NotebookCell[];
   moduleTitle?: string;
+}
+
+type PyodideRuntime = {
+  runPythonAsync: (code: string) => Promise<unknown>;
+  loadPackage?: (packages: string | string[]) => Promise<void>;
+  setStdout?: (config: { batched?: (text: string) => void }) => void;
+  setStderr?: (config: { batched?: (text: string) => void }) => void;
+};
+
+declare global {
+  interface Window {
+    loadPyodide?: (config?: { indexURL?: string }) => Promise<PyodideRuntime>;
+    __koryxaPyodidePromise?: Promise<PyodideRuntime>;
+  }
 }
 
 type CalloutTone = "remember" | "warning" | "practice" | "success" | "objective" | "default";
@@ -258,12 +272,64 @@ function OutputBlock({ output }: { output: CellOutput }) {
   );
 }
 
+function detectPackages(source: string) {
+  const packages: string[] = [];
+  if (/\bimport\s+pandas\b|\bfrom\s+pandas\b/.test(source)) packages.push("pandas");
+  if (/\bimport\s+numpy\b|\bfrom\s+numpy\b/.test(source)) packages.push("numpy");
+  if (/\bimport\s+matplotlib\b|\bfrom\s+matplotlib\b/.test(source)) packages.push("matplotlib");
+  return packages;
+}
+
+function loadPyodideScript() {
+  return new Promise<void>((resolve, reject) => {
+    if (typeof window === "undefined") return reject(new Error("Navigateur indisponible."));
+    if (window.loadPyodide) return resolve();
+
+    const existingScript = document.querySelector<HTMLScriptElement>("script[data-koryxa-pyodide]");
+    if (existingScript) {
+      existingScript.addEventListener("load", () => resolve(), { once: true });
+      existingScript.addEventListener("error", () => reject(new Error("Chargement Pyodide impossible.")), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
+    script.async = true;
+    script.dataset.koryxaPyodide = "true";
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Chargement Pyodide impossible."));
+    document.head.appendChild(script);
+  });
+}
+
+async function getPyodideRuntime() {
+  if (typeof window === "undefined") throw new Error("Exécution disponible uniquement dans le navigateur.");
+  if (!window.__koryxaPyodidePromise) {
+    window.__koryxaPyodidePromise = loadPyodideScript().then(() => {
+      if (!window.loadPyodide) throw new Error("Pyodide n'est pas prêt.");
+      return window.loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/" });
+    });
+  }
+  return window.__koryxaPyodidePromise;
+}
+
 function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: CellOutput[]; moduleTitle?: string }) {
+  const cleanedSource = fixNotebookText(source);
+  const [editableCode, setEditableCode] = useState(cleanedSource);
+  const [runOutput, setRunOutput] = useState("");
+  const [runError, setRunError] = useState("");
+  const [running, setRunning] = useState(false);
   const [fullText, setFullText] = useState("");
   const [displayed, setDisplayed] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showExp, setShowExp] = useState(false);
+
+  useEffect(() => {
+    setEditableCode(cleanedSource);
+    setRunOutput("");
+    setRunError("");
+  }, [cleanedSource]);
 
   useEffect(() => {
     if (!fullText) return;
@@ -289,7 +355,7 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
     }
     setLoading(true);
     try {
-      const response = await aiAPI.explain(source, moduleTitle);
+      const response = await aiAPI.explain(editableCode, moduleTitle);
       setFullText(cleanAIResponse(response.data.explanation));
       setShowExp(true);
     } catch (error) {
@@ -297,6 +363,57 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
       setShowExp(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const runCode = async () => {
+    setRunning(true);
+    setRunOutput("Initialisation de l'espace Python...");
+    setRunError("");
+    try {
+      const pyodide = await getPyodideRuntime();
+      if (editableCode.includes("ventes.csv")) {
+        await pyodide.runPythonAsync(`open("ventes.csv", "w", encoding="utf-8").write("""produit,montant\nFormation Python,29000\nCoaching Data,45000\nTemplate Excel,12000\nFormation Python,29000\n""")`);
+      }
+
+      const packages = detectPackages(editableCode);
+      if (packages.length && pyodide.loadPackage) {
+        setRunOutput(`Chargement des bibliothèques : ${packages.join(", ")}...`);
+        await pyodide.loadPackage(packages);
+      }
+
+      const captured: string[] = [];
+      const errors: string[] = [];
+      pyodide.setStdout?.({ batched: (text) => captured.push(text) });
+      pyodide.setStderr?.({ batched: (text) => errors.push(text) });
+
+      const result = await pyodide.runPythonAsync(editableCode);
+      const output = captured.join("\n").trim();
+      const stderr = errors.join("\n").trim();
+      const resultText = result === undefined || result === null ? "" : String(result);
+
+      setRunOutput(output || resultText || "Code exécuté. Aucun affichage détecté. Ajoute print(...) pour voir un résultat.");
+      setRunError(stderr);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setRunOutput("");
+      setRunError(message);
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  const resetCode = () => {
+    setEditableCode(cleanedSource);
+    setRunOutput("");
+    setRunError("");
+  };
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(editableCode);
+    } catch {
+      setRunError("Copie impossible depuis ce navigateur. Sélectionne le code manuellement.");
     }
   };
 
@@ -308,37 +425,71 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
             <TerminalSquare size={18} />
           </span>
           <div>
-            <p className="text-sm font-black text-white">Code Python</p>
-            <p className="text-xs text-slate-400">Lis, comprends, puis modifie pour pratiquer.</p>
+            <p className="text-sm font-black text-white">Laboratoire Python</p>
+            <p className="text-xs text-slate-400">Lis, modifie, exécute, observe, puis recommence.</p>
           </div>
         </div>
-        <motion.button
-          onClick={explain}
-          disabled={loading}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl border border-purple-300/20 bg-purple-400/10 px-4 text-xs font-black uppercase tracking-[0.12em] text-purple-100 transition hover:border-purple-200/40 hover:bg-purple-400/15 disabled:opacity-50"
-        >
-          {loading ? <><Loader2 size={14} className="animate-spin" /> Analyse…</> : <><Sparkles size={14} /> Expliquer</>}
-        </motion.button>
+        <div className="flex flex-wrap gap-2">
+          <motion.button
+            onClick={runCode}
+            disabled={running}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-4 text-xs font-black uppercase tracking-[0.12em] text-slate-950 transition hover:bg-emerald-300 disabled:opacity-60"
+          >
+            {running ? <><Loader2 size={14} className="animate-spin" /> Exécution…</> : <><PlayCircle size={14} /> Tester</>}
+          </motion.button>
+          <motion.button
+            onClick={explain}
+            disabled={loading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl border border-purple-300/20 bg-purple-400/10 px-4 text-xs font-black uppercase tracking-[0.12em] text-purple-100 transition hover:border-purple-200/40 hover:bg-purple-400/15 disabled:opacity-50"
+          >
+            {loading ? <><Loader2 size={14} className="animate-spin" /> Analyse…</> : <><Sparkles size={14} /> Expliquer</>}
+          </motion.button>
+        </div>
       </div>
 
-      <div className="relative">
-        <div className="absolute left-4 top-4 flex gap-1.5" aria-hidden="true">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
+      <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]">
+        <div className="relative border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
+          <div className="absolute left-4 top-4 z-10 flex gap-1.5" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
+          </div>
+          <textarea
+            aria-label="Code Python modifiable"
+            value={editableCode}
+            onChange={(event) => setEditableCode(event.target.value)}
+            spellCheck={false}
+            className="min-h-[260px] w-full resize-y bg-[#020617] px-5 pb-5 pt-12 font-mono text-sm leading-7 text-slate-100 outline-none ring-0 placeholder:text-slate-500 sm:text-[0.92rem]"
+          />
+          <div className="flex flex-wrap items-center gap-2 border-t border-white/10 bg-slate-950 px-4 py-3">
+            <button onClick={resetCode} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <RotateCcw size={13} /> Réinitialiser
+            </button>
+            <button onClick={copyCode} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <Copy size={13} /> Copier
+            </button>
+          </div>
         </div>
-        <SyntaxHighlighter
-          language="python"
-          style={vscDarkPlus}
-          customStyle={{ margin: 0, borderRadius: 0, fontSize: "0.88rem", background: "#020617", padding: "3rem 1.25rem 1.25rem" }}
-          showLineNumbers
-          lineNumberStyle={{ color: "#64748b", fontSize: "0.75rem", paddingRight: "1rem" }}
-          wrapLongLines
-        >
-          {fixNotebookText(source)}
-        </SyntaxHighlighter>
+
+        <div className="bg-slate-50 p-4 sm:p-5">
+          <div className="mb-3 flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+            <Flag size={14} /> Console d'exécution
+          </div>
+          {runOutput || runError ? (
+            <div className="space-y-3">
+              {runOutput && <pre className="overflow-x-auto whitespace-pre-wrap rounded-3xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-7 text-emerald-950 shadow-sm">{runOutput}</pre>}
+              {runError && <pre className="overflow-x-auto whitespace-pre-wrap rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-950 shadow-sm">{runError}</pre>}
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-5 text-sm leading-7 text-slate-600">
+              Modifie le code à gauche puis clique sur <strong>Tester</strong>. Pour voir un résultat, utilise <code>print(...)</code>.
+            </div>
+          )}
+        </div>
       </div>
 
       <AnimatePresence>
@@ -379,7 +530,7 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
       {outputs.length > 0 && (
         <div className="border-t border-white/10 bg-slate-50 px-4 py-5 sm:px-5">
           <div className="mb-3 flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
-            <Flag size={14} /> Résultat attendu
+            <Flag size={14} /> Résultat attendu du cours
           </div>
           <div className="space-y-4">
             {outputs.map((output, index) => (
