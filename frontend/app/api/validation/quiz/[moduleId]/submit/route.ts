@@ -31,10 +31,10 @@ export async function POST(request: Request, context: RouteContext) {
   ]);
 
   if (!moduleResponse.ok || !questionsResponse.ok) return jsonError("Impossible de corriger le QCM.", 502);
-  const module = (await moduleResponse.json())[0];
+  const courseModule = (await moduleResponse.json())[0];
   const questions = (await questionsResponse.json()) as QuestionRow[];
 
-  if (!module) return jsonError("Module introuvable.", 404);
+  if (!courseModule) return jsonError("Module introuvable.", 404);
   if (!questions.length) return jsonError("Aucun QCM préparé pour ce module.", 404);
 
   let correct = 0;
@@ -58,7 +58,7 @@ export async function POST(request: Request, context: RouteContext) {
 
   const total = questions.length;
   const score = Math.round((correct / total) * 20);
-  const passScore = Number(module.quiz_pass_score || 12);
+  const passScore = Number(courseModule.quiz_pass_score || 12);
   const passed = score >= passScore;
   const now = new Date().toISOString();
 
@@ -99,7 +99,7 @@ export async function POST(request: Request, context: RouteContext) {
     last_seen_at: now,
     validated_at: passed && !alreadyValidated ? now : existing?.validated_at || null,
     quiz_best_score: Math.max(score, Number(existing?.quiz_best_score || 0)),
-    platform_points_awarded: moduleValidated ? Number(module.platform_points || 0) : Number(existing?.platform_points_awarded || 0),
+    platform_points_awarded: moduleValidated ? Number(courseModule.platform_points || 0) : Number(existing?.platform_points_awarded || 0),
     validation_source: passed ? "quiz" : existing?.validation_source || null,
   };
 

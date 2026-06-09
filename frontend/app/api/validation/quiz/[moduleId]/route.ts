@@ -20,8 +20,8 @@ export async function GET(_request: Request, context: RouteContext) {
 
   if (!moduleResponse.ok) return jsonError("Module introuvable.", 404);
   const moduleRows = await moduleResponse.json();
-  const module = moduleRows[0];
-  if (!module) return jsonError("Module introuvable.", 404);
+  const courseModule = moduleRows[0];
+  if (!courseModule) return jsonError("Module introuvable.", 404);
 
   // Vérification d'accès sans appel HTTP interne fragile.
   const modulesResponse = await fetch(`${config.url}/rest/v1/modules?select=id,order_index&is_published=eq.true&order=order_index.asc`, { headers, cache: "no-store" });
@@ -30,9 +30,9 @@ export async function GET(_request: Request, context: RouteContext) {
   const modules = await modulesResponse.json();
   const progress = await progressResponse.json();
   const progressByModule = new Map(progress.map((row: { module_id: string; status: string; completed: boolean }) => [row.module_id, row]));
-  const previous = modules.find((item: { order_index: number }) => item.order_index === module.order_index - 1);
+  const previous = modules.find((item: { order_index: number }) => item.order_index === courseModule.order_index - 1);
   const previousProgress = previous ? progressByModule.get(previous.id) as { status?: string; completed?: boolean } | undefined : null;
-  const isAccessible = module.order_index === 0 || Boolean(previousProgress?.completed || previousProgress?.status === "validated");
+  const isAccessible = courseModule.order_index === 0 || Boolean(previousProgress?.completed || previousProgress?.status === "validated");
   if (!isAccessible) return jsonError("Module bloqué. Valide le module précédent avant de passer au QCM.", 403);
 
   const questionsResponse = await fetch(
@@ -46,7 +46,7 @@ export async function GET(_request: Request, context: RouteContext) {
 
   return Response.json({
     module_id: moduleId,
-    pass_score: module.quiz_pass_score || 12,
+    pass_score: courseModule.quiz_pass_score || 12,
     questions,
   });
 }
