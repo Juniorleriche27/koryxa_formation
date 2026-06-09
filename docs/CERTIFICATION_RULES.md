@@ -1,5 +1,7 @@
 # KORYXA Formation — Règles officielles de validation et certification
 
+Statut : cadre produit validé avant implémentation technique.
+
 ## 1. Objectif du document
 
 Ce document définit les règles produit, pédagogiques et fonctionnelles du système de validation de la formation **Analyse de Données avec Python**.
