@@ -98,7 +98,7 @@ export default function ModuleDetailPage() {
 
   const downloadUrl = notebookAPI.getDownloadUrl(id);
   const completed = Boolean(moduleStatus?.is_validated);
-  const isLocked = moduleStatus?.status === "locked" || moduleStatus?.is_accessible === false;
+  const isLocked = module.order_index > 0 && (!moduleStatus || moduleStatus.status === "locked" || moduleStatus.is_accessible === false);
   const hasFallbackModuleZero = isModuleZero(module) && cells === moduleZeroCells;
   const resourcesCount = (module.resources?.length ?? 0) + (isModuleZero(module) ? moduleZeroResources.length : 0);
   const videos = module.resources?.filter((resource) => resource.type === "video") ?? [];

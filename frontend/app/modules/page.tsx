@@ -149,8 +149,16 @@ export default function ModulesPage() {
             <div className="grid gap-5">
               {modulesWithStatus.map((module, index) => {
                 const validation = module.validation;
-                const accessible = validation?.is_accessible ?? true;
-                const copy = statusCopy(validation);
+                const accessible = validation?.is_accessible ?? module.order_index === 0;
+                const fallbackLocked = !validation && module.order_index > 0;
+                const copy = statusCopy(validation || (fallbackLocked ? {
+                  module_id: module.id,
+                  order_index: module.order_index,
+                  title: module.title,
+                  status: "locked",
+                  is_accessible: false,
+                  is_validated: false,
+                } as ModuleStatus : undefined));
                 const cardClass = accessible
                   ? "group grid gap-5 rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl transition hover:-translate-y-1 hover:border-blue-300/35 hover:bg-white/[0.085] md:grid-cols-[5rem_1fr_auto] md:items-center"
                   : "grid gap-5 rounded-3xl border border-white/10 bg-white/[0.035] p-5 opacity-75 shadow-2xl shadow-slate-950/10 backdrop-blur-xl md:grid-cols-[5rem_1fr_auto] md:items-center";
@@ -175,6 +183,7 @@ export default function ModulesPage() {
                       <h2 className={`text-xl font-black transition ${accessible ? "text-white group-hover:text-blue-100" : "text-slate-300"}`}>{module.title}</h2>
                       <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-400">{module.description}</p>
                       {!accessible && <p className="mt-3 text-sm font-semibold text-slate-500">Valide le module précédent pour débloquer cette étape.</p>}
+                      {fallbackLocked && <p className="mt-2 text-sm font-semibold text-amber-200/80">Progression en vérification : accès bloqué par sécurité.</p>}
                     </div>
                     <div className="flex items-center justify-between gap-4 md:justify-end">
                       <span className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${accessible ? "bg-white text-slate-950 group-hover:bg-blue-600 group-hover:text-white" : "bg-white/10 text-slate-500"}`}>
