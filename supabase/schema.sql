@@ -100,6 +100,186 @@ CREATE INDEX IF NOT EXISTS idx_resources_module ON public.resources(module_id);
 
 
 -- ============================================================
+-- PREPARED QUIZ QUESTIONS
+-- ============================================================
+-- Les QCM sont prepares et versionnes ici. Le bouton "Generer mon quiz"
+-- charge une session depuis cette banque, sans appel IA live.
+
+CREATE TABLE IF NOT EXISTS public.quiz_questions (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    module_id   UUID NOT NULL REFERENCES public.modules(id) ON DELETE CASCADE,
+    order_index INT  NOT NULL,
+    question    TEXT NOT NULL,
+    options     JSONB NOT NULL CHECK (jsonb_typeof(options) = 'array' AND jsonb_array_length(options) = 4),
+    answer      TEXT NOT NULL CHECK (answer IN ('A', 'B', 'C', 'D')),
+    difficulty  TEXT NOT NULL DEFAULT 'intermediaire' CHECK (difficulty IN ('debutant', 'intermediaire', 'avance')),
+    skill       TEXT,
+    explanation TEXT NOT NULL,
+    is_active   BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (module_id, order_index)
+);
+
+CREATE OR REPLACE TRIGGER quiz_questions_updated_at
+    BEFORE UPDATE ON public.quiz_questions
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+CREATE INDEX IF NOT EXISTS idx_quiz_questions_module
+    ON public.quiz_questions(module_id, order_index);
+
+WITH module_topics(order_index, topic, objective, tool, pitfall, outcome) AS (
+    VALUES
+    (0, 'demarrage professionnel', 'comprendre le role de Python, Jupyter et la methode de travail', 'Jupyter ou Google Colab', 'confondre installation, execution et analyse', 'un environnement pret et les premiers codes executes'),
+    (1, 'installation et premier projet data', 'installer les outils et organiser un premier projet data', 'Anaconda, VS Code, terminal et venv', 'travailler sans dossier projet ni environnement isole', 'un projet analyse_ventes structure et reproductible'),
+    (2, 'bases Python pour la data', 'maitriser variables, types, conditions, boucles et fonctions', 'Python standard', 'memoriser sans comprendre le flux du code', 'du code Python simple, lisible et testable'),
+    (3, 'structures, CSV et premieres donnees', 'representer des donnees, lire des CSV et introduire Pandas', 'csv et pandas', 'confondre structure Python et tableau de donnees', 'des donnees chargees et controlees proprement'),
+    (4, 'nettoyage de donnees', 'corriger valeurs manquantes, doublons, types et formats', 'pandas', 'nettoyer sans garder de trace ni verifier les impacts', 'un dataset fiable et pret pour analyse'),
+    (5, 'visualisation de donnees', 'choisir des graphiques utiles et raconter une conclusion', 'Matplotlib et Seaborn', 'faire un graphique joli mais sans message', 'des visualisations lisibles et actionnables'),
+    (6, 'analyse exploratoire EDA', 'explorer les KPI, tendances, segments et anomalies', 'pandas groupby et visualisation', 'tirer une conclusion sans preuve suffisante', 'des recommandations business fondees sur les donnees'),
+    (7, 'projet final professionnel', 'produire un rapport complet avec nettoyage, KPI, graphiques et recommandations', 'notebook projet et dataset ventes', 'livrer des calculs sans conclusion ni priorisation', 'un livrable portfolio clair et defendable')
+),
+seed AS (
+    SELECT
+        t.order_index AS module_order,
+        q.order_index,
+        q.question,
+        q.options,
+        q.answer,
+        q.difficulty,
+        q.skill,
+        q.explanation
+    FROM module_topics t
+    CROSS JOIN LATERAL (
+        VALUES
+        (1,
+            'Quel est l''objectif principal du module ' || t.topic || ' ?',
+            jsonb_build_array('A) Aller vite sans verifier', 'B) ' || t.objective, 'C) Memoriser tous les raccourcis', 'D) Eviter toute pratique'),
+            'B', 'debutant', 'objectif module',
+            'Le module vise surtout a construire une competence utilisable : ' || t.objective || '.'),
+        (2,
+            'Quel outil ou ensemble d''outils est central dans ce module ?',
+            jsonb_build_array('A) Uniquement un navigateur web', 'B) ' || t.tool, 'C) Un logiciel de dessin', 'D) Un outil sans lien avec la data'),
+            'B', 'debutant', 'outillage',
+            'L''outil central est ' || t.tool || ', car il permet de pratiquer le contenu du module.'),
+        (3,
+            'Quelle erreur doit etre evitee en priorite dans ce module ?',
+            jsonb_build_array('A) Documenter les choix', 'B) Tester les resultats', 'C) ' || t.pitfall, 'D) Organiser les fichiers'),
+            'C', 'intermediaire', 'erreurs frequentes',
+            'Cette erreur fragilise l''apprentissage et rend les resultats moins fiables.'),
+        (4,
+            'Quel resultat attendu montre que le module est compris ?',
+            jsonb_build_array('A) ' || t.outcome, 'B) Une capture d''ecran sans explication', 'C) Un code copie sans execution', 'D) Une conclusion non verifiee'),
+            'A', 'debutant', 'resultat attendu',
+            'Le bon resultat attendu est concret : ' || t.outcome || '.'),
+        (5,
+            'Dans une demarche professionnelle, que faut-il faire avant de conclure ?',
+            jsonb_build_array('A) Choisir la conclusion la plus rapide', 'B) Verifier les donnees, le code et les resultats', 'C) Supprimer les resultats inattendus', 'D) Ignorer les erreurs'),
+            'B', 'intermediaire', 'rigueur analytique',
+            'Une conclusion fiable vient apres verification des donnees, du code et des resultats.'),
+        (6,
+            'Pourquoi une question de depart est-elle importante ?',
+            jsonb_build_array('A) Elle evite d''analyser au hasard', 'B) Elle remplace le nettoyage', 'C) Elle supprime le besoin de coder', 'D) Elle garantit automatiquement un bon graphique'),
+            'A', 'debutant', 'cadrage',
+            'La question de depart oriente les calculs, les graphiques et les conclusions.'),
+        (7,
+            'Quel choix respecte le mieux une logique de reproductibilite ?',
+            jsonb_build_array('A) Garder les etapes dans un notebook clair', 'B) Modifier les donnees a la main sans trace', 'C) Effacer les cellules de verification', 'D) Garder seulement le resultat final'),
+            'A', 'intermediaire', 'reproductibilite',
+            'Un notebook clair permet de comprendre et refaire les etapes.'),
+        (8,
+            'Que doit contenir une bonne reponse analytique ?',
+            jsonb_build_array('A) Une opinion sans chiffres', 'B) Une observation, une preuve et une interpretation', 'C) Seulement du code', 'D) Seulement un graphique colore'),
+            'B', 'intermediaire', 'raisonnement data',
+            'Une reponse analytique relie observation, preuve et interpretation.'),
+        (9,
+            'Quelle attitude est la plus professionnelle face a une erreur ?',
+            jsonb_build_array('A) La cacher', 'B) Lire le message, isoler la cause et corriger progressivement', 'C) Relancer au hasard', 'D) Supprimer le fichier'),
+            'B', 'debutant', 'debugging',
+            'Le debugging consiste a comprendre la cause puis corriger methodiquement.'),
+        (10,
+            'Quel element rend un livrable plus credible ?',
+            jsonb_build_array('A) Des etapes explicites et des resultats verifiables', 'B) Des affirmations tres longues', 'C) Des couleurs nombreuses', 'D) Des fichiers non nommes'),
+            'A', 'intermediaire', 'qualite livrable',
+            'La credibilite vient des etapes explicites, des preuves et de la verification.'),
+        (11,
+            'Pourquoi faut-il nommer clairement les variables, fichiers ou sections ?',
+            jsonb_build_array('A) Pour rendre le travail lisible et maintenable', 'B) Pour ralentir le projet', 'C) Pour eviter d''executer le code', 'D) Pour masquer les erreurs'),
+            'A', 'debutant', 'lisibilite',
+            'Des noms clairs facilitent la lecture, la correction et la reprise du travail.'),
+        (12,
+            'Quel comportement montre une comprehension reelle ?',
+            jsonb_build_array('A) Copier sans executer', 'B) Modifier un exemple et expliquer le resultat', 'C) Eviter les exercices', 'D) Memoriser la forme sans le sens'),
+            'B', 'intermediaire', 'apprentissage actif',
+            'Modifier un exemple et expliquer le resultat prouve que le concept est compris.'),
+        (13,
+            'Dans le contexte du module, que signifie travailler proprement ?',
+            jsonb_build_array('A) Garder les donnees, le code et les notes organises', 'B) Melanger tous les fichiers', 'C) Ne pas sauvegarder', 'D) Ne jamais commenter'),
+            'A', 'debutant', 'organisation',
+            'Un travail propre facilite la progression et la correction.'),
+        (14,
+            'Quelle option est la meilleure pour valider une competence ?',
+            jsonb_build_array('A) Lire seulement le titre', 'B) Faire un exercice, verifier le resultat et expliquer la demarche', 'C) Passer directement au module suivant', 'D) Regarder le code sans l''executer'),
+            'B', 'intermediaire', 'validation competence',
+            'Une competence se valide par la pratique, la verification et l''explication.'),
+        (15,
+            'Pourquoi les distracteurs d''un QCM doivent-ils etre plausibles ?',
+            jsonb_build_array('A) Pour tester une vraie comprehension', 'B) Pour rendre la question impossible', 'C) Pour cacher la bonne reponse', 'D) Pour augmenter le hasard'),
+            'A', 'avance', 'evaluation',
+            'Des distracteurs plausibles distinguent la comprehension d''une simple devinette.'),
+        (16,
+            'Quel indicateur montre une reponse de qualite internationale ?',
+            jsonb_build_array('A) Une seule bonne reponse sans ambiguite', 'B) Plusieurs bonnes reponses cachees', 'C) Une question vague', 'D) Une option humoristique'),
+            'A', 'avance', 'standard qcm',
+            'Un QCM solide doit etre clair, non ambigu et avoir une seule bonne reponse.'),
+        (17,
+            'Quelle pratique reduit le risque d''erreur dans ce module ?',
+            jsonb_build_array('A) Tester par petites etapes', 'B) Tout faire en une seule fois', 'C) Ignorer les sorties', 'D) Changer plusieurs choses sans controle'),
+            'A', 'intermediaire', 'controle qualite',
+            'Les petites etapes rendent les erreurs plus faciles a localiser.'),
+        (18,
+            'Que faut-il faire quand un resultat semble surprenant ?',
+            jsonb_build_array('A) Le publier directement', 'B) Verifier la source, le calcul et l''interpretation', 'C) Le supprimer', 'D) Changer la conclusion pour qu''elle plaise'),
+            'B', 'avance', 'esprit critique',
+            'Un resultat surprenant doit etre verifie avant toute conclusion.'),
+        (19,
+            'Quelle formulation correspond le mieux a une recommandation professionnelle ?',
+            jsonb_build_array('A) Je pense que ca va marcher', 'B) Les donnees montrent X, donc je recommande Y parce que Z', 'C) C''est joli', 'D) On verra plus tard'),
+            'B', 'avance', 'recommandation',
+            'Une recommandation professionnelle relie preuve, action et justification.'),
+        (20,
+            'Quelle action finale consolide l''apprentissage du module ?',
+            jsonb_build_array('A) Relire, refaire un exemple et noter les points difficiles', 'B) Fermer sans sauvegarder', 'C) Supprimer les essais', 'D) Eviter le quiz'),
+            'A', 'debutant', 'consolidation',
+            'La consolidation passe par la repetition, la pratique et la trace des difficultes.')
+    ) AS q(order_index, question, options, answer, difficulty, skill, explanation)
+)
+INSERT INTO public.quiz_questions (
+    module_id, order_index, question, options, answer, difficulty, skill, explanation, is_active
+)
+SELECT
+    modules.id,
+    seed.order_index,
+    seed.question,
+    seed.options,
+    seed.answer,
+    seed.difficulty,
+    seed.skill,
+    seed.explanation,
+    TRUE
+FROM seed
+JOIN public.modules ON modules.order_index = seed.module_order
+ON CONFLICT (module_id, order_index) DO UPDATE SET
+    question = EXCLUDED.question,
+    options = EXCLUDED.options,
+    answer = EXCLUDED.answer,
+    difficulty = EXCLUDED.difficulty,
+    skill = EXCLUDED.skill,
+    explanation = EXCLUDED.explanation,
+    is_active = EXCLUDED.is_active;
+
+
+-- ============================================================
 -- PROGRESS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS public.progress (
@@ -166,6 +346,7 @@ CREATE OR REPLACE TRIGGER on_progress_updated
 ALTER TABLE public.profiles     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.modules      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.resources    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.progress     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
 
@@ -178,6 +359,8 @@ DROP POLICY IF EXISTS "Admin gère les modules" ON public.modules;
 DROP POLICY IF EXISTS "Ressources visibles par tous les connectés" ON public.resources;
 DROP POLICY IF EXISTS "Ressources visibles par accès formation" ON public.resources;
 DROP POLICY IF EXISTS "Admin gère les ressources" ON public.resources;
+DROP POLICY IF EXISTS "QCM visibles par accès formation" ON public.quiz_questions;
+DROP POLICY IF EXISTS "Admin gère les QCM" ON public.quiz_questions;
 DROP POLICY IF EXISTS "Progression visible par son propriétaire" ON public.progress;
 DROP POLICY IF EXISTS "Progression créée par son propriétaire" ON public.progress;
 DROP POLICY IF EXISTS "Progression modifiable par son propriétaire" ON public.progress;
@@ -209,6 +392,21 @@ CREATE POLICY "Ressources visibles par accès formation"
     );
 CREATE POLICY "Admin gère les ressources"
     ON public.resources FOR ALL
+    USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- Quiz questions
+CREATE POLICY "QCM visibles par accès formation"
+    ON public.quiz_questions FOR SELECT
+    USING (
+        is_active = TRUE
+        AND EXISTS (
+            SELECT 1 FROM public.modules
+            WHERE modules.id = quiz_questions.module_id
+              AND modules.is_published = TRUE
+        )
+    );
+CREATE POLICY "Admin gère les QCM"
+    ON public.quiz_questions FOR ALL
     USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
 -- Progress

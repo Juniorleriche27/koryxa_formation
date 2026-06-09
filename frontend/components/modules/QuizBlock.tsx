@@ -49,7 +49,7 @@ export default function QuizBlock({ moduleId, onComplete }: QuizBlockProps) {
         <Brain size={24} className="text-purple-400" />
         <div>
           <h3 className="text-xl font-bold text-white">Quiz du module</h3>
-          <p className="text-slate-400 text-sm">20 à 50 QCM selon le contenu — généré par IA</p>
+          <p className="text-slate-400 text-sm">QCM préparés — session mélangée au clic</p>
         </div>
       </div>
 

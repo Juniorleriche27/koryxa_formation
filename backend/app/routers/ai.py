@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import urllib.error
 import urllib.request
 import zipfile
@@ -232,161 +233,34 @@ class QuizRequest(BaseModel):
 
 @router.post("/quiz")
 def generate_quiz(req: QuizRequest):
-    module, context = load_module_context(req.module_id)
-
-    if not context:
-        raise HTTPException(status_code=404, detail="Contenu du module introuvable.")
-
-    target_count = get_quiz_question_count(module, context)
-    questions = generate_quiz_questions(context=context, target_count=target_count)
-    return {"questions": questions}
-
-
-def get_quiz_question_count(module: dict, context: str) -> int:
-    order_index = int(module.get("order_index") or 0)
-    context_len = len(context)
-
-    if order_index == 0:
-        return 20
-    if order_index == 7 or context_len >= 20000:
-        return 50
-    if context_len >= 14000:
-        return 40
-    if context_len >= 8000:
-        return 30
-    return 20
-
-
-def generate_quiz_questions(context: str, target_count: int) -> list[dict]:
-    questions: list[dict] = []
-    batch_size = 10
-    attempts = 0
-    max_attempts = ((target_count + batch_size - 1) // batch_size) + 3
-
-    while len(questions) < target_count and attempts < max_attempts:
-        remaining = target_count - len(questions)
-        requested = min(batch_size, remaining)
-        raw_questions = generate_quiz_batch(
-            context=context,
-            requested=requested,
-            batch_index=attempts,
-            existing_questions=[question["question"] for question in questions],
-        )
-        for question in validate_quiz_questions(raw_questions):
-            normalized = question["question"].lower()
-            if normalized not in {item["question"].lower() for item in questions}:
-                questions.append(question)
-        attempts += 1
-
-    if len(questions) < target_count:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Quiz incomplet genere par l'IA ({len(questions)}/{target_count}).",
-        )
-
-    return questions
-
-
-def generate_quiz_batch(
-    context: str,
-    requested: int,
-    batch_index: int,
-    existing_questions: list[str],
-) -> list[dict]:
-    system = """Tu es un createur de quiz pedagogique.
-Tu crees des QCM au standard international: questions claires, une seule bonne reponse, distracteurs plausibles, pas d'ambiguite.
-Tu reponds uniquement avec un JSON valide, sans texte avant ni apres."""
-
-    existing = "\n".join(f"- {question}" for question in existing_questions[-30:])
-
-    prompt = f"""Genere exactement {requested} questions QCM en francais basees sur ce contenu de cours Python/data.
-
-Contenu du cours:
----
-{context}
----
-
-Questions deja utilisees a eviter:
-{existing or "- Aucune"}
-
-Format JSON exact:
-{{
-  "questions": [
-    {{
-      "question": "La question ici ?",
-      "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
-      "answer": "A",
-      "difficulty": "debutant|intermediaire|avance",
-      "explanation": "Explication courte de la bonne reponse."
-    }}
-  ]
-}}
-
-Contraintes qualite:
-- couvre comprehension, application, analyse et erreurs frequentes;
-- varie les niveaux de difficulte;
-- chaque option commence par A), B), C) ou D);
-- la valeur answer est uniquement A, B, C ou D;
-- une seule bonne reponse par question;
-- les distracteurs doivent etre credibles;
-- pas de doublon avec les questions deja utilisees;
-- pas de question hors contenu."""
-
-    raw = cohere_chat_text(
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": prompt},
-        ],
-        temperature=0.25 + min(batch_index, 2) * 0.05,
-        max_tokens=3500,
+    response = (
+        supabase.table("quiz_questions")
+        .select("question, options, answer, difficulty, skill, explanation, order_index")
+        .eq("module_id", req.module_id)
+        .eq("is_active", True)
+        .order("order_index")
+        .execute()
     )
 
-    start = raw.find("{")
-    end = raw.rfind("}") + 1
-    if start == -1 or end == 0:
-        raise HTTPException(status_code=500, detail="Reponse quiz non JSON.")
+    questions = response.data or []
+    if not questions:
+        raise HTTPException(status_code=404, detail="Aucun QCM prepare pour ce module.")
 
-    try:
-        quiz = json.loads(raw[start:end])
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="Format de quiz invalide.")
+    rng = random.SystemRandom()
+    rng.shuffle(questions)
 
-    return quiz.get("questions", [])
-
-
-def validate_quiz_questions(raw_questions: list[dict]) -> list[dict]:
-    valid_questions = []
-    seen = set()
-
-    for item in raw_questions:
-        question = str(item.get("question", "")).strip()
-        options = item.get("options")
-        answer = str(item.get("answer", "")).strip().upper()
-        explanation = str(item.get("explanation", "")).strip()
-        difficulty = str(item.get("difficulty", "intermediaire")).strip().lower()
-
-        if not question or question.lower() in seen:
-            continue
-        if not isinstance(options, list) or len(options) != 4:
-            continue
-        if answer not in {"A", "B", "C", "D"}:
-            continue
-
-        normalized_options = []
-        for index, option in enumerate(options):
-            text = str(option).strip()
-            expected_prefix = f"{chr(65 + index)})"
-            if not text.startswith(expected_prefix):
-                text = f"{expected_prefix} {text.removeprefix(chr(65 + index)).lstrip(').:- ')}"
-            normalized_options.append(text)
-
-        seen.add(question.lower())
-        valid_questions.append({
-            "question": question,
-            "options": normalized_options,
-            "answer": answer,
-            "difficulty": difficulty if difficulty in {"debutant", "intermediaire", "avance"} else "intermediaire",
-            "explanation": explanation,
-        })
-
-    return valid_questions
+    return {
+        "source": "prepared",
+        "total": len(questions),
+        "questions": [
+            {
+                "question": question["question"],
+                "options": question["options"],
+                "answer": question["answer"],
+                "difficulty": question.get("difficulty"),
+                "skill": question.get("skill"),
+                "explanation": question.get("explanation"),
+            }
+            for question in questions
+        ],
+    }
