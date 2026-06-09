@@ -639,7 +639,6 @@ UPDATE public.modules SET title = 'Nettoyage de Données', description = 'Valeur
 UPDATE public.modules SET title = 'Visualisation de Données', description = 'Graphiques avec Matplotlib, choix visuel, interprétation et conclusion business.', duration = '6h' WHERE order_index = 5;
 UPDATE public.modules SET title = 'Analyse Exploratoire (EDA)', description = 'KPIs, exploration, groupby, tendances et recommandations actionnables.', duration = '8h' WHERE order_index = 6;
 UPDATE public.modules SET title = 'Projet Final Professionnel', description = 'Rapport complet : nettoyage, KPIs, visualisation, conclusions et recommandations.', duration = '12h à 15h' WHERE order_index = 7;
-UPDATE public.progress SET status = 'validated', validated_at = COALESCE(validated_at, completed_at, NOW()), validation_source = COALESCE(validation_source, 'system') WHERE completed = TRUE AND status <> 'validated';
 
 -- PROGRESS EXTENSIONS
 ALTER TABLE public.progress
@@ -658,6 +657,7 @@ CREATE OR REPLACE TRIGGER progress_updated_at
     FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 CREATE INDEX IF NOT EXISTS idx_progress_user_status ON public.progress(user_id, status);
+UPDATE public.progress SET status = 'validated', validated_at = COALESCE(validated_at, completed_at, NOW()), validation_source = COALESCE(validation_source, 'system') WHERE completed = TRUE AND status <> 'validated';
 
 -- QUIZ ATTEMPTS
 CREATE TABLE IF NOT EXISTS public.quiz_attempts (
