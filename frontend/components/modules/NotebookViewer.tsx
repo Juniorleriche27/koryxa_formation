@@ -272,6 +272,104 @@ function OutputBlock({ output }: { output: CellOutput }) {
   );
 }
 
+function normalizeRunnerText(value: string) {
+  return fixNotebookText(value)
+    .toLowerCase()
+    .replace(/[’']/g, "'")
+    .replace(/\s+/g, " ")
+    .replace(/\.0\b/g, "")
+    .trim();
+}
+
+function getExpectedText(outputs: CellOutput[]) {
+  return outputs
+    .filter((output) => output.type === "text")
+    .map((output) => fixNotebookText(output.data))
+    .join("\n")
+    .trim();
+}
+
+function getPracticeFeedback(runOutput: string, runError: string, outputs: CellOutput[]) {
+  if (runError) {
+    return {
+      status: "error" as const,
+      title: "Pas encore",
+      message: "Le code s'est arrêté avec une erreur. Lis le message, vérifie les noms, les guillemets, les parenthèses et relance.",
+    };
+  }
+
+  if (!runOutput) {
+    return null;
+  }
+
+  const expected = getExpectedText(outputs);
+  if (!expected) {
+    return {
+      status: "neutral" as const,
+      title: "Exécution terminée",
+      message: "Observe le résultat et explique ce que chaque ligne de code a produit.",
+    };
+  }
+
+  const normalizedOutput = normalizeRunnerText(runOutput);
+  const normalizedExpected = normalizeRunnerText(expected);
+  const isCorrect = normalizedOutput === normalizedExpected || normalizedOutput.includes(normalizedExpected) || normalizedExpected.includes(normalizedOutput);
+
+  if (isCorrect) {
+    return {
+      status: "success" as const,
+      title: "Correct",
+      message: "Le résultat correspond au résultat attendu. Tu peux maintenant modifier une valeur et observer l'impact.",
+    };
+  }
+
+  return {
+    status: "warning" as const,
+    title: "Pas encore",
+    message: "Le code s'exécute, mais le résultat ne correspond pas encore au résultat attendu. Compare les valeurs, les textes affichés et les calculs.",
+  };
+}
+
+function PracticeFeedback({ feedback }: { feedback: NonNullable<ReturnType<typeof getPracticeFeedback>> }) {
+  const config = {
+    success: {
+      icon: CheckCircle2,
+      className: "border-emerald-200 bg-emerald-50 text-emerald-950",
+      iconClassName: "bg-emerald-600 text-white",
+    },
+    warning: {
+      icon: AlertTriangle,
+      className: "border-amber-200 bg-amber-50 text-amber-950",
+      iconClassName: "bg-amber-500 text-white",
+    },
+    error: {
+      icon: AlertTriangle,
+      className: "border-red-200 bg-red-50 text-red-950",
+      iconClassName: "bg-red-600 text-white",
+    },
+    neutral: {
+      icon: BookOpenCheck,
+      className: "border-blue-200 bg-blue-50 text-blue-950",
+      iconClassName: "bg-blue-600 text-white",
+    },
+  }[feedback.status];
+  const Icon = config.icon;
+
+  return (
+    <div className={`rounded-3xl border p-4 shadow-sm ${config.className}`}>
+      <div className="flex items-start gap-3">
+        <span className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl ${config.iconClassName}`}>
+          <Icon size={17} />
+        </span>
+        <div>
+          <p className="text-sm font-black">{feedback.title}</p>
+          <p className="mt-1 text-sm font-medium leading-6 opacity-85">{feedback.message}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function detectPackages(source: string) {
   const packages: string[] = [];
   if (/\bimport\s+pandas\b|\bfrom\s+pandas\b/.test(source)) packages.push("pandas");
@@ -324,6 +422,7 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
   const [streaming, setStreaming] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showExp, setShowExp] = useState(false);
+  const practiceFeedback = useMemo(() => getPracticeFeedback(runOutput, runError, outputs), [runOutput, runError, outputs]);
 
   useEffect(() => {
     setEditableCode(cleanedSource);
@@ -481,6 +580,7 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
           </div>
           {runOutput || runError ? (
             <div className="space-y-3">
+              {practiceFeedback && <PracticeFeedback feedback={practiceFeedback} />}
               {runOutput && <pre className="overflow-x-auto whitespace-pre-wrap rounded-3xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-7 text-emerald-950 shadow-sm">{runOutput}</pre>}
               {runError && <pre className="overflow-x-auto whitespace-pre-wrap rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-950 shadow-sm">{runError}</pre>}
             </div>
@@ -548,7 +648,8 @@ function CourseProgressSummary({ cells }: { cells: NotebookCell[] }) {
     const markdown = cells.filter((cell) => cell.cell_type === "markdown" && cell.source.trim()).length;
     const code = cells.filter((cell) => cell.cell_type === "code" && cell.source.trim()).length;
     const outputs = cells.reduce((total, cell) => total + cell.outputs.length, 0);
-    return { markdown, code, outputs };
+    const validated = cells.filter((cell) => cell.cell_type === "code" && cell.outputs.some((output) => output.type === "text")).length;
+    return { markdown, code, outputs, validated };
   }, [cells]);
 
   return (
@@ -571,8 +672,8 @@ function CourseProgressSummary({ cells }: { cells: NotebookCell[] }) {
         <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
           <CheckCircle2 size={18} />
         </div>
-        <p className="text-2xl font-black text-slate-950">{summary.outputs}</p>
-        <p className="text-sm font-semibold text-slate-500">résultats visibles</p>
+        <p className="text-2xl font-black text-slate-950">{summary.validated}</p>
+        <p className="text-sm font-semibold text-slate-500">exercices vérifiables</p>
       </div>
     </div>
   );
