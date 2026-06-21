@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, modules, progress, certificates, notebook, ai, validation
+from app.routers import auth, modules, progress, certificates, notebook, ai, validation, access
 
 app = FastAPI(title="KORYXA Formation API", version="1.0.0")
 
@@ -20,6 +20,7 @@ app.include_router(certificates.router, prefix="/certificates", tags=["Certifica
 app.include_router(notebook.router,     prefix="/modules",      tags=["Notebook"])
 app.include_router(ai.router,           prefix="/ai",           tags=["AI"])
 app.include_router(validation.router,   prefix="/validation",   tags=["Validation"])
+app.include_router(access.router)
 
 @app.get("/")
 def health_check():

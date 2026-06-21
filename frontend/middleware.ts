@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ACCESS_COOKIE_NAME, getAccessSessionPayload } from "@/lib/accessControl";
-import { findGrantById, summarizeGrant } from "@/lib/formationAccessAdmin";
+import { ACCESS_COOKIE_NAME } from "@/lib/accessControl";
+
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
 function redirectToMaintenanceAccess(request: NextRequest) {
   const accessUrl = new URL("/access", request.url);
@@ -22,21 +23,13 @@ function redirectToMaintenanceAccess(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
-  const sessionPayload = await getAccessSessionPayload(accessToken);
+  const cookie = request.headers.get("cookie") || "";
+  const response = await fetch(`${API_URL}/access/session`, {
+    headers: { cookie, Accept: "application/json" },
+    cache: "no-store",
+  }).catch(() => null);
 
-  if (!sessionPayload || sessionPayload.sub === "legacy-access") {
-    return redirectToMaintenanceAccess(request);
-  }
-
-  try {
-    const grant = await findGrantById(sessionPayload.sub);
-    const summary = summarizeGrant(grant);
-
-    if (summary.status !== "active" || grant?.auth_provider !== "koryxa_admin") {
-      return redirectToMaintenanceAccess(request);
-    }
-  } catch {
+  if (!response?.ok) {
     return redirectToMaintenanceAccess(request);
   }
 
