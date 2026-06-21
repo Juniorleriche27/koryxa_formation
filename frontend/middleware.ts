@@ -6,14 +6,11 @@ import {
   getExpectedAccessToken,
 } from "@/lib/accessControl";
 import { findGrantById, summarizeGrant } from "@/lib/formationAccessAdmin";
+import { buildKoryxaAdminAuthUrl } from "@/lib/koryxaAdminAuth";
 
 function redirectToAccess(request: NextRequest) {
-  const accessUrl = request.nextUrl.clone();
-  accessUrl.pathname = "/access";
-  accessUrl.search = "";
-  accessUrl.searchParams.set("redirect", request.nextUrl.pathname + request.nextUrl.search);
-
-  const response = NextResponse.redirect(accessUrl);
+  const requestedPath = request.nextUrl.pathname + request.nextUrl.search;
+  const response = NextResponse.redirect(buildKoryxaAdminAuthUrl(requestedPath));
   response.cookies.set({
     name: ACCESS_COOKIE_NAME,
     value: "",
@@ -59,5 +56,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/register", "/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
+  matcher: ["/access", "/login", "/register", "/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
 };
