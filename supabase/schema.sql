@@ -457,6 +457,11 @@ CREATE TABLE IF NOT EXISTS public.formation_access_codes (
     activated_at  TIMESTAMPTZ,
     access_until  TIMESTAMPTZ,
     created_by_admin_email TEXT,
+    koryxa_admin_user_id TEXT,
+    koryxa_admin_email TEXT,
+    koryxa_admin_name TEXT,
+    auth_provider TEXT NOT NULL DEFAULT 'formation_code',
+    last_admin_sync_at TIMESTAMPTZ,
     created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -467,7 +472,12 @@ ALTER TABLE public.formation_access_codes
     ADD COLUMN IF NOT EXISTS partner_name TEXT,
     ADD COLUMN IF NOT EXISTS activated_at TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS access_until TIMESTAMPTZ,
-    ADD COLUMN IF NOT EXISTS created_by_admin_email TEXT;
+    ADD COLUMN IF NOT EXISTS created_by_admin_email TEXT,
+    ADD COLUMN IF NOT EXISTS koryxa_admin_user_id TEXT,
+    ADD COLUMN IF NOT EXISTS koryxa_admin_email TEXT,
+    ADD COLUMN IF NOT EXISTS koryxa_admin_name TEXT,
+    ADD COLUMN IF NOT EXISTS auth_provider TEXT NOT NULL DEFAULT 'formation_code',
+    ADD COLUMN IF NOT EXISTS last_admin_sync_at TIMESTAMPTZ;
 
 CREATE OR REPLACE TRIGGER formation_access_codes_updated_at
     BEFORE UPDATE ON public.formation_access_codes
@@ -481,6 +491,12 @@ CREATE INDEX IF NOT EXISTS idx_formation_access_codes_status
 
 CREATE INDEX IF NOT EXISTS idx_formation_access_codes_partner
     ON public.formation_access_codes(partner_code);
+
+CREATE INDEX IF NOT EXISTS idx_formation_access_codes_koryxa_admin_user
+    ON public.formation_access_codes(koryxa_admin_user_id);
+
+CREATE INDEX IF NOT EXISTS idx_formation_access_codes_auth_provider
+    ON public.formation_access_codes(auth_provider);
 
 ALTER TABLE public.formation_access_codes ENABLE ROW LEVEL SECURITY;
 

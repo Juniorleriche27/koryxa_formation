@@ -17,6 +17,11 @@ export type FormationAccessGrant = {
   partner_name: string | null;
   activated_at: string | null;
   access_until: string | null;
+  koryxa_admin_user_id: string | null;
+  koryxa_admin_email: string | null;
+  koryxa_admin_name: string | null;
+  auth_provider: string | null;
+  last_admin_sync_at: string | null;
   created_at: string;
 };
 
@@ -39,6 +44,11 @@ const SELECT_COLUMNS = [
   "partner_name",
   "activated_at",
   "access_until",
+  "koryxa_admin_user_id",
+  "koryxa_admin_email",
+  "koryxa_admin_name",
+  "auth_provider",
+  "last_admin_sync_at",
   "created_at",
 ].join(",");
 
@@ -126,6 +136,122 @@ export async function findGrantByPartnerCode(partnerCode: string) {
 
   const rows = (await response.json()) as FormationAccessGrant[];
   return rows[0] || null;
+}
+
+
+export async function findGrantByKoryxaAdminUserId(koryxaAdminUserId: string) {
+  const config = getSupabaseConfig();
+  if (!config) throw new Error("Supabase formation non configuré.");
+
+  const response = await fetch(
+    `${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}&koryxa_admin_user_id=eq.${encodeURIComponent(koryxaAdminUserId)}&order=created_at.desc&limit=1`,
+    {
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+      },
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) throw new Error("Impossible de lire l'accès KORYXA Admin formation.");
+
+  const rows = (await response.json()) as FormationAccessGrant[];
+  return rows[0] || null;
+}
+
+export async function grantKoryxaAdminFormationAccess(params: {
+  koryxaAdminUserId: string;
+  email?: string | null;
+  name?: string | null;
+  roleKey?: string | null;
+  months?: number;
+}) {
+  const config = getSupabaseConfig();
+  if (!config) throw new Error("Supabase formation non configuré.");
+
+  const now = new Date();
+  const months = Number.isFinite(params.months) ? Math.min(Math.max(Math.floor(params.months || 2), 1), 24) : 2;
+  const accessUntil = addMonths(now, months).toISOString();
+  const certificateEligibleFrom = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000).toISOString();
+  const email = params.email?.trim().toLowerCase() || null;
+  const name = params.name?.trim() || email || params.koryxaAdminUserId;
+  const existing = await findGrantByKoryxaAdminUserId(params.koryxaAdminUserId);
+
+  if (existing) {
+    const updatePayload: Record<string, string | number | null> = {
+      student_name: name,
+      student_email: email,
+      status: existing.status === "revoked" ? "revoked" : "used",
+      used_count: Math.max(existing.used_count || 0, 1),
+      first_used_at: existing.first_used_at || now.toISOString(),
+      last_used_at: now.toISOString(),
+      activated_at: existing.activated_at || now.toISOString(),
+      access_until: existing.access_until || accessUntil,
+      expires_at: existing.expires_at || accessUntil,
+      koryxa_admin_email: email,
+      koryxa_admin_name: name,
+      auth_provider: "koryxa_admin",
+      last_admin_sync_at: now.toISOString(),
+      notes: `Accès synchronisé depuis KORYXA Admin${params.roleKey ? ` (${params.roleKey})` : ""}`,
+    };
+
+    if (!existing.activated_at) {
+      updatePayload.certificate_eligible_from = certificateEligibleFrom;
+    }
+
+    const response = await fetch(`${config.url}/rest/v1/formation_access_codes?id=eq.${existing.id}&select=${SELECT_COLUMNS}`, {
+      method: "PATCH",
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+      body: JSON.stringify(updatePayload),
+    });
+
+    if (!response.ok) throw new Error("Impossible de mettre à jour l'accès KORYXA Admin formation.");
+    const rows = (await response.json()) as FormationAccessGrant[];
+    return rows[0];
+  }
+
+  const codeHash = await accessTokenFor(`KORYXA-ADMIN:${params.koryxaAdminUserId}`);
+  const response = await fetch(`${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}`, {
+    method: "POST",
+    headers: {
+      apikey: config.serviceRoleKey,
+      Authorization: `Bearer ${config.serviceRoleKey}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify({
+      code_hash: codeHash,
+      student_name: name,
+      student_email: email,
+      label: "KORYXA Admin · Formation IA",
+      status: "used",
+      max_uses: 1,
+      used_count: 1,
+      first_used_at: now.toISOString(),
+      last_used_at: now.toISOString(),
+      expires_at: accessUntil,
+      activated_at: now.toISOString(),
+      access_until: accessUntil,
+      certificate_eligible_from: certificateEligibleFrom,
+      created_by_admin_email: email,
+      koryxa_admin_user_id: params.koryxaAdminUserId,
+      koryxa_admin_email: email,
+      koryxa_admin_name: name,
+      auth_provider: "koryxa_admin",
+      last_admin_sync_at: now.toISOString(),
+      notes: `Accès créé depuis KORYXA Admin${params.roleKey ? ` (${params.roleKey})` : ""}`,
+    }),
+  });
+
+  if (!response.ok) throw new Error("Impossible de créer l'accès KORYXA Admin formation.");
+  const rows = (await response.json()) as FormationAccessGrant[];
+  return rows[0];
 }
 
 export async function grantPartnerFormationAccess(params: {
