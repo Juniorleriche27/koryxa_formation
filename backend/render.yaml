@@ -14,7 +14,7 @@ services:
       - key: FRONTEND_URL
         sync: false
       - key: CORS_ORIGINS
-        value: https://formation.innovaplus.africa,https://koryxa-formation-jlr7.vercel.app,https://koryxa-formation.vercel.app,http://localhost:3000
+        value: https://formation.koryxa.fr,https://formation.innovaplus.africa,https://koryxa-formation-jlr7.vercel.app,https://koryxa-formation.vercel.app,http://localhost:3000
       - key: COHERE_API_KEY
         sync: false
       - key: COHERE_MODEL

@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     SUPABASE_JWT_SECRET: str
     FRONTEND_URL: str = "http://localhost:3000"
     CORS_ORIGINS: str = (
+        "https://formation.koryxa.fr,"
         "https://formation.innovaplus.africa,"
         "https://koryxa-formation-jlr7.vercel.app,"
         "https://koryxa-formation.vercel.app,"

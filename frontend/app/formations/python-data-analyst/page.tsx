@@ -24,7 +24,7 @@ import {
   Zap,
 } from "lucide-react";
 
-const PARTNER_AUTH_URL = process.env.NEXT_PUBLIC_PARTNER_AUTH_URL || "https://partenaires.innovaplus.africa/inscription";
+const ACCESS_STATUS_URL = "/access";
 
 const words = ["Data Analyst", "analyste métier", "profil data", "portfolio solide"];
 const skills = ["Python", "Pandas", "NumPy", "Matplotlib", "Data Cleaning", "EDA", "Dashboard", "Portfolio", "Certificat"];
@@ -45,9 +45,32 @@ const benefits = [
   "Un projet final qui te donne une preuve concrète de compétence.",
 ];
 
+const courseJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  name: "Formation Python Data Analyst",
+  description:
+    "Formation pratique pour apprendre Python, Pandas, le nettoyage de données, la visualisation, l’analyse exploratoire et construire un projet portfolio.",
+  provider: {
+    "@type": "EducationalOrganization",
+    name: "KORYXA Formation",
+    url: "https://formation.koryxa.fr",
+  },
+  educationalCredentialAwarded: "Certificat KORYXA Formation",
+  courseMode: "online",
+  inLanguage: "fr-FR",
+  offers: {
+    "@type": "Offer",
+    price: "29000",
+    priceCurrency: "XOF",
+    availability: "https://schema.org/LimitedAvailability",
+    url: "https://formation.koryxa.fr/formations/python-data-analyst",
+  },
+};
+
 const faqs = [
   ["Je peux commencer même si je débute ?", "Oui. Le parcours commence par l’installation et les bases avant d’aller vers Pandas, l’analyse et le projet."],
-  ["Comment l’accès est activé ?", "Après validation, ton accès est attribué à ton compte partenaire. Tu peux entrer directement dans l’espace formation."],
+  ["Comment l’accès est activé ?", "La plateforme est en maintenance pendant la migration vers KORYXA Admin. L’accès sera réouvert via l’entrée centralisée KORYXA."],
   ["La vidéo d’introduction reste disponible ?", "Oui. Le module 0 est visible sur la landing pour comprendre l’expérience avant de commencer."],
   ["Le certificat est inclus ?", "Oui, le certificat fait partie du parcours de complétion."],
 ];
@@ -173,6 +196,7 @@ ca.sort_values().plot(kind="barh")`}</code></pre>
 export default function LandingPage() {
   return (
     <main className="kx-dark-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }} />
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#07111f]/78 backdrop-blur-2xl">
         <div className="kx-container flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
@@ -188,8 +212,8 @@ export default function LandingPage() {
             <a href="#prix" className="transition hover:text-white">Prix</a>
             <a href="#faq" className="transition hover:text-white">FAQ</a>
           </div>
-          <Link href={PARTNER_AUTH_URL} className="inline-flex h-10 items-center justify-center rounded-2xl bg-white px-4 text-sm font-black text-slate-950 shadow-lg shadow-white/10 transition hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-700">
-            Commencer
+          <Link href={ACCESS_STATUS_URL} className="inline-flex h-10 items-center justify-center rounded-2xl bg-white px-4 text-sm font-black text-slate-950 shadow-lg shadow-white/10 transition hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-700">
+            Accès en maintenance
           </Link>
         </div>
       </nav>
@@ -212,8 +236,8 @@ export default function LandingPage() {
               Apprends Python, Pandas et l’analyse de données avec notebooks, vidéo d’introduction, quiz, assistant IA, projet portfolio et certificat.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link href={PARTNER_AUTH_URL} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-7 py-4 text-base font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-blue-500">
-                Commencer le parcours <ArrowRight size={19} />
+              <Link href={ACCESS_STATUS_URL} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-7 py-4 text-base font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-blue-500">
+                Voir l’état de l’accès <ArrowRight size={19} />
               </Link>
               <a href="#video" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.07] px-7 py-4 text-base font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/12">
                 <PlayCircle size={19} /> Voir la vidéo
@@ -322,9 +346,9 @@ export default function LandingPage() {
               <motion.div animate={{ boxShadow: ["0 20px 70px rgba(37,99,235,.18)", "0 28px 90px rgba(37,99,235,.34)", "0 20px 70px rgba(37,99,235,.18)"] }} transition={{ duration: 3, repeat: Infinity }} className="rounded-3xl bg-white p-6 text-slate-950 shadow-soft">
                 <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Prix actuel</p>
                 <p className="mt-4 text-5xl font-black tracking-tight">29 000<span className="ml-1 text-xl text-slate-500">FCFA</span></p>
-                <p className="mt-2 text-sm font-semibold text-slate-500">Accès attribué après validation.</p>
-                <Link href={PARTNER_AUTH_URL} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-4 text-sm font-black text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:bg-blue-500">
-                  Activer mon accès <ArrowRight size={17} />
+                <p className="mt-2 text-sm font-semibold text-slate-500">Accès réouvert après migration KORYXA Admin.</p>
+                <Link href={ACCESS_STATUS_URL} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-4 text-sm font-black text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:bg-blue-500">
+                  Voir l’état de l’accès <ArrowRight size={17} />
                 </Link>
               </motion.div>
             </div>
@@ -354,8 +378,8 @@ export default function LandingPage() {
           <Zap className="mx-auto mb-5 h-9 w-9 text-white" />
           <h2 className="text-3xl font-black tracking-tight text-white sm:text-5xl">On apprend mieux quand l’expérience donne envie.</h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-blue-50">C’est le niveau qu’on vise pour toute la plateforme KORYXA Formation.</p>
-          <Link href={PARTNER_AUTH_URL} className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-7 py-4 text-base font-black text-blue-700 shadow-lg shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-50">
-            Commencer maintenant <ArrowRight size={18} />
+          <Link href={ACCESS_STATUS_URL} className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-7 py-4 text-base font-black text-blue-700 shadow-lg shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-50">
+            Voir l’état de l’accès <ArrowRight size={18} />
           </Link>
         </div>
       </section>
@@ -363,7 +387,7 @@ export default function LandingPage() {
       <footer className="border-t border-white/10 px-4 py-8 text-sm text-slate-400 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row">
           <p className="font-black text-white">KORYXA Formation</p>
-          <p>© {new Date().getFullYear()} KORYXA Tech Store — Python Data Academy.</p>
+          <p>© {new Date().getFullYear()} KORYXA — Python Data Academy.</p>
         </div>
       </footer>
     </main>
