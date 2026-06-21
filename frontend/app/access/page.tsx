@@ -1,13 +1,15 @@
-import { redirect } from "next/navigation";
-import { buildKoryxaAdminAuthUrl } from "@/lib/koryxaAdminAuth";
+import type { Metadata } from "next";
+import { MaintenanceAccessPage } from "@/components/marketing/MaintenanceAccessPage";
 
-type AccessPageProps = {
-  searchParams?: {
-    redirect?: string;
-  };
+export const metadata: Metadata = {
+  title: "Accès en maintenance — KORYXA Formation",
+  description: "L’accès apprenant KORYXA Formation est temporairement fermé pendant la migration vers KORYXA Admin.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
-export default function AccessPage({ searchParams }: AccessPageProps) {
-  const requestedRedirect = searchParams?.redirect || "/dashboard";
-  redirect(buildKoryxaAdminAuthUrl(requestedRedirect));
+export default function AccessPage() {
+  return <MaintenanceAccessPage source="access" />;
 }

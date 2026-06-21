@@ -6,11 +6,12 @@ import {
   getExpectedAccessToken,
 } from "@/lib/accessControl";
 import { findGrantById, summarizeGrant } from "@/lib/formationAccessAdmin";
-import { buildKoryxaAdminAuthUrl } from "@/lib/koryxaAdminAuth";
 
-function redirectToAccess(request: NextRequest) {
-  const requestedPath = request.nextUrl.pathname + request.nextUrl.search;
-  const response = NextResponse.redirect(buildKoryxaAdminAuthUrl(requestedPath));
+function redirectToMaintenanceAccess(request: NextRequest) {
+  const accessUrl = new URL("/access", request.url);
+  accessUrl.searchParams.set("from", request.nextUrl.pathname + request.nextUrl.search);
+
+  const response = NextResponse.redirect(accessUrl);
   response.cookies.set({
     name: ACCESS_COOKIE_NAME,
     value: "",
@@ -33,7 +34,7 @@ export async function middleware(request: NextRequest) {
     const hasLegacyAccess = Boolean(expectedAccessToken && accessToken === expectedAccessToken);
 
     if (!hasLegacyAccess) {
-      return redirectToAccess(request);
+      return redirectToMaintenanceAccess(request);
     }
 
     return NextResponse.next();
@@ -45,10 +46,10 @@ export async function middleware(request: NextRequest) {
       const summary = summarizeGrant(grant);
 
       if (summary.status !== "active") {
-        return redirectToAccess(request);
+        return redirectToMaintenanceAccess(request);
       }
     } catch {
-      return redirectToAccess(request);
+      return redirectToMaintenanceAccess(request);
     }
   }
 
@@ -56,5 +57,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/access", "/login", "/register", "/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
+  matcher: ["/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
 };

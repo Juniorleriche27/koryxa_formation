@@ -1,6 +1,15 @@
-import { redirect } from "next/navigation";
-import { buildKoryxaAdminAuthUrl } from "@/lib/koryxaAdminAuth";
+import type { Metadata } from "next";
+import { MaintenanceAccessPage } from "@/components/marketing/MaintenanceAccessPage";
 
-export default function LegacyRegisterRedirect() {
-  redirect(buildKoryxaAdminAuthUrl("/dashboard"));
+export const metadata: Metadata = {
+  title: "Inscription en maintenance — KORYXA Formation",
+  description: "L’inscription apprenant KORYXA Formation est temporairement fermée pendant la migration vers KORYXA Admin.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
+export default function RegisterPage() {
+  return <MaintenanceAccessPage source="register" />;
 }
