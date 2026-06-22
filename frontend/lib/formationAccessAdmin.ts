@@ -58,6 +58,7 @@ export function getInternalSecret() {
   return (
     process.env.KORYXA_FORMATION_PARTNER_BRIDGE_SECRET ||
     process.env.KORYXA_FORMATION_INTERNAL_SECRET ||
+    process.env.KORYXA_ADMIN_FORMATION_BRIDGE_SECRET ||
     ""
   ).trim();
 }
