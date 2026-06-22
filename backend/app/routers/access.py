@@ -254,7 +254,7 @@ def get_session_grant(request: Request) -> dict[str, Any]:
     if not session or session.get("sub") == "legacy-access":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session formation requise")
     grant = find_grant_by_id(str(session["sub"]))
-    if not grant_is_active(grant) or grant.get("auth_provider") != "koryxa_admin":
+    if not grant_is_active(grant):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session formation invalide")
     return grant
 

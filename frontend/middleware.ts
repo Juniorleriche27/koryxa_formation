@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ACCESS_COOKIE_NAME } from "@/lib/accessControl";
+import {
+  ACCESS_COOKIE_NAME,
+  getAccessSessionPayload,
+  getExpectedAccessToken,
+} from "@/lib/accessControl";
+import { findGrantById, summarizeGrant } from "@/lib/formationAccessAdmin";
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
-
-function redirectToMaintenanceAccess(request: NextRequest) {
-  const accessUrl = new URL("/access", request.url);
-  accessUrl.searchParams.set("from", request.nextUrl.pathname + request.nextUrl.search);
+function redirectToAccess(request: NextRequest) {
+  const accessUrl = request.nextUrl.clone();
+  accessUrl.pathname = "/access";
+  accessUrl.search = "";
+  accessUrl.searchParams.set("redirect", request.nextUrl.pathname + request.nextUrl.search);
 
   const response = NextResponse.redirect(accessUrl);
   response.cookies.set({
@@ -23,19 +28,36 @@ function redirectToMaintenanceAccess(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  const cookie = request.headers.get("cookie") || "";
-  const response = await fetch(`${API_URL}/access/session`, {
-    headers: { cookie, Accept: "application/json" },
-    cache: "no-store",
-  }).catch(() => null);
+  const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
+  const sessionPayload = await getAccessSessionPayload(accessToken);
 
-  if (!response?.ok) {
-    return redirectToMaintenanceAccess(request);
+  if (!sessionPayload) {
+    const expectedAccessToken = await getExpectedAccessToken();
+    const hasLegacyAccess = Boolean(expectedAccessToken && accessToken === expectedAccessToken);
+
+    if (!hasLegacyAccess) {
+      return redirectToAccess(request);
+    }
+
+    return NextResponse.next();
+  }
+
+  if (sessionPayload.sub !== "legacy-access") {
+    try {
+      const grant = await findGrantById(sessionPayload.sub);
+      const summary = summarizeGrant(grant);
+
+      if (summary.status !== "active") {
+        return redirectToAccess(request);
+      }
+    } catch {
+      return redirectToAccess(request);
+    }
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
+  matcher: ["/login", "/register", "/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
 };
