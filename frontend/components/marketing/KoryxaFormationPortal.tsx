@@ -21,7 +21,6 @@ import {
   LineChart,
   Menu,
   MousePointerClick,
-  Play,
   ShieldCheck,
   Sparkles,
   Target,
@@ -36,104 +35,123 @@ const HERO_VIDEO_URL = "https://videos.pexels.com/video-files/7693408/7693408-hd
 
 const navItems = [
   { label: "Formations", href: "#formations" },
-  { label: "Projet", href: "#projet" },
   { label: "Méthode", href: "#methode" },
-  { label: "Plateforme", href: "#plateforme" },
+  { label: "Expérience", href: "#experience" },
   { label: "FAQ", href: "#faq" },
 ];
 
-const trustItems = [
-  { value: "1", label: "formation disponible" },
-  { value: "29k", label: "FCFA pour démarrer" },
-  { value: "100%", label: "orienté projet" },
-  { value: "4", label: "étapes simples" },
+const formations = [
+  {
+    title: "Python Data Analyst",
+    status: "Disponible",
+    href: "/formations/python-data-analyst",
+    cta: "Voir la page dédiée",
+    description: "Apprendre Python, organiser des données, créer des graphiques et construire un projet portfolio.",
+    icon: BarChart3,
+    active: true,
+    tags: ["Python", "Data", "Portfolio"],
+  },
+  {
+    title: "Chatbot IA avec documents",
+    status: "Bientôt",
+    href: "#faq",
+    cta: "Voir ce qui arrive",
+    description: "Comprendre comment relier des documents, une recherche intelligente et une interface chatbot.",
+    icon: BrainCircuit,
+    active: false,
+    tags: ["IA", "Documents", "Chatbot"],
+  },
+  {
+    title: "Assistant IA pour métier",
+    status: "Bientôt",
+    href: "#faq",
+    cta: "En préparation",
+    description: "Utiliser l’IA pour écrire, synthétiser, vendre, organiser et produire plus vite dans un contexte réel.",
+    icon: Bot,
+    active: false,
+    tags: ["IA métier", "Productivité", "Cas pratiques"],
+  },
+  {
+    title: "Automatisation IA & no-code",
+    status: "Bientôt",
+    href: "#faq",
+    cta: "En préparation",
+    description: "Créer des workflows simples pour réduire les tâches répétitives et structurer des opérations.",
+    icon: Workflow,
+    active: false,
+    tags: ["Workflows", "No-code", "Opérations"],
+  },
 ];
 
 const proofItems = [
-  { label: "Modules guidés", icon: BookOpenCheck },
-  { label: "Projet portfolio", icon: Layers3 },
-  { label: "Certificat", icon: Award },
-  { label: "Accès apprenant", icon: ShieldCheck },
-];
-
-const buildItems = [
-  {
-    title: "Notebook Python",
-    description: "Manipuler des données avec des commandes claires et réutilisables.",
-    icon: Code2,
-  },
-  {
-    title: "Graphiques propres",
-    description: "Transformer des chiffres en visuels compréhensibles.",
-    icon: LineChart,
-  },
-  {
-    title: "Analyse métier",
-    description: "Expliquer ce que les données disent vraiment.",
-    icon: Target,
-  },
-  {
-    title: "Projet présentable",
-    description: "Finaliser une preuve visible de compétence.",
-    icon: Award,
-  },
+  { label: "Formations orientées projets", icon: Layers3 },
+  { label: "Pages dédiées par parcours", icon: FileText },
+  { label: "Progression guidée", icon: BookOpenCheck },
+  { label: "Preuves visibles", icon: Award },
 ];
 
 const methodSteps = [
   {
+    title: "Choisir",
+    description: "Sélectionner le parcours qui correspond à votre objectif : data, IA ou automatisation.",
+    icon: Target,
+  },
+  {
     title: "Apprendre",
-    description: "Comprendre les bases sans se perdre dans la théorie.",
+    description: "Avancer avec des modules clairs, des exemples et des ressources pratiques.",
     icon: GraduationCap,
   },
   {
-    title: "Pratiquer",
-    description: "Avancer avec des exercices, fichiers et exemples concrets.",
-    icon: MousePointerClick,
-  },
-  {
     title: "Construire",
-    description: "Assembler un vrai projet, étape par étape.",
+    description: "Produire un livrable concret lié au parcours choisi.",
     icon: Workflow,
   },
   {
     title: "Montrer",
-    description: "Présenter un résultat clair, utile et visible.",
+    description: "Présenter un résultat visible : projet, analyse, interface ou automatisation.",
     icon: Sparkles,
   },
 ];
 
+const experienceItems = [
+  { title: "Une entrée générale", description: "La page actuelle présente l’ensemble des parcours KORYXA Formation.", icon: Database },
+  { title: "Une page par formation", description: "Chaque formation garde sa landing dédiée avec son programme, son prix et son accès.", icon: FileText },
+  { title: "Un apprentissage guidé", description: "Les parcours sont pensés pour progresser étape par étape jusqu’à un livrable.", icon: BookOpenCheck },
+  { title: "Un résultat concret", description: "L’objectif est de repartir avec une compétence appliquée et une preuve visible.", icon: ShieldCheck },
+];
+
 const audiences = [
-  { title: "Étudiants", description: "Construire un projet concret pour renforcer un dossier ou un portfolio.", icon: GraduationCap },
-  { title: "Professionnels", description: "Comprendre la data et l’IA appliquée pour travailler plus efficacement.", icon: TrendingUp },
-  { title: "Entrepreneurs", description: "Mieux lire ses chiffres, tester des idées et automatiser certaines tâches.", icon: Target },
-  { title: "Débutants motivés", description: "Apprendre avec une progression claire, sans partir dans tous les sens.", icon: Users },
+  { title: "Étudiants", description: "Construire des projets pour renforcer un dossier ou un portfolio.", icon: GraduationCap },
+  { title: "Professionnels", description: "Apprendre la data, l’IA ou l’automatisation pour travailler plus efficacement.", icon: TrendingUp },
+  { title: "Entrepreneurs", description: "Mieux lire ses données, créer des assistants et automatiser certaines tâches.", icon: Target },
+  { title: "Débutants motivés", description: "Démarrer avec une progression claire et des exemples concrets.", icon: Users },
 ];
 
 const faqs = [
   {
+    question: "Cette page concerne-t-elle une seule formation ?",
+    answer:
+      "Non. Cette page est le portail général KORYXA Formation. Elle présente l’ensemble des parcours. Chaque formation possède ensuite sa propre page dédiée.",
+  },
+  {
     question: "Quelle formation est disponible aujourd’hui ?",
     answer:
-      "La formation Analyse de données avec Python est disponible. Elle vous aide à apprendre Python, organiser des données, créer des graphiques et construire un projet portfolio.",
+      "La formation Python Data Analyst est actuellement disponible. Les autres parcours sont présentés comme bientôt disponibles ou en préparation.",
+  },
+  {
+    question: "Où voir le détail d’une formation ?",
+    answer:
+      "Depuis la section Formations, chaque parcours renvoie vers sa page dédiée lorsque celle-ci est disponible. La page générale sert d’entrée principale.",
+  },
+  {
+    question: "Les parcours IA sont-ils déjà ouverts ?",
+    answer:
+      "Pas encore. Le parcours autour du chatbot IA avec documents est annoncé comme bientôt disponible, sans bouton de paiement sur cette page générale.",
   },
   {
     question: "Ai-je besoin d’être développeur ?",
     answer:
-      "Non. Le parcours est progressif. Vous devez surtout être motivé, régulier et prêt à pratiquer avec des exemples concrets.",
-  },
-  {
-    question: "Qu’est-ce que je vais construire ?",
-    answer:
-      "Vous construisez un projet d’analyse de données avec notebooks, graphiques, interprétation et résultat présentable.",
-  },
-  {
-    question: "Les prochains parcours IA sont-ils déjà ouverts ?",
-    answer:
-      "Pas encore. Le prochain parcours autour d’un chatbot IA avec documents est annoncé comme bientôt disponible, sans paiement ni inscription ouverte pour le moment.",
-  },
-  {
-    question: "Y a-t-il un certificat ?",
-    answer:
-      "Oui, un certificat de complétion est prévu pour le parcours Python Data Analyst après les étapes nécessaires.",
+      "Cela dépend du parcours. Les formations KORYXA sont pensées pour rester pratiques, progressives et centrées sur la construction d’un résultat concret.",
   },
 ];
 
@@ -163,7 +181,7 @@ function Header() {
           </span>
           <span className="leading-tight">
             <span className="block text-sm font-black tracking-tight text-slate-950 sm:text-base">KORYXA Formation</span>
-            <span className="block text-[0.7rem] font-semibold text-slate-500 sm:text-xs">Apprendre en construisant</span>
+            <span className="block text-[0.7rem] font-semibold text-slate-500 sm:text-xs">Portail des parcours</span>
           </span>
         </Link>
 
@@ -175,12 +193,12 @@ function Header() {
           ))}
         </nav>
 
-        <Link
-          href="/formations/python-data-analyst"
+        <a
+          href="#formations"
           className="hidden h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-black text-white shadow-lg shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-emerald-600 lg:inline-flex"
         >
-          Voir la formation
-        </Link>
+          Voir les formations
+        </a>
 
         <button
           type="button"
@@ -213,13 +231,13 @@ function Header() {
                   {item.label}
                 </a>
               ))}
-              <Link
-                href="/formations/python-data-analyst"
+              <a
+                href="#formations"
                 onClick={() => setOpen(false)}
                 className="mt-2 inline-flex min-h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-black text-white"
               >
-                Voir la formation disponible
-              </Link>
+                Voir toutes les formations
+              </a>
             </nav>
           </motion.div>
         )}
@@ -242,7 +260,7 @@ function Hero() {
           playsInline
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_22%,rgba(16,185,129,.55),transparent_24rem),linear-gradient(90deg,rgba(3,7,18,.92),rgba(3,7,18,.54),rgba(3,7,18,.78))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_22%,rgba(16,185,129,.55),transparent_24rem),linear-gradient(90deg,rgba(3,7,18,.92),rgba(3,7,18,.52),rgba(3,7,18,.78))]" />
         <motion.div
           aria-hidden="true"
           initial={{ opacity: 0.25, scale: 1 }}
@@ -255,26 +273,26 @@ function Hero() {
       <div className="relative mx-auto grid min-h-[calc(92vh-7rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.78fr]">
         <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }} className="max-w-4xl">
           <SectionLabel dark>
-            <Sparkles size={14} /> Formations pratiques en data, IA et automatisation
+            <Sparkles size={14} /> Portail de formations pratiques
           </SectionLabel>
           <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[0.88] tracking-[-0.075em] sm:text-7xl lg:text-[6.7rem]">
-            Apprenez en construisant des projets concrets.
+            Apprenez la data, l’IA et l’automatisation par projets.
           </h1>
           <p className="mt-7 max-w-2xl text-base font-medium leading-8 text-slate-100 sm:text-xl sm:leading-9">
-            KORYXA Formation vous guide pas à pas pour apprendre Python, la data et l’IA appliquée avec des exercices, des projets et une preuve visible de compétence.
+            KORYXA Formation rassemble plusieurs parcours pour apprendre des compétences utiles, choisir une formation dédiée et construire des résultats concrets.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/formations/python-data-analyst"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-emerald-400 px-7 py-4 text-sm font-black text-slate-950 shadow-2xl shadow-emerald-950/25 transition hover:-translate-y-1 hover:bg-lime-300"
-            >
-              Voir la formation disponible <ArrowRight size={18} />
-            </Link>
             <a
               href="#formations"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-emerald-400 px-7 py-4 text-sm font-black text-slate-950 shadow-2xl shadow-emerald-950/25 transition hover:-translate-y-1 hover:bg-lime-300"
+            >
+              Voir les formations <ArrowRight size={18} />
+            </a>
+            <a
+              href="#methode"
               className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/18"
             >
-              Explorer les parcours <Play size={17} />
+              Comprendre la méthode
             </a>
           </div>
         </motion.div>
@@ -291,44 +309,23 @@ function Hero() {
             className="rounded-[2rem] border border-white/15 bg-white/12 p-5 shadow-2xl shadow-black/35 backdrop-blur-2xl"
           >
             <div className="rounded-[1.5rem] bg-white p-5 text-slate-950">
-              <div className="flex items-center justify-between gap-5">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Disponible maintenant</p>
-                  <h2 className="mt-2 text-2xl font-black tracking-tight">Python Data Analyst</h2>
-                </div>
-                <BarChart3 className="h-10 w-10 text-emerald-600" />
-              </div>
-              <div className="mt-6 h-3 rounded-full bg-slate-100">
-                <motion.div
-                  initial={{ width: "30%" }}
-                  animate={{ width: "78%" }}
-                  transition={{ duration: 1.4, delay: 0.75 }}
-                  className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-lime-400"
-                />
-              </div>
-              <div className="mt-5 grid grid-cols-3 gap-3">
-                {trustItems.slice(1).map((item) => (
-                  <div key={item.label} className="rounded-2xl bg-slate-50 p-3 text-center ring-1 ring-slate-200">
-                    <p className="text-xl font-black text-slate-950">{item.value}</p>
-                    <p className="mt-1 text-[0.65rem] font-bold uppercase tracking-wide text-slate-500">{item.label}</p>
-                  </div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Parcours KORYXA</p>
+              <h2 className="mt-2 text-2xl font-black tracking-tight">Un portail. Plusieurs formations.</h2>
+              <div className="mt-6 grid gap-3">
+                {formations.map((formation, index) => (
+                  <motion.div
+                    key={formation.title}
+                    initial={{ opacity: 0, x: 18 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 + index * 0.08 }}
+                    className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-200"
+                  >
+                    <span className="text-sm font-black text-slate-800">{formation.title}</span>
+                    <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black ${formation.active ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"}`}>
+                      {formation.status}
+                    </span>
+                  </motion.div>
                 ))}
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-10 -left-14 rounded-3xl border border-white/15 bg-slate-950/70 p-4 shadow-2xl shadow-black/30 backdrop-blur-xl"
-          >
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lime-300 text-slate-950">
-                <Award size={20} />
-              </span>
-              <div>
-                <p className="text-sm font-black">Projet portfolio</p>
-                <p className="text-xs font-semibold text-slate-300">une preuve visible</p>
               </div>
             </div>
           </motion.div>
@@ -338,32 +335,109 @@ function Hero() {
   );
 }
 
-function TrustStrip() {
+function ProofStrip() {
   return (
     <section className="relative z-10 -mt-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-6xl gap-3 rounded-[2rem] border border-white/70 bg-white/90 p-3 shadow-2xl shadow-slate-950/12 backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
-        {trustItems.map((item, index) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.06 }}
-            className="rounded-[1.35rem] bg-slate-50 px-5 py-4 text-center ring-1 ring-slate-200"
-          >
-            <p className="text-3xl font-black tracking-tight text-emerald-700">{item.value}</p>
-            <p className="mt-1 text-xs font-black uppercase tracking-[0.14em] text-slate-500">{item.label}</p>
-          </motion.div>
-        ))}
+        {proofItems.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.06 }}
+              className="flex items-center gap-3 rounded-[1.35rem] bg-slate-50 px-5 py-4 ring-1 ring-slate-200"
+            >
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                <Icon size={19} />
+              </span>
+              <p className="text-sm font-black leading-5 text-slate-800">{item.label}</p>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-function FormationSection() {
+function FormationsSection() {
   return (
     <section id="formations" className="scroll-mt-24 bg-[#f7f8f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+          <div>
+            <SectionLabel>
+              <Zap size={14} /> Toutes les formations
+            </SectionLabel>
+            <h2 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] text-slate-950 sm:text-6xl">
+              Choisissez le parcours qui correspond à votre objectif.
+            </h2>
+          </div>
+          <p className="max-w-2xl text-lg font-medium leading-9 text-slate-600 lg:justify-self-end">
+            Cette page est le point d’entrée général. Chaque formation garde sa propre page dédiée avec son programme, ses détails et son parcours d’accès.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-5 lg:grid-cols-4">
+          {formations.map((formation, index) => {
+            const Icon = formation.icon;
+            const CardContent = (
+              <motion.article
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: index * 0.06 }}
+                className={`group flex h-full flex-col rounded-[2rem] border p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-slate-950/12 ${
+                  formation.active
+                    ? "border-emerald-200 bg-white"
+                    : "border-slate-200 bg-white/80"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <span className={`flex h-13 w-13 items-center justify-center rounded-2xl ${formation.active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                    <Icon size={24} />
+                  </span>
+                  <span className={`rounded-full px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.12em] ${formation.active ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"}`}>
+                    {formation.status}
+                  </span>
+                </div>
+                <h3 className="mt-8 text-2xl font-black tracking-tight text-slate-950">{formation.title}</h3>
+                <p className="mt-4 flex-1 text-sm leading-7 text-slate-600">{formation.description}</p>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {formation.tags.map((tag) => (
+                    <span key={tag} className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-black text-slate-600">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <span className={`mt-8 inline-flex items-center gap-2 text-sm font-black ${formation.active ? "text-emerald-700" : "text-slate-500"}`}>
+                  {formation.cta} <ArrowRight size={16} />
+                </span>
+              </motion.article>
+            );
+
+            return formation.active ? (
+              <Link key={formation.title} href={formation.href} className="block h-full">
+                {CardContent}
+              </Link>
+            ) : (
+              <a key={formation.title} href={formation.href} className="block h-full">
+                {CardContent}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function GeneralVisionSection() {
+  return (
+    <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <motion.div
           initial={{ opacity: 0, x: -28 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -371,108 +445,40 @@ function FormationSection() {
           transition={{ duration: 0.65 }}
           className="relative"
         >
-          <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-emerald-300/35 to-lime-200/25 blur-3xl" />
+          <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-emerald-300/30 to-cyan-200/20 blur-3xl" />
           <div className="relative overflow-hidden rounded-[2rem] border border-white bg-white p-3 shadow-2xl shadow-slate-950/12">
             <Image
               src="/assets/landing/formations/python-data-workspace.jpg"
-              alt="Espace de travail avec ordinateur pour apprendre l’analyse de données avec Python"
+              alt="Ordinateur portable utilisé pour apprendre avec des parcours pratiques"
               width={1400}
               height={950}
               className="h-[28rem] w-full rounded-[1.5rem] object-cover"
-              priority={false}
             />
             <div className="absolute bottom-8 left-8 right-8 rounded-[1.5rem] border border-white/70 bg-white/88 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-xl">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Ce que vous construisez</p>
-              <p className="mt-2 text-xl font-black tracking-tight text-slate-950">un projet data clair, présentable et utile.</p>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Principe commun</p>
+              <p className="mt-2 text-xl font-black tracking-tight text-slate-950">chaque parcours mène vers un livrable concret.</p>
             </div>
           </div>
         </motion.div>
 
         <div>
           <SectionLabel>
-            <Zap size={14} /> Formation disponible
+            <Target size={14} /> Objectif commun
           </SectionLabel>
           <h2 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] text-slate-950 sm:text-6xl">
-            Analyse de données avec Python.
+            Plusieurs formations, une même logique : apprendre utile.
           </h2>
           <p className="mt-6 max-w-2xl text-lg font-medium leading-9 text-slate-600">
-            Apprenez à nettoyer, explorer et visualiser des données avec Python, puis construisez un projet portfolio que vous pouvez présenter.
+            Data, IA ou automatisation : l’objectif reste le même. Comprendre, pratiquer et construire quelque chose que vous pouvez utiliser, présenter ou améliorer.
           </p>
-
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {proofItems.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.06 }}
-                  className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-                >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
-                    <Icon size={20} />
-                  </span>
-                  <span className="text-sm font-black text-slate-800">{item.label}</span>
-                </motion.div>
-              );
-            })}
+            {["Data", "IA appliquée", "Automatisation", "Projets visibles"].map((item) => (
+              <div key={item} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-black text-slate-800">
+                <CheckCircle2 className="h-5 w-5 text-emerald-700" />
+                {item}
+              </div>
+            ))}
           </div>
-
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link
-              href="/formations/python-data-analyst"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-slate-950 px-7 py-4 text-sm font-black text-white shadow-xl shadow-slate-950/15 transition hover:-translate-y-1 hover:bg-emerald-600"
-            >
-              Voir le parcours <ArrowRight size={18} />
-            </Link>
-            <span className="inline-flex min-h-14 items-center justify-center rounded-full border border-emerald-200 bg-white px-6 py-4 text-sm font-black text-emerald-700">
-              29 000 FCFA
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function BuildSection() {
-  return (
-    <section id="projet" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="mx-auto max-w-7xl">
-        <div className="mx-auto max-w-3xl text-center">
-          <SectionLabel>
-            <Target size={14} /> Projet concret
-          </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-slate-950 sm:text-6xl">
-            Un projet visible vaut mieux qu’une promesse de compétence.
-          </h2>
-          <p className="mt-5 text-lg leading-9 text-slate-600">
-            Vous ne repartez pas seulement avec des notions. Vous repartez avec quelque chose à montrer, expliquer et améliorer.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {buildItems.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <motion.article
-                key={item.title}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ delay: index * 0.06 }}
-                className="group rounded-[2rem] border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-2 hover:bg-slate-950 hover:text-white hover:shadow-2xl hover:shadow-slate-950/15"
-              >
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm group-hover:bg-emerald-400 group-hover:text-slate-950">
-                  <Icon size={22} />
-                </span>
-                <h3 className="mt-8 text-xl font-black tracking-tight text-slate-950 group-hover:text-white">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600 group-hover:text-slate-300">{item.description}</p>
-              </motion.article>
-            );
-          })}
         </div>
       </div>
     </section>
@@ -486,13 +492,13 @@ function MethodSection() {
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
             <SectionLabel dark>
-              <Workflow size={14} /> Méthode KORYXA
+              <Workflow size={14} /> Méthode générale
             </SectionLabel>
             <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] sm:text-6xl">
-              Apprendre. Pratiquer. Construire. Montrer.
+              Choisir. Apprendre. Construire. Montrer.
             </h2>
             <p className="mt-6 text-lg leading-9 text-slate-300">
-              Le parcours est pensé pour avancer sans confusion : une notion, une pratique, un livrable, puis une preuve claire.
+              La méthode s’applique à tous les parcours KORYXA Formation. Le sujet change, mais la logique reste concrète.
             </p>
           </div>
 
@@ -533,65 +539,9 @@ function MethodSection() {
   );
 }
 
-function FutureAISection() {
-  const nodes = ["Documents", "Recherche", "Réponse", "Chatbot"];
+function ExperienceSection() {
   return (
-    <section className="relative overflow-hidden bg-[#f7f8f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-950 to-transparent opacity-5" />
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
-        <div>
-          <SectionLabel>
-            <BrainCircuit size={14} /> Bientôt
-          </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-slate-950 sm:text-6xl">
-            Construisez un chatbot IA avec vos propres documents.
-          </h2>
-          <p className="mt-6 max-w-2xl text-lg leading-9 text-slate-600">
-            Un futur parcours pratique pour comprendre comment relier des documents, une recherche intelligente et une interface de conversation.
-          </p>
-          <a
-            href="#faq"
-            className="mt-8 inline-flex min-h-14 items-center justify-center rounded-full border border-slate-200 bg-white px-7 py-4 text-sm font-black text-slate-900 shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:text-emerald-700"
-          >
-            Voir ce qui arrive bientôt
-          </a>
-        </div>
-
-        <div className="relative rounded-[2.2rem] border border-slate-200 bg-slate-950 p-5 text-white shadow-2xl shadow-slate-950/20">
-          <div className="absolute inset-0 rounded-[2.2rem] bg-[radial-gradient(circle_at_20%_15%,rgba(16,185,129,.35),transparent_18rem),radial-gradient(circle_at_90%_20%,rgba(0,199,216,.24),transparent_16rem)]" />
-          <div className="relative grid gap-4">
-            {nodes.map((node, index) => (
-              <motion.div
-                key={node}
-                initial={{ opacity: 0, x: 28 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.12 }}
-                className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl"
-              >
-                <motion.span
-                  animate={{ boxShadow: ["0 0 0 rgba(163,230,53,0)", "0 0 30px rgba(163,230,53,.35)", "0 0 0 rgba(163,230,53,0)"] }}
-                  transition={{ duration: 2.2, repeat: Infinity, delay: index * 0.25 }}
-                  className="flex h-12 w-12 items-center justify-center rounded-2xl bg-lime-300 text-sm font-black text-slate-950"
-                >
-                  {index + 1}
-                </motion.span>
-                <div>
-                  <p className="text-lg font-black">{node}</p>
-                  <p className="text-sm font-semibold text-slate-300">étape {index + 1} du futur projet IA</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PlatformSection() {
-  return (
-    <section id="plateforme" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+    <section id="experience" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div className="relative order-2 lg:order-1">
           <Image
@@ -606,28 +556,32 @@ function PlatformSection() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="absolute bottom-6 left-6 right-6 rounded-[1.7rem] border border-white/70 bg-white/90 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-xl sm:left-auto sm:w-80"
           >
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Plateforme</p>
-            <p className="mt-2 text-xl font-black tracking-tight text-slate-950">Modules, progression, ressources et projet final.</p>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Expérience apprenant</p>
+            <p className="mt-2 text-xl font-black tracking-tight text-slate-950">un parcours dédié après le choix de la formation.</p>
           </motion.div>
         </div>
 
         <div className="order-1 lg:order-2">
           <SectionLabel>
-            <Database size={14} /> Expérience apprenant
+            <Database size={14} /> Expérience générale
           </SectionLabel>
           <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-slate-950 sm:text-6xl">
-            Une formation claire du premier module au projet final.
+            Le portail présente. Les pages dédiées détaillent.
           </h2>
           <p className="mt-6 text-lg leading-9 text-slate-600">
-            L’objectif est simple : savoir quoi apprendre, quoi pratiquer et quoi construire à chaque étape.
+            Cette page donne une vue d’ensemble. Ensuite, chaque formation possède sa propre page pour expliquer le programme, les bénéfices et les modalités.
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {["Modules guidés", "Ressources pratiques", "Suivi de progression", "Projet final"].map((item) => (
-              <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-black text-slate-800">
-                <CheckCircle2 className="mb-3 h-5 w-5 text-emerald-700" />
-                {item}
-              </div>
-            ))}
+            {experienceItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <Icon className="mb-3 h-5 w-5 text-emerald-700" />
+                  <h3 className="text-sm font-black text-slate-900">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -680,7 +634,7 @@ function FAQSection() {
             <FileText size={14} /> FAQ
           </SectionLabel>
           <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-slate-950 sm:text-6xl">
-            Avant de commencer.
+            Avant de choisir.
           </h2>
         </div>
         <div className="space-y-3">
@@ -713,23 +667,23 @@ function FinalCTA() {
       <div className="relative mx-auto max-w-5xl text-center">
         <Sparkles className="mx-auto h-10 w-10 text-lime-300" />
         <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] sm:text-6xl">
-          Commencez par construire votre premier projet data.
+          Trouvez le parcours qui vous fait avancer.
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-9 text-slate-200">
-          Découvrez la formation Python Data Analyst et avancez vers un résultat concret, visible et présentable.
+          Data, IA ou automatisation : commencez par choisir la formation adaptée à votre objectif.
         </p>
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link
-            href="/formations/python-data-analyst"
-            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-lime-300 px-7 py-4 text-sm font-black text-slate-950 shadow-2xl shadow-lime-950/25 transition hover:-translate-y-1 hover:bg-emerald-300"
-          >
-            Voir Python Data Analyst <ArrowRight size={18} />
-          </Link>
           <a
             href="#formations"
+            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-lime-300 px-7 py-4 text-sm font-black text-slate-950 shadow-2xl shadow-lime-950/25 transition hover:-translate-y-1 hover:bg-emerald-300"
+          >
+            Voir les formations <ArrowRight size={18} />
+          </a>
+          <a
+            href="#methode"
             className="inline-flex min-h-14 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/18"
           >
-            Explorer les parcours
+            Voir la méthode
           </a>
         </div>
       </div>
@@ -743,28 +697,29 @@ function FooterSEO() {
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
         <div>
           <p className="text-lg font-black text-white">KORYXA Formation</p>
-          <p className="mt-3 max-w-md text-sm leading-6">Formations pratiques en data, IA et automatisation pour apprendre en construisant des projets concrets.</p>
+          <p className="mt-3 max-w-md text-sm leading-6">Portail de formations pratiques en data, IA et automatisation. Chaque formation possède sa propre page dédiée.</p>
         </div>
         <div>
           <p className="text-sm font-black uppercase tracking-[0.16em] text-white">Formations</p>
           <div className="mt-4 space-y-3 text-sm font-semibold">
             <Link href="/formations/python-data-analyst" className="block hover:text-white">Python Data Analyst</Link>
-            <a href="#faq" className="block hover:text-white">Chatbot IA avec documents</a>
-            <a href="#methode" className="block hover:text-white">Méthode KORYXA</a>
+            <a href="#formations" className="block hover:text-white">Chatbot IA avec documents</a>
+            <a href="#formations" className="block hover:text-white">Assistant IA pour métier</a>
+            <a href="#formations" className="block hover:text-white">Automatisation IA & no-code</a>
           </div>
         </div>
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.16em] text-white">Plateforme</p>
+          <p className="text-sm font-black uppercase tracking-[0.16em] text-white">Portail</p>
           <div className="mt-4 space-y-3 text-sm font-semibold">
-            <a href="#formations" className="block hover:text-white">Parcours</a>
-            <a href="#projet" className="block hover:text-white">Projet</a>
+            <a href="#formations" className="block hover:text-white">Toutes les formations</a>
+            <a href="#methode" className="block hover:text-white">Méthode</a>
+            <a href="#experience" className="block hover:text-white">Expérience</a>
             <a href="#faq" className="block hover:text-white">FAQ</a>
-            <Link href="/access" className="block hover:text-white">Accès formation</Link>
           </div>
         </div>
       </div>
       <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-sm">
-        © {new Date().getFullYear()} KORYXA Formation — apprendre en construisant des projets concrets.
+        © {new Date().getFullYear()} KORYXA Formation — portail général des parcours pratiques.
       </div>
     </footer>
   );
@@ -778,12 +733,11 @@ export function KoryxaFormationPortal() {
       </a>
       <Header />
       <Hero />
-      <TrustStrip />
-      <FormationSection />
-      <BuildSection />
+      <ProofStrip />
+      <FormationsSection />
+      <GeneralVisionSection />
       <MethodSection />
-      <FutureAISection />
-      <PlatformSection />
+      <ExperienceSection />
       <AudienceSection />
       <FAQSection />
       <FinalCTA />

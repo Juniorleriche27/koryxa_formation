@@ -2,27 +2,27 @@ import type { Metadata } from "next";
 import { KoryxaFormationPortal } from "@/components/marketing/KoryxaFormationPortal";
 
 export const metadata: Metadata = {
-  title: "KORYXA Formation — Apprendre la data et l'IA par des projets concrets",
+  title: "KORYXA Formation — Formations pratiques en Data, IA et Automatisation",
   description:
-    "Apprenez Python, la data et l'IA appliquée avec KORYXA Formation. Des parcours pratiques, des exercices guidés et un projet visible à construire.",
+    "Découvrez les parcours KORYXA Formation pour apprendre la data, l'IA et l'automatisation par des projets concrets. Chaque formation possède sa page dédiée.",
   keywords: [
-    "formation Python",
-    "formation data analyse",
+    "KORYXA Formation",
     "formation IA",
-    "formation pratique IA",
-    "formation Python Data Analyst",
-    "apprendre Python",
-    "projet portfolio data",
+    "formation data analyse",
+    "formation Python",
     "formation automatisation IA",
-    "chatbot IA documents",
+    "formation chatbot IA",
+    "formation IA appliquée",
+    "formation pratique",
+    "parcours data IA automatisation",
   ],
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "KORYXA Formation — Apprendre en construisant des projets concrets",
+    title: "KORYXA Formation — Portail des formations pratiques",
     description:
-      "Des formations pratiques pour apprendre Python, la data et l'IA appliquée avec des exercices, des projets et une preuve visible de compétence.",
+      "Un portail général pour choisir une formation en data, IA ou automatisation, puis accéder à la page dédiée de chaque parcours.",
     type: "website",
     locale: "fr_FR",
     images: [
@@ -30,14 +30,14 @@ export const metadata: Metadata = {
         url: "/assets/landing/hero/koryxa-learning-hero.jpg",
         width: 1200,
         height: 630,
-        alt: "KORYXA Formation — apprendre en construisant des projets concrets",
+        alt: "KORYXA Formation — portail des parcours pratiques",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KORYXA Formation — Apprendre en construisant",
-    description: "Apprenez Python, la data et l'IA appliquée avec des projets concrets.",
+    title: "KORYXA Formation — Portail des formations pratiques",
+    description: "Choisissez un parcours en data, IA ou automatisation et accédez à sa page dédiée.",
     images: ["/assets/landing/hero/koryxa-learning-hero.jpg"],
   },
 };
@@ -47,7 +47,7 @@ const organizationJsonLd = {
   "@type": "EducationalOrganization",
   name: "KORYXA Formation",
   url: "https://formation.koryxa.fr",
-  description: "Formations pratiques en data, IA et automatisation pour apprendre en construisant des projets concrets.",
+  description: "Portail de formations pratiques en data, IA et automatisation.",
 };
 
 const catalogJsonLd = {
@@ -57,9 +57,19 @@ const catalogJsonLd = {
   itemListElement: [
     {
       "@type": "Course",
-      name: "Analyse de données avec Python",
-      description:
-        "Formation pratique pour apprendre Python, organiser des données, créer des graphiques et construire un projet portfolio.",
+      name: "Python Data Analyst",
+      description: "Formation pratique pour apprendre Python, organiser des données, créer des graphiques et construire un projet portfolio.",
+      provider: {
+        "@type": "EducationalOrganization",
+        name: "KORYXA Formation",
+      },
+      courseMode: "online",
+      inLanguage: "fr-FR",
+    },
+    {
+      "@type": "Course",
+      name: "Chatbot IA avec documents",
+      description: "Parcours à venir pour apprendre à relier des documents, une recherche intelligente et une interface chatbot.",
       provider: {
         "@type": "EducationalOrganization",
         name: "KORYXA Formation",
@@ -76,26 +86,26 @@ const faqJsonLd = {
   mainEntity: [
     {
       "@type": "Question",
+      name: "Cette page concerne-t-elle une seule formation ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Non. Cette page est le portail général KORYXA Formation. Elle présente l'ensemble des parcours, puis chaque formation possède sa page dédiée.",
+      },
+    },
+    {
+      "@type": "Question",
       name: "Quelle formation est disponible aujourd'hui ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "La formation Analyse de données avec Python est disponible. Elle aide à apprendre Python, organiser des données, créer des graphiques et construire un projet portfolio.",
+        text: "La formation Python Data Analyst est actuellement disponible. Les autres parcours sont présentés comme bientôt disponibles ou en préparation.",
       },
     },
     {
       "@type": "Question",
-      name: "Ai-je besoin d'être développeur ?",
+      name: "Où voir le détail d'une formation ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Non. Le parcours est progressif et s'adresse aux personnes motivées qui veulent apprendre avec des exemples concrets.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Qu'est-ce que je vais construire ?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Vous construisez un projet d'analyse de données avec notebooks, graphiques, interprétation et résultat présentable.",
+        text: "Depuis la section Formations, chaque parcours renvoie vers sa page dédiée lorsque celle-ci est disponible. La page générale sert d'entrée principale.",
       },
     },
   ],
