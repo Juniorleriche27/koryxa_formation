@@ -249,11 +249,25 @@ def create_or_update_admin_grant(payload: dict[str, Any]) -> dict[str, Any]:
     return response.data[0]
 
 
+def get_internal_access_id(request: Request) -> str | None:
+    secret = settings.KORYXA_ADMIN_FORMATION_BRIDGE_SECRET.strip()
+    provided = (request.headers.get("x-koryxa-internal-secret") or "").strip()
+    access_id = (request.headers.get("x-koryxa-access-id") or "").strip()
+
+    if secret and provided and access_id and timing_safe_equal(secret, provided):
+        return access_id
+    return None
+
+
 def get_session_grant(request: Request) -> dict[str, Any]:
     session = verify_access_session(request.cookies.get(ACCESS_COOKIE_NAME))
-    if not session or session.get("sub") == "legacy-access":
+    access_id = None if not session or session.get("sub") == "legacy-access" else str(session["sub"])
+    access_id = access_id or get_internal_access_id(request)
+
+    if not access_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session formation requise")
-    grant = find_grant_by_id(str(session["sub"]))
+
+    grant = find_grant_by_id(access_id)
     if not grant_is_active(grant):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session formation invalide")
     return grant

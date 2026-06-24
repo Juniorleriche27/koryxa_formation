@@ -1,3 +1,5 @@
+import { ACCESS_COOKIE_NAME, getAccessSessionPayload } from "@/lib/accessControl";
+
 function backendBaseUrl() {
   return (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 }
@@ -8,12 +10,32 @@ export function backendUrl(path: string) {
 
 export async function proxyBackend(request: Request, path: string, init: RequestInit = {}) {
   const body = init.body ?? (request.method === "GET" || request.method === "HEAD" ? undefined : await request.text());
+  const cookieHeader = request.headers.get("cookie") || "";
+  const accessCookie = cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${ACCESS_COOKIE_NAME}=`))
+    ?.slice(ACCESS_COOKIE_NAME.length + 1);
+  const sessionPayload = await getAccessSessionPayload(accessCookie ? decodeURIComponent(accessCookie) : null);
+  const internalSecret = (
+    process.env.KORYXA_ADMIN_FORMATION_BRIDGE_SECRET ||
+    process.env.KORYXA_FORMATION_INTERNAL_SECRET ||
+    process.env.KORYXA_FORMATION_PARTNER_BRIDGE_SECRET ||
+    ""
+  ).trim();
+
   const response = await fetch(backendUrl(path), {
     method: init.method || request.method,
     headers: {
       Accept: "application/json",
       "Content-Type": request.headers.get("content-type") || "application/json",
-      cookie: request.headers.get("cookie") || "",
+      cookie: cookieHeader,
+      ...(sessionPayload?.sub && internalSecret
+        ? {
+            "x-koryxa-internal-secret": internalSecret,
+            "x-koryxa-access-id": sessionPayload.sub,
+          }
+        : {}),
       ...(init.headers || {}),
     },
     body,
