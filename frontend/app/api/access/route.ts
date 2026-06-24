@@ -78,22 +78,17 @@ export async function POST(request: Request) {
   const redeemResult = await redeemCodeWithSupabase(code, partner);
 
   if (!redeemResult.ok) {
-    const legacyCode = process.env.KORYXA_FORMATION_ACCESS_CODE?.trim();
-    const legacyAccepted = legacyCode && code === legacyCode;
+    const message =
+      ERROR_MESSAGES[redeemResult.reason || ""] ||
+      "Impossible de valider ce code. Utilise l’accès attribué depuis ton espace partenaire ou demande une réactivation.";
 
-    if (!legacyAccepted) {
-      const message =
-        ERROR_MESSAGES[redeemResult.reason || ""] ||
-        "Impossible de valider ce code pour le moment. Réessaie dans quelques instants.";
-
-      return NextResponse.json({ message }, { status: redeemResult.reason === "server_error" ? 503 : 401 });
-    }
+    return NextResponse.json({ message }, { status: redeemResult.reason === "server_error" ? 503 : 401 });
   }
 
   const maxAge = 60 * 60 * 24 * 90;
   const accessSession = await createAccessSession(
     {
-      sub: redeemResult.id || "legacy-access",
+      sub: redeemResult.id as string,
       name: redeemResult.student_name || partner?.partner_name || "Apprenant KORYXA",
       email: redeemResult.student_email || redeemResult.partner_email || partner?.partner_email || null,
     },
