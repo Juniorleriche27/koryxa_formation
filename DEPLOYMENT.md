@@ -49,7 +49,7 @@ FRONTEND_URL
 COHERE_API_KEY
 ```
 
-`FRONTEND_URL` doit être l'URL publique Vercel du frontend.
+`FRONTEND_URL` doit valoir `https://formation.koryxa.fr`.
 
 Endpoint de santé disponible :
 
@@ -78,8 +78,8 @@ KORYXA_FORMATION_PARTNER_BRIDGE_SECRET
 
 Notes :
 
-- `NEXT_PUBLIC_API_URL` doit pointer vers l'URL Render du backend.
-- `NEXT_PUBLIC_APP_URL` doit pointer vers l'URL Vercel de la plateforme formation.
+- `NEXT_PUBLIC_API_URL` doit valoir `https://api.formation.koryxa.fr`.
+- `NEXT_PUBLIC_APP_URL` doit valoir `https://formation.koryxa.fr`.
 - `NEXT_PUBLIC_SUPABASE_URL` est public.
 - `SUPABASE_SERVICE_ROLE_KEY` reste serveur uniquement. Ne jamais l'exposer côté navigateur.
 - `KORYXA_FORMATION_ACCESS_SECRET` sert à signer le cookie d'accès apprenant. Utiliser une valeur longue et privée.
@@ -136,7 +136,7 @@ Après déploiement :
 
 Les policies publiques de lecture sur `modules` et `resources` sont volontaires : l’accès apprenant reste contrôlé par le cookie signé Formation côté frontend.
 
-Render doit définir `CORS_ORIGINS=https://formation.innovaplus.africa,https://koryxa-formation-jlr7.vercel.app,https://koryxa-formation.vercel.app,http://localhost:3000` pour autoriser le frontend Formation.
+Render doit définir `CORS_ORIGINS=https://formation.koryxa.fr,http://localhost:3000` pour autoriser uniquement le domaine Formation KORYXA et le développement local.
 
 - `NEXT_PUBLIC_PARTNER_AUTH_URL` pointe vers l’inscription/authentification partenaire utilisée par les CTA publics de la landing Formation.
 

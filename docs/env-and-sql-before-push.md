@@ -34,25 +34,25 @@ Projet concerné : `koryxa_formation/frontend`.
 Variables autorisées côté frontend Formation :
 
 ```env
-NEXT_PUBLIC_API_URL=https://<url-backend-formation>
+NEXT_PUBLIC_API_URL=https://api.formation.koryxa.fr
 NEXT_PUBLIC_APP_URL=https://formation.koryxa.fr
 NEXT_PUBLIC_FORMATION_PUBLIC_URL=https://formation.koryxa.fr
 NEXT_PUBLIC_KORYXA_ADMIN_URL=https://admin.koryxa.fr
 NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key-formation>
+KORYXA_FORMATION_ACCESS_SECRET=<meme-secret-long-que-sur-render>
 ```
 
-Variables à ne plus mettre côté frontend Formation :
+Variables à ne pas exposer avec le préfixe `NEXT_PUBLIC_` :
 
 ```env
-SUPABASE_SERVICE_ROLE_KEY
-KORYXA_FORMATION_ACCESS_SECRET
 KORYXA_ADMIN_FORMATION_BRIDGE_SECRET
 KORYXA_FORMATION_PARTNER_BRIDGE_SECRET
 KORYXA_ADMIN_SECRET
 KORYXA_FORMATION_ACCESS_CODE
 ```
 
-Ces variables appartiennent aux backends, pas au frontend Formation.
+`SUPABASE_SERVICE_ROLE_KEY` et `KORYXA_FORMATION_ACCESS_SECRET` restent des variables serveur Vercel. Le secret de session doit être strictement identique sur Vercel Formation et Render.
 
 ## 2. KORYXA Formation Backend — Render/API
 
@@ -66,7 +66,7 @@ SUPABASE_KEY=<supabase-anon-key>
 SUPABASE_SERVICE_ROLE_KEY=<service-role-key-formation>
 SUPABASE_JWT_SECRET=<supabase-jwt-secret>
 FRONTEND_URL=https://formation.koryxa.fr
-CORS_ORIGINS=https://formation.koryxa.fr,https://formation.innovaplus.africa,https://koryxa-formation-jlr7.vercel.app,https://koryxa-formation.vercel.app,http://localhost:3000
+CORS_ORIGINS=https://formation.koryxa.fr,http://localhost:3000
 KORYXA_ADMIN_FORMATION_BRIDGE_SECRET=<meme-secret-que-cote-koryxa-admin-api>
 KORYXA_FORMATION_ACCESS_SECRET=<secret-long-random-pour-cookie-formation>
 FORMATION_COOKIE_DOMAIN=.koryxa.fr

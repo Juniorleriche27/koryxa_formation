@@ -169,8 +169,8 @@ function AccessForm() {
                 <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <p className="text-sm leading-6 text-slate-600">
                   Besoin d’aide ? Ouvre CoraBiz pour discuter avec l’assistant commercial KORYXA :{" "}
-                  <a href="https://cora.innovaplus.africa" target="_blank" rel="noopener noreferrer" className="font-black text-blue-700 underline underline-offset-4 hover:text-blue-600">
-                    cora.innovaplus.africa
+                  <a href="https://corabiz.koryxa.fr" target="_blank" rel="noopener noreferrer" className="font-black text-blue-700 underline underline-offset-4 hover:text-blue-600">
+                    corabiz.koryxa.fr
                   </a>
                 </p>
               </div>
