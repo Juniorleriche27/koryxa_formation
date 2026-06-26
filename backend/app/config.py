@@ -15,7 +15,6 @@ class Settings(BaseSettings):
     COHERE_MODEL: str = "command-r-08-2024"
     SUPABASE_SERVICE_ROLE_KEY: str | None = None
     KORYXA_IDENTITY_BRIDGE_KEY: str = ""
-    KORYXA_ADMIN_FORMATION_BRIDGE_SECRET: str = ""
     KORYXA_FORMATION_ACCESS_SECRET: str = ""
     FORMATION_COOKIE_DOMAIN: str | None = None
 

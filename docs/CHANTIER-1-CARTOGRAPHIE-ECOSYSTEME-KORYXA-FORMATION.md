@@ -104,9 +104,9 @@ Il permet à un système serveur autorisé de:
 Cet endpoint dépend d'un secret interne:
 
 ```txt
-KORYXA_ADMIN_FORMATION_BRIDGE_SECRET
-ou KORYXA_FORMATION_INTERNAL_SECRET
-ou KORYXA_FORMATION_PARTNER_BRIDGE_SECRET
+KORYXA_IDENTITY_BRIDGE_KEY
+ou KORYXA_IDENTITY_BRIDGE_KEY
+ou KORYXA_IDENTITY_BRIDGE_KEY
 ```
 
 Donc le futur landing ne doit pas inventer un nouveau tunnel d'accès. Il doit respecter cette logique.

@@ -72,7 +72,7 @@ def timing_safe_equal(left: str, right: str) -> bool:
 
 
 def verify_admin_bridge(ctx: str | None, sig: str | None) -> dict[str, Any]:
-    secret = (settings.KORYXA_IDENTITY_BRIDGE_KEY or settings.KORYXA_ADMIN_FORMATION_BRIDGE_SECRET).strip()
+    secret = settings.KORYXA_IDENTITY_BRIDGE_KEY.strip()
     if not secret:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Bridge secret missing")
     if not ctx or not sig:
@@ -250,7 +250,7 @@ def create_or_update_admin_grant(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def get_internal_access_id(request: Request) -> str | None:
-    secret = (settings.KORYXA_IDENTITY_BRIDGE_KEY or settings.KORYXA_ADMIN_FORMATION_BRIDGE_SECRET).strip()
+    secret = settings.KORYXA_IDENTITY_BRIDGE_KEY.strip()
     provided = (request.headers.get("x-koryxa-internal-secret") or "").strip()
     access_id = (request.headers.get("x-koryxa-access-id") or "").strip()
 

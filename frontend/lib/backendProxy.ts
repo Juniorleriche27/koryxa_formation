@@ -17,12 +17,7 @@ export async function proxyBackend(request: Request, path: string, init: Request
     .find((part) => part.startsWith(`${ACCESS_COOKIE_NAME}=`))
     ?.slice(ACCESS_COOKIE_NAME.length + 1);
   const sessionPayload = await getAccessSessionPayload(accessCookie ? decodeURIComponent(accessCookie) : null);
-  const internalSecret = (
-    process.env.KORYXA_ADMIN_FORMATION_BRIDGE_SECRET ||
-    process.env.KORYXA_FORMATION_INTERNAL_SECRET ||
-    process.env.KORYXA_FORMATION_PARTNER_BRIDGE_SECRET ||
-    ""
-  ).trim();
+  const internalSecret = (process.env.KORYXA_IDENTITY_BRIDGE_KEY || "").trim();
 
   const response = await fetch(backendUrl(path), {
     method: init.method || request.method,

@@ -46,8 +46,8 @@ KORYXA_FORMATION_ACCESS_SECRET=<meme-secret-long-que-sur-render>
 Variables à ne pas exposer avec le préfixe `NEXT_PUBLIC_` :
 
 ```env
-KORYXA_ADMIN_FORMATION_BRIDGE_SECRET
-KORYXA_FORMATION_PARTNER_BRIDGE_SECRET
+KORYXA_IDENTITY_BRIDGE_KEY
+KORYXA_IDENTITY_BRIDGE_KEY
 KORYXA_ADMIN_SECRET
 KORYXA_FORMATION_ACCESS_CODE
 ```
@@ -67,7 +67,7 @@ SUPABASE_SERVICE_ROLE_KEY=<service-role-key-formation>
 SUPABASE_JWT_SECRET=<supabase-jwt-secret>
 FRONTEND_URL=https://formation.koryxa.fr
 CORS_ORIGINS=https://formation.koryxa.fr,http://localhost:3000
-KORYXA_ADMIN_FORMATION_BRIDGE_SECRET=<meme-secret-que-cote-koryxa-admin-api>
+KORYXA_IDENTITY_BRIDGE_KEY=<meme-secret-que-cote-koryxa-admin-api>
 KORYXA_FORMATION_ACCESS_SECRET=<secret-long-random-pour-cookie-formation>
 FORMATION_COOKIE_DOMAIN=.koryxa.fr
 COHERE_API_KEY=<cohere-key>
@@ -106,7 +106,7 @@ NEXT_PUBLIC_APP_URL=https://admin.koryxa.fr
 Variables à ne plus mettre côté Admin Web :
 
 ```env
-KORYXA_ADMIN_FORMATION_BRIDGE_SECRET
+KORYXA_IDENTITY_BRIDGE_KEY
 KORYXA_FORMATION_BRIDGE_CALLBACK_URL
 ```
 
@@ -125,11 +125,11 @@ DATABASE_URL=<database-url-koryxa-admin>
 CLERK_ISSUER=<clerk-issuer-url>
 CLERK_JWKS_URL=<clerk-jwks-url-ou-vide-si-clerk-issuer-suffit>
 KORYXA_ADMIN_INGEST_KEY=<cle-audit-si-utilisee>
-KORYXA_ADMIN_FORMATION_BRIDGE_SECRET=<meme-secret-que-cote-formation-backend>
+KORYXA_IDENTITY_BRIDGE_KEY=<meme-secret-que-cote-formation-backend>
 KORYXA_FORMATION_BRIDGE_CALLBACK_URL=https://api.formation.koryxa.fr/access/koryxa-admin/callback
 ```
 
-Point critique : `KORYXA_ADMIN_FORMATION_BRIDGE_SECRET` doit être strictement identique côté Admin API et Formation Backend.
+Point critique : `KORYXA_IDENTITY_BRIDGE_KEY` doit être strictement identique côté Admin API et Formation Backend.
 
 ## 5. Migration SQL à jouer dans Supabase Formation
 

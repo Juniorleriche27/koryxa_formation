@@ -73,7 +73,7 @@ KORYXA_FORMATION_ACCESS_SECRET
 KORYXA_ADMIN_EMAIL
 KORYXA_ADMIN_SECRET
 KORYXA_ACCESS_CODE_PREFIX
-KORYXA_FORMATION_PARTNER_BRIDGE_SECRET
+KORYXA_IDENTITY_BRIDGE_KEY
 ```
 
 Notes :
@@ -86,7 +86,7 @@ Notes :
 - `KORYXA_ADMIN_EMAIL` est l'email autorisé pour ouvrir `/admin`.
 - `KORYXA_ADMIN_SECRET` est la clé privée admin à saisir sur `/admin`.
 - `KORYXA_ACCESS_CODE_PREFIX` peut être `O` pour générer des codes qui commencent par O.
-- `KORYXA_FORMATION_PARTNER_BRIDGE_SECRET` doit être identique sur Vercel Formation et Vercel Partenaire pour signer le lien partenaire → formation.
+- `KORYXA_IDENTITY_BRIDGE_KEY` doit être identique sur Vercel Formation et Vercel Partenaire pour signer le lien partenaire → formation.
 
 ## 4. Écran admin
 
