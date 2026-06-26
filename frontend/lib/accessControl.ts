@@ -9,11 +9,7 @@ type AccessSessionPayload = {
 };
 
 function getAccessSecret() {
-  return (
-    process.env.KORYXA_FORMATION_ACCESS_SECRET ||
-    process.env.KORYXA_FORMATION_ACCESS_CODE ||
-    ""
-  ).trim();
+  return (process.env.KORYXA_IDENTITY_BRIDGE_KEY || "").trim();
 }
 
 function base64UrlEncode(input: string | Uint8Array) {
@@ -61,13 +57,6 @@ export async function accessTokenFor(code: string) {
     .join("");
 }
 
-export async function getExpectedAccessToken() {
-  const code = process.env.KORYXA_FORMATION_ACCESS_CODE;
-  if (!code) return null;
-
-  return accessTokenFor(code);
-}
-
 export async function createAccessSession(
   payload: Pick<AccessSessionPayload, "sub" | "name" | "email">,
   maxAgeSeconds = 60 * 60 * 24 * 90
@@ -75,7 +64,7 @@ export async function createAccessSession(
   const secret = getAccessSecret();
 
   if (!secret) {
-    throw new Error("KORYXA_FORMATION_ACCESS_SECRET is not configured");
+    throw new Error("KORYXA_IDENTITY_BRIDGE_KEY is not configured");
   }
 
   const now = Math.floor(Date.now() / 1000);

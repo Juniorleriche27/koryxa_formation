@@ -15,9 +15,7 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
-      - key: KORYXA_ADMIN_FORMATION_BRIDGE_SECRET
-        sync: false
-      - key: KORYXA_FORMATION_ACCESS_SECRET
+      - key: KORYXA_IDENTITY_BRIDGE_KEY
         sync: false
       - key: FORMATION_COOKIE_DOMAIN
         value: .koryxa.fr

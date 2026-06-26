@@ -101,9 +101,9 @@ def verify_admin_bridge(ctx: str | None, sig: str | None) -> dict[str, Any]:
 
 
 def create_access_session(access_id: str, name: str | None, email: str | None) -> str:
-    secret = settings.KORYXA_FORMATION_ACCESS_SECRET.strip()
+    secret = settings.KORYXA_IDENTITY_BRIDGE_KEY.strip()
     if not secret:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Access session secret missing")
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="KORYXA Identity bridge key missing")
     now = int(utc_now().timestamp())
     payload = {
         "sub": access_id,
@@ -117,7 +117,7 @@ def create_access_session(access_id: str, name: str | None, email: str | None) -
 
 
 def verify_access_session(value: str | None) -> dict[str, Any] | None:
-    secret = settings.KORYXA_FORMATION_ACCESS_SECRET.strip()
+    secret = settings.KORYXA_IDENTITY_BRIDGE_KEY.strip()
     if not secret or not value:
         return None
     parts = value.split(".")

@@ -40,7 +40,7 @@ NEXT_PUBLIC_FORMATION_PUBLIC_URL=https://formation.koryxa.fr
 NEXT_PUBLIC_KORYXA_ADMIN_URL=https://admin.koryxa.fr
 NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=<service-role-key-formation>
-KORYXA_FORMATION_ACCESS_SECRET=<meme-secret-long-que-sur-render>
+KORYXA_IDENTITY_BRIDGE_KEY=<meme-secret-que-koryxa-admin-et-partner-portal>
 ```
 
 Variables à ne pas exposer avec le préfixe `NEXT_PUBLIC_` :
@@ -49,10 +49,9 @@ Variables à ne pas exposer avec le préfixe `NEXT_PUBLIC_` :
 KORYXA_IDENTITY_BRIDGE_KEY
 KORYXA_IDENTITY_BRIDGE_KEY
 KORYXA_ADMIN_SECRET
-KORYXA_FORMATION_ACCESS_CODE
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` et `KORYXA_FORMATION_ACCESS_SECRET` restent des variables serveur Vercel. Le secret de session doit être strictement identique sur Vercel Formation et Render.
+`SUPABASE_SERVICE_ROLE_KEY` et `KORYXA_IDENTITY_BRIDGE_KEY` restent des variables serveur Vercel. La clé KORYXA Identity doit être strictement identique sur Vercel Formation, Render Formation, KORYXA Admin et Partner Portal.
 
 ## 2. KORYXA Formation Backend — Render/API
 
@@ -68,7 +67,7 @@ SUPABASE_JWT_SECRET=<supabase-jwt-secret>
 FRONTEND_URL=https://formation.koryxa.fr
 CORS_ORIGINS=https://formation.koryxa.fr,http://localhost:3000
 KORYXA_IDENTITY_BRIDGE_KEY=<meme-secret-que-cote-koryxa-admin-api>
-KORYXA_FORMATION_ACCESS_SECRET=<secret-long-random-pour-cookie-formation>
+KORYXA_IDENTITY_BRIDGE_KEY=<meme-secret-que-koryxa-admin-et-partner-portal>
 FORMATION_COOKIE_DOMAIN=.koryxa.fr
 COHERE_API_KEY=<cohere-key>
 COHERE_MODEL=command-r-08-2024

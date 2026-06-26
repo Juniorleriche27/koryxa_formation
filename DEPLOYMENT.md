@@ -69,7 +69,7 @@ NEXT_PUBLIC_APP_URL
 NEXT_PUBLIC_PARTNER_AUTH_URL
 NEXT_PUBLIC_SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
-KORYXA_FORMATION_ACCESS_SECRET
+KORYXA_IDENTITY_BRIDGE_KEY
 KORYXA_ADMIN_EMAIL
 KORYXA_ADMIN_SECRET
 KORYXA_ACCESS_CODE_PREFIX
@@ -82,7 +82,7 @@ Notes :
 - `NEXT_PUBLIC_APP_URL` doit valoir `https://formation.koryxa.fr`.
 - `NEXT_PUBLIC_SUPABASE_URL` est public.
 - `SUPABASE_SERVICE_ROLE_KEY` reste serveur uniquement. Ne jamais l'exposer côté navigateur.
-- `KORYXA_FORMATION_ACCESS_SECRET` sert à signer le cookie d'accès apprenant. Utiliser une valeur longue et privée.
+- `KORYXA_IDENTITY_BRIDGE_KEY` sert aussi à signer le cookie d'accès apprenant et les ponts internes. Utiliser la même valeur longue et privée partout.
 - `KORYXA_ADMIN_EMAIL` est l'email autorisé pour ouvrir `/admin`.
 - `KORYXA_ADMIN_SECRET` est la clé privée admin à saisir sur `/admin`.
 - `KORYXA_ACCESS_CODE_PREFIX` peut être `O` pour générer des codes qui commencent par O.
