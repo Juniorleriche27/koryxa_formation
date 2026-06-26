@@ -48,7 +48,6 @@ Variables à ne pas exposer avec le préfixe `NEXT_PUBLIC_` :
 ```env
 KORYXA_IDENTITY_BRIDGE_KEY
 KORYXA_IDENTITY_BRIDGE_KEY
-KORYXA_ADMIN_SECRET
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` et `KORYXA_IDENTITY_BRIDGE_KEY` restent des variables serveur Vercel. La clé KORYXA Identity doit être strictement identique sur Vercel Formation, Render Formation, KORYXA Admin et Partner Portal.

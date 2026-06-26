@@ -71,8 +71,6 @@ NEXT_PUBLIC_SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
 KORYXA_IDENTITY_BRIDGE_KEY
 KORYXA_ADMIN_EMAIL
-KORYXA_ADMIN_SECRET
-KORYXA_ACCESS_CODE_PREFIX
 KORYXA_IDENTITY_BRIDGE_KEY
 ```
 
@@ -84,8 +82,6 @@ Notes :
 - `SUPABASE_SERVICE_ROLE_KEY` reste serveur uniquement. Ne jamais l'exposer côté navigateur.
 - `KORYXA_IDENTITY_BRIDGE_KEY` sert aussi à signer le cookie d'accès apprenant et les ponts internes. Utiliser la même valeur longue et privée partout.
 - `KORYXA_ADMIN_EMAIL` est l'email autorisé pour ouvrir `/admin`.
-- `KORYXA_ADMIN_SECRET` est la clé privée admin à saisir sur `/admin`.
-- `KORYXA_ACCESS_CODE_PREFIX` peut être `O` pour générer des codes qui commencent par O.
 - `KORYXA_IDENTITY_BRIDGE_KEY` doit être identique sur Vercel Formation et Vercel Partenaire pour signer le lien partenaire → formation.
 
 ## 4. Écran admin
@@ -131,7 +127,6 @@ Après déploiement :
 - Ne jamais mettre de vrais codes apprenants dans GitHub.
 - Ne jamais mettre de clés Supabase ou Render dans GitHub.
 - Ne jamais partager `SUPABASE_SERVICE_ROLE_KEY` côté frontend client.
-- Ne jamais partager `KORYXA_ADMIN_SECRET` aux apprenants.
 - Révoquer un code depuis `/admin` quand l'accès doit être coupé.
 
 Les policies publiques de lecture sur `modules` et `resources` sont volontaires : l’accès apprenant reste contrôlé par le cookie signé Formation côté frontend.

@@ -9,7 +9,7 @@ type AdminSessionPayload = {
 };
 
 function getAdminSecret() {
-  return (process.env.KORYXA_ADMIN_SECRET || "").trim();
+  return (process.env.KORYXA_IDENTITY_BRIDGE_KEY || "").trim();
 }
 
 function getAdminEmail() {
@@ -72,7 +72,7 @@ export async function createAdminSession(email: string, maxAgeSeconds = 60 * 60 
   const secret = getAdminSecret();
 
   if (!secret) {
-    throw new Error("KORYXA_ADMIN_SECRET is not configured");
+    throw new Error("KORYXA_IDENTITY_BRIDGE_KEY is not configured");
   }
 
   const now = Math.floor(Date.now() / 1000);
