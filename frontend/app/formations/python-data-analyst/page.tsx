@@ -58,6 +58,7 @@ const courseJsonLd = {
   },
   educationalCredentialAwarded: "Certificat KORYXA Formation",
   courseMode: "online",
+  timeRequired: "PT90H",
   inLanguage: "fr-FR",
   offers: {
     "@type": "Offer",
@@ -281,7 +282,7 @@ export default function LandingPage() {
 
       <section className="border-y border-white/10 bg-white/[0.04] py-6">
         <div className="kx-container grid grid-cols-2 gap-4 md:grid-cols-4">
-          {[['8', 'modules guidés', BookOpen], ['21h', 'contenu', Clock3], ['120+', 'exercices', Code2], ['1', 'certificat', Award]].map(([value, label, Icon]) => {
+          {[['8', 'modules guidés', BookOpen], ['90h', 'parcours complet', Clock3], ['120+', 'exercices', Code2], ['1', 'certificat', Award]].map(([value, label, Icon]) => {
             const IconComponent = Icon as typeof BookOpen;
             return (
               <div key={label as string} className="rounded-3xl border border-white/10 bg-white/[0.05] p-4 text-center backdrop-blur">

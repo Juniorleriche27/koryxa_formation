@@ -6,19 +6,6 @@ import {
 } from "@/lib/accessControl";
 import { findGrantById, summarizeGrant } from "@/lib/formationAccessAdmin";
 
-const CANONICAL_HOST = "formation.koryxa.fr";
-const LEGACY_HOSTS = new Set(["formation.innovaplus.africa"]);
-
-function redirectLegacyDomain(request: NextRequest) {
-  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
-  if (!host || !LEGACY_HOSTS.has(host)) return null;
-
-  const url = request.nextUrl.clone();
-  url.protocol = "https:";
-  url.hostname = CANONICAL_HOST;
-  url.port = "";
-  return NextResponse.redirect(url, 308);
-}
 
 function redirectToAccess(request: NextRequest) {
   const accessUrl = request.nextUrl.clone();
@@ -41,9 +28,6 @@ function redirectToAccess(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  const legacyDomainRedirect = redirectLegacyDomain(request);
-  if (legacyDomainRedirect) return legacyDomainRedirect;
-
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   const sessionPayload = await getAccessSessionPayload(accessToken);
 
