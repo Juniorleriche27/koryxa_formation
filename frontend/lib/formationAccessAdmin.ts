@@ -43,19 +43,61 @@ const SELECT_COLUMNS = [
 ].join(",");
 
 function getSupabaseConfig() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
-  if (!url || !serviceRoleKey) return null;
+  if (!rawUrl || !serviceRoleKey) return null;
+
+  let url: URL;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    throw new Error("URL Supabase Formation invalide.");
+  }
+
+  if (url.protocol !== "https:" || !url.hostname.endsWith(".supabase.co")) {
+    throw new Error(`URL Supabase Formation refusée: ${url.hostname || "hôte inconnu"}.`);
+  }
 
   return {
-    url: url.replace(/\/$/, ""),
+    url: url.origin,
     serviceRoleKey,
   };
 }
 
 export function getInternalSecret() {
   return (process.env.KORYXA_IDENTITY_BRIDGE_KEY || "").trim();
+}
+
+function describeFetchFailure(error: unknown) {
+  if (!(error instanceof Error)) return "cause inconnue";
+
+  const cause = "cause" in error ? error.cause : null;
+  if (cause instanceof Error) return cause.message;
+
+  if (cause && typeof cause === "object") {
+    const record = cause as Record<string, unknown>;
+    return String(record.code || record.message || error.message || "cause inconnue");
+  }
+
+  return error.message || "cause inconnue";
+}
+
+async function fetchSupabase(input: string, init: RequestInit, context: string) {
+  let response: Response;
+
+  try {
+    response = await fetch(input, init);
+  } catch (error) {
+    throw new Error(`${context}: connexion Supabase impossible (${describeFetchFailure(error)}).`);
+  }
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(`${context}: Supabase a répondu HTTP ${response.status}${detail ? ` — ${detail.slice(0, 180)}` : ""}.`);
+  }
+
+  return response;
 }
 
 function addMonths(date: Date, months: number) {
@@ -90,7 +132,7 @@ export async function findGrantById(id: string) {
   const config = getSupabaseConfig();
   if (!config) throw new Error("Supabase formation non configuré.");
 
-  const response = await fetch(
+  const response = await fetchSupabase(
     `${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}&id=eq.${encodeURIComponent(id)}&limit=1`,
     {
       headers: {
@@ -98,10 +140,9 @@ export async function findGrantById(id: string) {
         Authorization: `Bearer ${config.serviceRoleKey}`,
       },
       cache: "no-store",
-    }
+    },
+    "Lecture accès formation par ID"
   );
-
-  if (!response.ok) throw new Error("Impossible de lire l'accès formation.");
 
   const rows = (await response.json()) as FormationAccessGrant[];
   return rows[0] || null;
@@ -111,7 +152,7 @@ export async function findGrantByPartnerCode(partnerCode: string) {
   const config = getSupabaseConfig();
   if (!config) throw new Error("Supabase formation non configuré.");
 
-  const response = await fetch(
+  const response = await fetchSupabase(
     `${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}&partner_code=eq.${encodeURIComponent(partnerCode)}&order=created_at.desc&limit=1`,
     {
       headers: {
@@ -119,10 +160,9 @@ export async function findGrantByPartnerCode(partnerCode: string) {
         Authorization: `Bearer ${config.serviceRoleKey}`,
       },
       cache: "no-store",
-    }
+    },
+    "Lecture accès formation par code partenaire"
   );
-
-  if (!response.ok) throw new Error("Impossible de lire l'accès formation.");
 
   const rows = (await response.json()) as FormationAccessGrant[];
   return rows[0] || null;
@@ -147,7 +187,7 @@ export async function grantPartnerFormationAccess(params: {
   const existing = await findGrantByPartnerCode(partnerCode);
 
   if (existing) {
-    const response = await fetch(`${config.url}/rest/v1/formation_access_codes?id=eq.${existing.id}&select=${SELECT_COLUMNS}`, {
+    const response = await fetchSupabase(`${config.url}/rest/v1/formation_access_codes?id=eq.${existing.id}&select=${SELECT_COLUMNS}`, {
       method: "PATCH",
       headers: {
         apikey: config.serviceRoleKey,
@@ -170,15 +210,14 @@ export async function grantPartnerFormationAccess(params: {
         label: existing.label || "Formation Python Data",
         notes: `Accès attribué depuis admin partenaire${params.assignedBy ? ` par ${params.assignedBy}` : ""}`,
       }),
-    });
+    }, "Mise à jour accès formation");
 
-    if (!response.ok) throw new Error("Impossible de mettre à jour l'accès formation.");
     const rows = (await response.json()) as FormationAccessGrant[];
     return rows[0];
   }
 
   const codeHash = await accessTokenFor(`PARTNER-GRANT:${partnerCode}`);
-  const response = await fetch(`${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}`, {
+  const response = await fetchSupabase(`${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}`, {
     method: "POST",
     headers: {
       apikey: config.serviceRoleKey,
@@ -205,9 +244,8 @@ export async function grantPartnerFormationAccess(params: {
       access_until: accessUntil,
       created_by_admin_email: params.assignedBy || null,
     }),
-  });
+  }, "Création accès formation");
 
-  if (!response.ok) throw new Error("Impossible de créer l'accès formation.");
   const rows = (await response.json()) as FormationAccessGrant[];
   return rows[0];
 }
@@ -219,7 +257,7 @@ export async function revokePartnerFormationAccess(partnerCode: string) {
   const existing = await findGrantByPartnerCode(partnerCode.trim());
   if (!existing) return null;
 
-  const response = await fetch(`${config.url}/rest/v1/formation_access_codes?id=eq.${existing.id}&select=${SELECT_COLUMNS}`, {
+  const response = await fetchSupabase(`${config.url}/rest/v1/formation_access_codes?id=eq.${existing.id}&select=${SELECT_COLUMNS}`, {
     method: "PATCH",
     headers: {
       apikey: config.serviceRoleKey,
@@ -228,9 +266,7 @@ export async function revokePartnerFormationAccess(partnerCode: string) {
       Prefer: "return=representation",
     },
     body: JSON.stringify({ status: "revoked" }),
-  });
-
-  if (!response.ok) throw new Error("Impossible de révoquer l'accès formation.");
+  }, "Révocation accès formation");
   const rows = (await response.json()) as FormationAccessGrant[];
   return rows[0] || null;
 }
