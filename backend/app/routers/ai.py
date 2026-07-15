@@ -89,36 +89,6 @@ def extract_cohere_error(body: str) -> str:
     return body[:500]
 
 
-def fallback_code_explanation(code: str) -> str:
-    lines = [line.strip() for line in code.splitlines() if line.strip()]
-    if not lines:
-        return "Aucun code a expliquer. Ajoute une instruction Python, puis relance l'explication."
-
-    explanation = [
-        "L'assistant IA est momentanement lent, donc voici une explication rapide generee par la plateforme.",
-        "",
-        "Ce code contient les etapes suivantes :",
-    ]
-
-    for index, line in enumerate(lines[:8], start=1):
-        if line.startswith("print("):
-            explanation.append(f"{index}. `{line}` affiche une valeur dans la console.")
-        elif "=" in line and "==" not in line:
-            name = line.split("=", 1)[0].strip()
-            explanation.append(f"{index}. `{line}` cree ou modifie la variable `{name}`.")
-        elif line.startswith("for "):
-            explanation.append(f"{index}. `{line}` lance une boucle pour repeter des instructions.")
-        elif line.startswith("if "):
-            explanation.append(f"{index}. `{line}` verifie une condition avant d'executer la suite.")
-        elif line.startswith("import ") or line.startswith("from "):
-            explanation.append(f"{index}. `{line}` charge une bibliotheque Python utile pour le programme.")
-        else:
-            explanation.append(f"{index}. `{line}` est une instruction Python executee dans l'ordre.")
-
-    explanation.append("")
-    explanation.append("Lis le code ligne par ligne, execute-le, puis modifie une petite valeur pour observer le changement.")
-    return "\n".join(explanation)
-
 
 def load_module_context(module_id: str, max_chars: int = 24000) -> tuple[dict, str]:
     module_result = supabase.table("modules").select("*").eq("id", module_id).single().execute()
@@ -251,18 +221,15 @@ Code a expliquer:
 
 Explication:"""
 
-    try:
-        explanation = cohere_chat_text(
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0.3,
-            max_tokens=400,
-            timeout_seconds=12,
-        )
-    except HTTPException:
-        explanation = fallback_code_explanation(req.code)
+    explanation = cohere_chat_text(
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.3,
+        max_tokens=400,
+        timeout_seconds=45,
+    )
 
     return {"explanation": explanation}
 
