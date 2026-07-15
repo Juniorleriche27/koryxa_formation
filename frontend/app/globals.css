@@ -6,9 +6,9 @@
   --background: 248 250 252;
   --foreground: 15 23 42;
   --surface: 255 255 255;
-  --brand-blue: 37 99 235;
-  --brand-cyan: 14 165 233;
-  --brand-emerald: 16 185 129;
+  --brand-blue: 13 27 56;
+  --brand-cyan: 61 122 104;
+  --brand-emerald: 200 169 107;
 }
 
 * {
@@ -22,8 +22,8 @@ html {
 body {
   color: rgb(var(--foreground));
   background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 32rem),
-    radial-gradient(circle at top right, rgba(16, 185, 129, 0.10), transparent 28rem),
+    radial-gradient(circle at top left, rgba(200, 169, 107, 0.13), transparent 32rem),
+    radial-gradient(circle at top right, rgba(61, 122, 104, 0.10), transparent 28rem),
     rgb(var(--background));
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -31,7 +31,7 @@ body {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.18);
+  background: rgba(200, 169, 107, 0.26);
   color: rgb(15 23 42);
 }
 
@@ -41,7 +41,7 @@ body {
   input,
   textarea,
   select {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
   }
 
   code,
@@ -107,5 +107,24 @@ body {
 
   .kx-dark-muted {
     @apply text-sm leading-6 text-slate-300 sm:text-base;
+  }
+}
+
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: Georgia, "Times New Roman", serif;
   }
 }

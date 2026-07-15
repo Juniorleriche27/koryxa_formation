@@ -15,11 +15,13 @@ module.exports = {
         },
         koryxa: {
           night: "#07111f",
+          navy: "#0d1b38",
           ink: "#0f172a",
           blue: "#2563eb",
           cyan: "#0ea5e9",
           emerald: "#10b981",
-          gold: "#f59e0b",
+          green: "#3d7a68",
+          gold: "#c8a96b",
         },
       },
       fontFamily: {
