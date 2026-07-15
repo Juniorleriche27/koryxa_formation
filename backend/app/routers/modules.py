@@ -3,8 +3,8 @@ from app.database import get_service_supabase
 
 router = APIRouter()
 
-MODULE_COLUMNS = "id,title,description,order_index,duration_minutes,is_published,created_at"
-RESOURCE_COLUMNS = "id,module_id,title,type,content_url,content,order_index,created_at"
+MODULE_COLUMNS = "id,title,description,order_index,duration,notebook_path,is_published,created_at"
+RESOURCE_COLUMNS = "id,module_id,title,type,url,description,order_index,created_at"
 
 
 def service_db():
