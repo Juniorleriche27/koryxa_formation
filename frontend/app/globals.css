@@ -3,12 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --background: 245 251 247;
-  --foreground: 15 23 42;
-  --surface: 255 255 255;
-  --brand-deep-green: 5 37 28;
-  --brand-teal: 20 184 166;
-  --brand-emerald: 16 185 129;
+  --bg: #fbfcf8;
+  --paper: #ffffff;
+  --ink: #06251c;
+  --muted: rgba(6, 37, 28, 0.64);
+  --line: rgba(6, 37, 28, 0.12);
+  --emerald: #056b46;
+  --emerald-2: #0ea873;
+  --mint: #bcf5d7;
+  --aqua: #14b8a6;
+  --cora-green: #00bd72;
 }
 
 * {
@@ -17,22 +21,41 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--bg);
 }
 
 body {
-  color: rgb(var(--foreground));
-  background:
-    radial-gradient(circle at top left, rgba(var(--brand-emerald), 0.13), transparent 32rem),
-    radial-gradient(circle at top right, rgba(var(--brand-teal), 0.10), transparent 28rem),
-    rgb(var(--background));
-  text-rendering: optimizeLegibility;
+  margin: 0;
+  color: var(--ink);
+  background: var(--bg);
+  text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+body::before {
+  pointer-events: none;
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0.014;
+  background-image: radial-gradient(var(--ink) 0.7px, transparent 0.7px);
+  background-size: 22px 22px;
+  mix-blend-mode: multiply;
+}
+
 ::selection {
-  background: rgba(var(--brand-emerald), 0.26);
-  color: rgb(15 23 42);
+  background: var(--mint);
+  color: var(--ink);
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
 }
 
 @layer base {
@@ -62,17 +85,18 @@ body {
   }
 }
 
+
 @layer components {
   .kx-page {
-    @apply min-h-screen bg-[#f5fbf7] text-slate-950;
+    @apply min-h-screen bg-[#f5fbf7] text-[#06251c];
   }
 
   .kx-dark-page {
-    @apply min-h-screen overflow-x-hidden bg-[#05251c] text-white;
+    @apply min-h-screen overflow-x-hidden bg-[#06251c] text-white;
     background-image:
       radial-gradient(circle at top left, rgba(16, 185, 129, 0.20), transparent 32rem),
       radial-gradient(circle at 85% 12%, rgba(20, 184, 166, 0.13), transparent 28rem),
-      linear-gradient(180deg, #05251c 0%, #041b15 48%, #061f18 100%);
+      linear-gradient(180deg, #06251c 0%, #04130f 52%, #06251c 100%);
   }
 
   .kx-container {
@@ -104,7 +128,7 @@ body {
   }
 
   .kx-heading-xl {
-    @apply text-3xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl;
+    @apply text-3xl font-black tracking-tight text-[#06251c] sm:text-5xl lg:text-6xl;
   }
 
   .kx-dark-heading-xl {
@@ -121,11 +145,10 @@ body {
 }
 
 @layer utilities {
-  .koryxa-green-surface {
-    background-image:
-      radial-gradient(ellipse at 50% -8%, rgba(16, 185, 129, 0.16), transparent 32rem),
-      radial-gradient(ellipse at 12% 18%, rgba(20, 184, 166, 0.075), transparent 30rem),
-      radial-gradient(ellipse at 88% 20%, rgba(188, 245, 215, 0.24), transparent 34rem),
-      linear-gradient(180deg, #f7fcf9 0%, #eef9f3 46%, #fbfefc 100%);
+  .text-gradient-mint {
+    background: linear-gradient(110deg, #057a4c 0%, #10b981 54%, #b8f7d2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }

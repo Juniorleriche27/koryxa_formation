@@ -161,7 +161,7 @@ function SectionLabel({ children, dark = false }: { children: React.ReactNode; d
       className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.18em] shadow-sm backdrop-blur-xl ${
         dark
           ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-100"
-          : "border-emerald-200/80 bg-emerald-50 text-[#05251c]"
+          : "border-emerald-400/20 bg-emerald-400/10 text-emerald-700 shadow-[0_0_32px_rgba(16,185,129,.12)]"
       }`}
     >
       {children}
@@ -176,11 +176,11 @@ function Header() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-950/10 bg-white/86 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
         <Link href="/" className="flex items-center gap-3" aria-label="Accueil KORYXA Formation">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#05251c] text-sm font-black text-emerald-300 shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-300/20">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#06251c] text-sm font-black text-emerald-300 shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-300/20">
             K
           </span>
           <span className="leading-tight">
-            <span className="block text-sm font-black tracking-tight text-[#05251c] sm:text-base">KORYXA Formation</span>
+            <span className="block text-sm font-black tracking-tight text-[#06251c] sm:text-base">KORYXA Formation</span>
             <span className="block text-[0.7rem] font-semibold text-slate-500 sm:text-xs">Portail des parcours</span>
           </span>
         </Link>
@@ -195,7 +195,7 @@ function Header() {
 
         <a
           href="#formations"
-          className="hidden h-11 items-center justify-center rounded-full bg-[#05251c] px-5 text-sm font-black text-white shadow-lg shadow-emerald-950/12 transition hover:-translate-y-0.5 hover:bg-emerald-400 hover:text-[#05251c] lg:inline-flex"
+          className="hidden h-11 items-center justify-center rounded-full bg-[#06251c] px-5 text-sm font-black text-white shadow-lg shadow-emerald-950/12 transition hover:-translate-y-0.5 hover:bg-[#00bd72] hover:text-[#06251c] lg:inline-flex"
         >
           Voir les formations
         </a>
@@ -205,7 +205,7 @@ function Header() {
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#05251c] shadow-sm lg:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#06251c] shadow-sm lg:hidden"
         >
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -226,7 +226,7 @@ function Header() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-2xl px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-emerald-50 hover:text-[#05251c]"
+                  className="rounded-2xl px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-emerald-50 hover:text-[#06251c]"
                 >
                   {item.label}
                 </a>
@@ -234,7 +234,7 @@ function Header() {
               <a
                 href="#formations"
                 onClick={() => setOpen(false)}
-                className="mt-2 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#05251c] px-5 py-3 text-sm font-black text-white"
+                className="mt-2 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#06251c] px-5 py-3 text-sm font-black text-white"
               >
                 Voir toutes les formations
               </a>
@@ -251,7 +251,7 @@ function Hero() {
     <section id="contenu" className="relative min-h-[92vh] overflow-hidden bg-[#f2fbf5] px-4 pb-12 pt-28 text-slate-950 sm:px-6 lg:px-8 lg:pt-32">
       <div className="absolute inset-0">
         <video
-          className="h-full w-full scale-105 object-cover opacity-[0.08] saturate-[0.9]"
+          className="h-full w-full scale-105 object-cover opacity-[0.26] saturate-[0.86] contrast-[0.96]"
           src={HERO_VIDEO_URL}
           poster="/assets/landing/hero/koryxa-learning-hero.jpg"
           autoPlay
@@ -260,7 +260,7 @@ function Hero() {
           playsInline
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-8%,rgba(16,185,129,.18),transparent_34rem),radial-gradient(ellipse_at_12%_18%,rgba(20,184,166,.09),transparent_30rem),radial-gradient(ellipse_at_88%_20%,rgba(188,245,215,.28),transparent_34rem),linear-gradient(180deg,#f7fcf9_0%,#eef9f3_48%,#fbfefc_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-8%,rgba(16,185,129,.22),transparent_34rem),radial-gradient(ellipse_at_12%_18%,rgba(20,184,166,.10),transparent_30rem),radial-gradient(ellipse_at_88%_20%,rgba(188,245,215,.24),transparent_34rem),linear-gradient(180deg,rgba(247,252,249,.74)_0%,rgba(238,249,243,.80)_48%,rgba(251,254,252,.88)_100%)]" />
         <motion.div
           aria-hidden="true"
           initial={{ opacity: 0.25, scale: 1 }}
@@ -270,9 +270,10 @@ function Hero() {
         />
       </div>
 
+      <div className="pointer-events-none absolute left-1/2 top-28 hidden h-[calc(100%-8rem)] w-[min(72rem,calc(100%-4rem))] -translate-x-1/2 rounded-[clamp(2rem,4vw,4.5rem)] border border-emerald-300/10 bg-[radial-gradient(ellipse_at_50%_22%,rgba(16,185,129,.18),transparent_30rem),radial-gradient(ellipse_at_50%_54%,rgba(52,211,153,.14),transparent_34rem),linear-gradient(rgba(5,122,76,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(5,122,76,.03)_1px,transparent_1px),linear-gradient(180deg,rgba(220,252,231,.44),rgba(187,247,208,.26))] bg-[length:auto,auto,62px_62px,62px_62px,auto] shadow-[inset_0_1px_0_rgba(255,255,255,.66),0_28px_96px_rgba(5,46,22,.055)] [mask-image:radial-gradient(ellipse_at_50%_46%,black_0%,black_64%,transparent_90%)] lg:block" aria-hidden="true" />
       <div className="relative mx-auto grid min-h-[calc(92vh-7rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.78fr]">
         <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }} className="max-w-4xl">
-          <SectionLabel dark>
+          <SectionLabel>
             <Sparkles size={14} /> Portail de formations pratiques
           </SectionLabel>
           <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] text-slate-950 sm:text-7xl lg:text-[6.15rem]">
@@ -284,7 +285,7 @@ function Hero() {
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a
               href="#formations"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[#12d184] via-[#00bd72] to-[#069b64] px-7 py-4 text-sm font-black text-[#05251c] shadow-2xl shadow-emerald-500/18 ring-1 ring-emerald-500/20 transition hover:-translate-y-1 hover:from-[#22dc92] hover:to-[#07a66b]"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[#12d184] via-[#00bd72] to-[#0ea873] px-7 py-4 text-sm font-black text-[#06251c] shadow-2xl shadow-emerald-500/18 ring-1 ring-emerald-500/20 transition hover:-translate-y-1 hover:from-[#22dc92] hover:to-[#0ea873]"
             >
               Voir les formations <ArrowRight size={18} />
             </a>
@@ -308,9 +309,9 @@ function Hero() {
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="rounded-[2rem] border border-emerald-200/80 bg-white/82 p-5 shadow-2xl shadow-emerald-950/10 backdrop-blur-2xl ring-1 ring-emerald-300/20"
           >
-            <div className="rounded-[1.5rem] bg-white p-5 text-[#05251c]">
+            <div className="rounded-[1.5rem] bg-white p-5 text-[#06251c]">
               <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Parcours KORYXA</p>
-              <h2 className="mt-2 text-2xl font-black tracking-tight">Un portail. Plusieurs formations.</h2>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Un portail. Plusieurs formations.</h2>
               <div className="mt-6 grid gap-3">
                 {formations.map((formation, index) => (
                   <motion.div
@@ -321,7 +322,7 @@ function Hero() {
                     className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-200"
                   >
                     <span className="text-sm font-black text-slate-800">{formation.title}</span>
-                    <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black ${formation.active ? "bg-emerald-100 text-[#05251c]" : "bg-slate-200 text-slate-600"}`}>
+                    <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black ${formation.active ? "bg-emerald-100 text-[#06251c]" : "bg-slate-200 text-slate-600"}`}>
                       {formation.status}
                     </span>
                   </motion.div>
@@ -350,7 +351,7 @@ function ProofStrip() {
               transition={{ delay: index * 0.06 }}
               className="flex items-center gap-3 rounded-[1.35rem] bg-slate-50 px-5 py-4 ring-1 ring-slate-200"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#05251c] text-emerald-700">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500 text-white">
                 <Icon size={19} />
               </span>
               <p className="text-sm font-black leading-5 text-slate-800">{item.label}</p>
@@ -371,7 +372,7 @@ function FormationsSection() {
             <SectionLabel>
               <Zap size={14} /> Toutes les formations
             </SectionLabel>
-            <h2 className="mt-6 font-serif text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-[#05251c] sm:text-6xl">
+            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[#06251c] sm:text-6xl">
               Choisissez le parcours qui correspond à votre objectif.
             </h2>
           </div>
@@ -396,14 +397,14 @@ function FormationsSection() {
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
-                  <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${formation.active ? "bg-[#05251c] text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                  <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${formation.active ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-600"}`}>
                     <Icon size={24} />
                   </span>
-                  <span className={`rounded-full px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.12em] ${formation.active ? "bg-emerald-400 text-[#05251c]" : "bg-slate-200 text-slate-600"}`}>
+                  <span className={`rounded-full px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.12em] ${formation.active ? "bg-[#00bd72] text-[#06251c]" : "bg-slate-200 text-slate-600"}`}>
                     {formation.status}
                   </span>
                 </div>
-                <h3 className="mt-8 text-2xl font-black tracking-tight text-[#05251c]">{formation.title}</h3>
+                <h3 className="mt-8 text-2xl font-black tracking-tight text-[#06251c]">{formation.title}</h3>
                 <p className="mt-4 flex-1 text-sm leading-7 text-slate-600">{formation.description}</p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {formation.tags.map((tag) => (
@@ -412,7 +413,7 @@ function FormationsSection() {
                     </span>
                   ))}
                 </div>
-                <span className={`mt-8 inline-flex items-center gap-2 text-sm font-black ${formation.active ? "text-[#05251c]" : "text-slate-500"}`}>
+                <span className={`mt-8 inline-flex items-center gap-2 text-sm font-black ${formation.active ? "text-[#06251c]" : "text-slate-500"}`}>
                   {formation.cta} <ArrowRight size={16} />
                 </span>
               </motion.article>
@@ -456,7 +457,7 @@ function GeneralVisionSection() {
             />
             <div className="absolute bottom-8 left-8 right-8 rounded-[1.5rem] border border-white/70 bg-white/88 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-xl">
               <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Principe commun</p>
-              <p className="mt-2 text-xl font-black tracking-tight text-[#05251c]">chaque parcours mène vers un livrable concret.</p>
+              <p className="mt-2 text-xl font-black tracking-tight text-[#06251c]">chaque parcours mène vers un livrable concret.</p>
             </div>
           </div>
         </motion.div>
@@ -465,7 +466,7 @@ function GeneralVisionSection() {
           <SectionLabel>
             <Target size={14} /> Objectif commun
           </SectionLabel>
-          <h2 className="mt-6 font-serif text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-[#05251c] sm:text-6xl">
+          <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[#06251c] sm:text-6xl">
             Plusieurs formations, une même logique : apprendre utile.
           </h2>
           <p className="mt-6 max-w-2xl text-lg font-medium leading-9 text-slate-600">
@@ -487,17 +488,19 @@ function GeneralVisionSection() {
 
 function MethodSection() {
   return (
-    <section id="methode" className="scroll-mt-24 overflow-hidden bg-[#05251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
-      <div className="mx-auto max-w-7xl">
+    <section id="methode" className="relative scroll-mt-24 overflow-hidden border-y border-emerald-100/80 bg-[#f2fbf5] px-4 py-20 text-slate-950 sm:px-6 lg:px-8 lg:py-28">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_18%_0%,rgba(16,185,129,.115),transparent_24rem),radial-gradient(ellipse_at_86%_16%,rgba(20,184,166,.075),transparent_28rem),radial-gradient(ellipse_at_50%_100%,rgba(188,245,215,.22),transparent_30rem),linear-gradient(180deg,#f7fcf9_0%,#eef9f3_100%)]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(5,122,76,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(5,122,76,.028)_1px,transparent_1px)] bg-[length:64px_64px] opacity-80 [mask-image:radial-gradient(circle_at_50%_18%,black,transparent_76%)]" aria-hidden="true" />
+      <div className="relative mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
-            <SectionLabel dark>
+            <SectionLabel>
               <Workflow size={14} /> Méthode générale
             </SectionLabel>
-            <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] sm:text-6xl">
+            <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-slate-950 sm:text-6xl">
               Choisir. Apprendre. Construire. Montrer.
             </h2>
-            <p className="mt-6 text-lg leading-9 text-slate-300">
+            <p className="mt-6 text-lg font-semibold leading-9 text-slate-600">
               La méthode s’applique à tous les parcours KORYXA Formation. Le sujet change, mais la logique reste concrète.
             </p>
           </div>
@@ -520,14 +523,14 @@ function MethodSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ delay: index * 0.08 }}
-                    className="relative rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl shadow-black/20 backdrop-blur-xl"
+                    className="relative overflow-hidden rounded-[1.7rem] border border-[rgba(5,122,76,.145)] bg-[radial-gradient(ellipse_at_85%_0%,rgba(16,185,129,.095),transparent_17rem),linear-gradient(180deg,rgba(255,255,255,.9),rgba(240,253,244,.78))] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,.78),0_22px_64px_rgba(5,46,22,.072)] backdrop-blur-xl transition hover:-translate-y-1 hover:border-[#00bd72]/30 hover:shadow-[0_26px_82px_rgba(5,46,22,.105)]"
                   >
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-400 text-[#05251c]">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00bd72] text-[#06251c]">
                       <Icon size={22} />
                     </span>
-                    <p className="mt-8 text-sm font-black text-emerald-100">0{index + 1}</p>
-                    <h3 className="mt-2 text-2xl font-black tracking-tight">{step.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-300">{step.description}</p>
+                    <p className="mt-8 font-mono text-sm font-black uppercase tracking-[0.22em] text-emerald-700">0{index + 1}</p>
+                    <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950">{step.title}</h3>
+                    <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">{step.description}</p>
                   </motion.article>
                 );
               })}
@@ -557,7 +560,7 @@ function ExperienceSection() {
             className="absolute bottom-6 left-6 right-6 rounded-[1.7rem] border border-emerald-100/80 bg-white/90 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-xl sm:left-auto sm:w-80"
           >
             <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Expérience apprenant</p>
-            <p className="mt-2 text-xl font-black tracking-tight text-[#05251c]">un parcours dédié après le choix de la formation.</p>
+            <p className="mt-2 text-xl font-black tracking-tight text-[#06251c]">un parcours dédié après le choix de la formation.</p>
           </motion.div>
         </div>
 
@@ -565,7 +568,7 @@ function ExperienceSection() {
           <SectionLabel>
             <Database size={14} /> Expérience générale
           </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#05251c] sm:text-6xl">
+          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-6xl">
             Le portail présente. Les pages dédiées détaillent.
           </h2>
           <p className="mt-6 text-lg leading-9 text-slate-600">
@@ -591,13 +594,13 @@ function ExperienceSection() {
 
 function AudienceSection() {
   return (
-    <section className="bg-[#f7f8f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+    <section className="bg-[#f2fbf5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <SectionLabel>
             <Users size={14} /> Pour qui
           </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#05251c] sm:text-6xl">
+          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-6xl">
             Pour celles et ceux qui veulent apprendre utile.
           </h2>
         </div>
@@ -614,7 +617,7 @@ function AudienceSection() {
                 className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-slate-950/10"
               >
                 <Icon className="h-7 w-7 text-emerald-700" />
-                <h3 className="mt-7 text-xl font-black tracking-tight text-[#05251c]">{audience.title}</h3>
+                <h3 className="mt-7 text-xl font-black tracking-tight text-[#06251c]">{audience.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-600">{audience.description}</p>
               </motion.article>
             );
@@ -633,14 +636,14 @@ function FAQSection() {
           <SectionLabel>
             <FileText size={14} /> FAQ
           </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#05251c] sm:text-6xl">
+          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-6xl">
             Avant de choisir.
           </h2>
         </div>
         <div className="space-y-3">
           {faqs.map((faq) => (
             <details key={faq.question} className="group rounded-3xl border border-slate-200 bg-slate-50 p-5 open:bg-white open:shadow-xl open:shadow-slate-950/10">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-black text-[#05251c]">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-black text-[#06251c]">
                 {faq.question}
                 <ChevronDown className="h-5 w-5 shrink-0 text-slate-500 transition group-open:rotate-180" />
               </summary>
@@ -655,7 +658,7 @@ function FAQSection() {
 
 function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-[#05251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+    <section className="relative overflow-hidden bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
       <Image
         src="/assets/landing/hero/koryxa-modern-office.jpg"
         alt="Bureau moderne pour apprendre et travailler avec la technologie"
@@ -663,7 +666,7 @@ function FinalCTA() {
         height={900}
         className="absolute inset-0 h-full w-full object-cover opacity-25"
       />
-      <div className="absolute inset-0 bg-[#05251c]/70" />
+      <div className="absolute inset-0 bg-[#06251c]/70" />
       <div className="relative mx-auto max-w-5xl text-center">
         <Sparkles className="mx-auto h-10 w-10 text-emerald-700" />
         <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] sm:text-6xl">
@@ -675,7 +678,7 @@ function FinalCTA() {
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <a
             href="#formations"
-            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-emerald-400 px-7 py-4 text-sm font-black text-[#05251c] shadow-2xl shadow-emerald-500/18 transition hover:-translate-y-1 hover:bg-emerald-400"
+            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-7 py-4 text-sm font-black text-[#06251c] shadow-2xl shadow-emerald-500/18 transition hover:-translate-y-1 hover:bg-[#0ea873]"
           >
             Voir les formations <ArrowRight size={18} />
           </a>
@@ -693,7 +696,7 @@ function FinalCTA() {
 
 function FooterSEO() {
   return (
-    <footer className="bg-[#05251c] px-4 py-10 text-slate-400 sm:px-6 lg:px-8">
+    <footer className="bg-[#06251c] px-4 py-10 text-slate-400 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
         <div>
           <p className="text-lg font-black text-white">KORYXA Formation</p>
@@ -727,8 +730,8 @@ function FooterSEO() {
 
 export function KoryxaFormationPortal() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-[#05251c]">
-      <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-black focus:text-[#05251c] focus:shadow-xl">
+    <main className="min-h-screen overflow-x-hidden bg-white text-[#06251c]">
+      <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-black focus:text-[#06251c] focus:shadow-xl">
         Aller au contenu
       </a>
       <Header />
