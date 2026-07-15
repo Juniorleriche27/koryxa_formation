@@ -52,13 +52,16 @@ export default function ModuleDetailPage() {
   const [loadingNb, setLoadingNb] = useState(false);
   const [tab, setTab] = useState<"cours" | "ressources">("cours");
   const [moduleStatus, setModuleStatus] = useState<ModuleStatus | null>(null);
+  const [moduleStatuses, setModuleStatuses] = useState<ModuleStatus[]>([]);
 
   const refreshModuleStatus = useCallback(async () => {
     try {
       const response = await validationAPI.getModuleStatuses();
       const statuses = (response.data.modules || []) as ModuleStatus[];
+      setModuleStatuses(statuses);
       setModuleStatus(statuses.find((status) => status.module_id === id) || null);
     } catch {
+      setModuleStatuses([]);
       setModuleStatus(null);
     }
   }, [id]);
@@ -103,6 +106,8 @@ export default function ModuleDetailPage() {
   const resourcesCount = (module.resources?.length ?? 0) + (isModuleZero(module) ? moduleZeroResources.length : 0);
   const videos = module.resources?.filter((resource) => resource.type === "video") ?? [];
   const others = module.resources?.filter((resource) => resource.type !== "video") ?? [];
+  const nextModuleStatus = moduleStatuses.find((status) => Number(status.order_index ?? -1) === Number(module.order_index ?? -1) + 1) || null;
+  const canGoToNextModule = completed && nextModuleStatus?.module_id && nextModuleStatus.is_accessible !== false && nextModuleStatus.status !== "locked";
 
   return (
     <div className="kx-dark-page flex flex-col">
@@ -262,6 +267,26 @@ export default function ModuleDetailPage() {
                       onValidated={refreshModuleStatus}
                     />
                   </div>
+
+                  {canGoToNextModule && nextModuleStatus && (
+                    <section className="mt-8 rounded-3xl border border-emerald-300/25 bg-emerald-400/10 p-5 shadow-2xl shadow-emerald-950/20 backdrop-blur-xl sm:p-6">
+                      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">Étape suivante débloquée</p>
+                          <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Continue vers le module {nextModuleStatus.order_index}</h2>
+                          <p className="mt-2 max-w-2xl text-sm leading-6 text-emerald-50/80">
+                            {nextModuleStatus.title || "Le module suivant"} est maintenant disponible. Tu peux continuer sans revenir au tableau du parcours.
+                          </p>
+                        </div>
+                        <Link
+                          href={`/modules/${nextModuleStatus.module_id}`}
+                          className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-5 text-sm font-black text-slate-950 shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-emerald-50"
+                        >
+                          Passer au module suivant <ChevronRight size={17} />
+                        </Link>
+                      </div>
+                    </section>
+                  )}
 
                   {module.resources && module.resources.length > 0 && (
                     <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl sm:p-6">
