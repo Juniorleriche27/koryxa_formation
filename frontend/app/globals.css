@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --background: 248 250 252;
+  --background: 245 251 247;
   --foreground: 15 23 42;
   --surface: 255 255 255;
-  --brand-blue: 5 37 28;
-  --brand-cyan: 20 184 166;
+  --brand-deep-green: 5 37 28;
+  --brand-teal: 20 184 166;
   --brand-emerald: 16 185 129;
 }
 
@@ -22,8 +22,8 @@ html {
 body {
   color: rgb(var(--foreground));
   background:
-    radial-gradient(circle at top left, rgba(16, 185, 129, 0.13), transparent 32rem),
-    radial-gradient(circle at top right, rgba(20, 184, 166, 0.10), transparent 28rem),
+    radial-gradient(circle at top left, rgba(var(--brand-emerald), 0.13), transparent 32rem),
+    radial-gradient(circle at top right, rgba(var(--brand-teal), 0.10), transparent 28rem),
     rgb(var(--background));
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -31,7 +31,7 @@ body {
 }
 
 ::selection {
-  background: rgba(16, 185, 129, 0.26);
+  background: rgba(var(--brand-emerald), 0.26);
   color: rgb(15 23 42);
 }
 
@@ -50,19 +50,29 @@ body {
   samp {
     font-feature-settings: "liga" 0;
   }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
 }
 
 @layer components {
   .kx-page {
-    @apply min-h-screen bg-slate-50 text-slate-950;
+    @apply min-h-screen bg-[#f5fbf7] text-slate-950;
   }
 
   .kx-dark-page {
-    @apply min-h-screen overflow-x-hidden bg-[#07111f] text-white;
+    @apply min-h-screen overflow-x-hidden bg-[#05251c] text-white;
     background-image:
-      radial-gradient(circle at top left, rgba(59, 130, 246, 0.22), transparent 32rem),
-      radial-gradient(circle at 85% 12%, rgba(20, 184, 166, 0.12), transparent 28rem),
-      linear-gradient(180deg, #07111f 0%, #06101d 48%, #08111f 100%);
+      radial-gradient(circle at top left, rgba(16, 185, 129, 0.20), transparent 32rem),
+      radial-gradient(circle at 85% 12%, rgba(20, 184, 166, 0.13), transparent 28rem),
+      linear-gradient(180deg, #05251c 0%, #041b15 48%, #061f18 100%);
   }
 
   .kx-container {
@@ -74,23 +84,23 @@ body {
   }
 
   .kx-glass {
-    @apply border border-white/10 bg-white/[0.06] shadow-2xl shadow-slate-950/30 backdrop-blur-xl;
+    @apply border border-white/10 bg-white/[0.06] shadow-2xl shadow-emerald-950/30 backdrop-blur-xl;
   }
 
   .kx-surface {
-    @apply rounded-3xl border border-slate-200 bg-white shadow-sm;
+    @apply rounded-3xl border border-emerald-100 bg-white shadow-sm;
   }
 
   .kx-dark-surface {
-    @apply rounded-3xl border border-white/10 bg-white/[0.06] shadow-2xl shadow-slate-950/30 backdrop-blur-xl;
+    @apply rounded-3xl border border-white/10 bg-white/[0.06] shadow-2xl shadow-emerald-950/30 backdrop-blur-xl;
   }
 
   .kx-eyebrow {
-    @apply inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-700;
+    @apply inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700;
   }
 
   .kx-dark-eyebrow {
-    @apply inline-flex items-center rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-200;
+    @apply inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-100;
   }
 
   .kx-heading-xl {
@@ -106,29 +116,9 @@ body {
   }
 
   .kx-dark-muted {
-    @apply text-sm leading-6 text-slate-300 sm:text-base;
+    @apply text-sm leading-6 text-emerald-50/80 sm:text-base;
   }
 }
-
-
-@layer base {
-  h1,
-  h2,
-  h3 {
-    text-wrap: balance;
-  }
-
-  p {
-    text-wrap: pretty;
-  }
-}
-
-@layer utilities {
-  .font-serif {
-    font-family: inherit;
-  }
-}
-
 
 @layer utilities {
   .koryxa-green-surface {

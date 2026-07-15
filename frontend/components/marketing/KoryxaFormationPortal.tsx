@@ -173,10 +173,10 @@ function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-koryxa-navy/10 bg-white/86 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-950/10 bg-white/86 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
         <Link href="/" className="flex items-center gap-3" aria-label="Accueil KORYXA Formation">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#05251c] text-sm font-black text-emerald-700 shadow-lg shadow-koryxa-navy/20 ring-1 ring-emerald-300/20">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#05251c] text-sm font-black text-emerald-300 shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-300/20">
             K
           </span>
           <span className="leading-tight">
@@ -290,7 +290,7 @@ function Hero() {
             </a>
             <a
               href="#methode"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:border-koryxa-gold/50 hover:bg-white/[0.18]"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-emerald-200/80 bg-white/75 px-7 py-4 text-sm font-black text-slate-950 shadow-sm backdrop-blur-xl transition hover:-translate-y-1 hover:border-emerald-300 hover:bg-emerald-50"
             >
               Comprendre la méthode
             </a>
