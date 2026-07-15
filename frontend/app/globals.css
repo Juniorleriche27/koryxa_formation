@@ -6,9 +6,9 @@
   --background: 248 250 252;
   --foreground: 15 23 42;
   --surface: 255 255 255;
-  --brand-blue: 13 27 56;
-  --brand-cyan: 61 122 104;
-  --brand-emerald: 200 169 107;
+  --brand-blue: 5 37 28;
+  --brand-cyan: 20 184 166;
+  --brand-emerald: 16 185 129;
 }
 
 * {
@@ -22,8 +22,8 @@ html {
 body {
   color: rgb(var(--foreground));
   background:
-    radial-gradient(circle at top left, rgba(200, 169, 107, 0.13), transparent 32rem),
-    radial-gradient(circle at top right, rgba(61, 122, 104, 0.10), transparent 28rem),
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.13), transparent 32rem),
+    radial-gradient(circle at top right, rgba(20, 184, 166, 0.10), transparent 28rem),
     rgb(var(--background));
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -31,7 +31,7 @@ body {
 }
 
 ::selection {
-  background: rgba(200, 169, 107, 0.26);
+  background: rgba(16, 185, 129, 0.26);
   color: rgb(15 23 42);
 }
 
@@ -41,7 +41,7 @@ body {
   input,
   textarea,
   select {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
   }
 
   code,
@@ -125,6 +125,17 @@ body {
 
 @layer utilities {
   .font-serif {
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: inherit;
+  }
+}
+
+
+@layer utilities {
+  .koryxa-green-surface {
+    background-image:
+      radial-gradient(ellipse at 50% -8%, rgba(16, 185, 129, 0.16), transparent 32rem),
+      radial-gradient(ellipse at 12% 18%, rgba(20, 184, 166, 0.075), transparent 30rem),
+      radial-gradient(ellipse at 88% 20%, rgba(188, 245, 215, 0.24), transparent 34rem),
+      linear-gradient(180deg, #f7fcf9 0%, #eef9f3 46%, #fbfefc 100%);
   }
 }
