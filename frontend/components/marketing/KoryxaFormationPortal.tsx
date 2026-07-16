@@ -260,7 +260,7 @@ function Hero() {
           playsInline
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-8%,rgba(16,185,129,.22),transparent_34rem),radial-gradient(ellipse_at_12%_18%,rgba(20,184,166,.10),transparent_30rem),radial-gradient(ellipse_at_88%_20%,rgba(188,245,215,.24),transparent_34rem),linear-gradient(180deg,rgba(247,252,249,.74)_0%,rgba(238,249,243,.80)_48%,rgba(251,254,252,.88)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-8%,rgba(16,185,129,.12),transparent_34rem),radial-gradient(ellipse_at_12%_18%,rgba(20,184,166,.06),transparent_30rem),radial-gradient(ellipse_at_88%_20%,rgba(188,245,215,.12),transparent_34rem),linear-gradient(180deg,rgba(247,252,249,.42)_0%,rgba(238,249,243,.50)_48%,rgba(251,254,252,.62)_100%)]" />
         <motion.div
           aria-hidden="true"
           initial={{ opacity: 0.25, scale: 1 }}
