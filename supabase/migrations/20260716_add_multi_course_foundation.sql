@@ -4,6 +4,25 @@
 -- Le parcours Python existant reste le parcours par défaut.
 -- ============================================================
 
+-- Helper RLS rétrocompatible avec les politiques historiques basées sur profiles.role.
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.profiles
+        WHERE id = auth.uid()
+          AND role = 'admin'
+    );
+$$;
+
+REVOKE ALL ON FUNCTION public.is_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO anon, authenticated, service_role;
+
 CREATE TABLE IF NOT EXISTS public.courses (
     id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     slug           TEXT NOT NULL UNIQUE,
