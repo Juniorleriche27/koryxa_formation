@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Bot } from "lucide-react";
 import ApiWakeStatus from "@/components/layout/ApiWakeStatus";
 import "./globals.css";
 
@@ -55,6 +56,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
       <body className="font-sans antialiased">
         {children}
+        <a
+          href="https://assistant-formation.koryxa.fr"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Ouvrir l’assistant KORYXA Formation"
+          className="fixed bottom-4 right-4 z-[70] inline-flex h-14 items-center justify-center gap-3 rounded-full border border-[#bcf5d7]/30 bg-[#06251c] px-4 text-white shadow-2xl shadow-[#06251c]/25 transition hover:-translate-y-1 hover:bg-[#00bd72] hover:text-[#06251c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00bd72] focus-visible:ring-offset-2 sm:bottom-6 sm:right-6 sm:h-16 sm:px-5"
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#bcf5d7] text-[#06251c] sm:h-10 sm:w-10">
+            <Bot size={20} aria-hidden="true" />
+          </span>
+          <span className="hidden text-left sm:block">
+            <span className="block text-[0.68rem] font-black uppercase tracking-[0.14em] text-[#bcf5d7]">Assistant</span>
+            <span className="block text-sm font-black">Besoin d’aide ?</span>
+          </span>
+        </a>
         <ApiWakeStatus />
       </body>
     </html>

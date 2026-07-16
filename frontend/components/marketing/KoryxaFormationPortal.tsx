@@ -181,13 +181,13 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-950/10 bg-white/86 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
-        <Link href="/" className="flex items-center gap-3" aria-label="Accueil KORYXA Formation">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#06251c] text-sm font-black text-emerald-300 shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-300/20">
-            K
+        <Link href="/" className="flex items-center gap-3" aria-label="Accueil KORYXA — Pôle Formation">
+          <span className="relative h-11 w-11 overflow-hidden rounded-2xl border border-[#06251c]/10 bg-white shadow-sm sm:h-12 sm:w-12">
+            <Image src="/assets/brand/koryxa-logo.webp" alt="Logo KORYXA" fill className="object-cover" sizes="48px" priority />
           </span>
           <span className="leading-tight">
-            <span className="block text-sm font-black tracking-tight text-[#06251c] sm:text-base">KORYXA Formation</span>
-            <span className="block text-[0.7rem] font-semibold text-slate-500 sm:text-xs">Portail des parcours</span>
+            <span className="block text-sm font-black tracking-[0.08em] text-[#06251c] sm:text-base">KORYXA</span>
+            <span className="block text-[0.7rem] font-semibold text-slate-500 sm:text-xs">Pôle Formation</span>
           </span>
         </Link>
 
@@ -201,13 +201,6 @@ export function Header() {
             );
           })}
         </nav>
-
-        <a
-          href="/formations"
-          className="hidden h-11 items-center justify-center rounded-full bg-[#06251c] px-5 text-sm font-black text-white shadow-lg shadow-emerald-950/12 transition hover:-translate-y-0.5 hover:bg-[#00bd72] hover:text-[#06251c] lg:inline-flex"
-        >
-          Voir les formations
-        </a>
 
         <button
           type="button"
@@ -243,13 +236,6 @@ export function Header() {
                   </Link>
                 );
               })}
-              <a
-                href="/formations"
-                onClick={() => setOpen(false)}
-                className="mt-2 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#06251c] px-5 py-3 text-sm font-black text-white"
-              >
-                Voir toutes les formations
-              </a>
             </nav>
           </motion.div>
         )}
