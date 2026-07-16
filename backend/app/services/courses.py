@@ -13,11 +13,12 @@ def get_course_by_slug(slug: str | None = None, *, published_only: bool = True) 
     query = get_service_supabase().table("courses").select("*").eq("slug", selected_slug)
     if published_only:
         query = query.eq("is_published", True)
-    response = query.maybe_single().execute()
-    if not response.data:
+    response = query.limit(1).execute()
+    rows = response.data or []
+    if not rows:
         logger.info("course_not_found slug=%s published_only=%s", selected_slug, published_only)
         raise HTTPException(status_code=404, detail=COURSE_NOT_FOUND)
-    return response.data
+    return rows[0]
 
 
 def get_course_id(slug: str | None = None, *, published_only: bool = True) -> str:

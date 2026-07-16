@@ -41,6 +41,9 @@ class FakeQuery:
         self.order_field = field
         return self
 
+    def limit(self, _value):
+        return self
+
     def maybe_single(self):
         self.single = True
         return self
@@ -62,7 +65,7 @@ class FakeDB:
 
 class CourseServiceTests(unittest.TestCase):
     def test_default_slug_is_python_and_published(self):
-        db = FakeDB({"courses": {"id": "python-id", "slug": "python-data-analyst"}})
+        db = FakeDB({"courses": [{"id": "python-id", "slug": "python-data-analyst"}]})
         with patch.object(courses, "get_service_supabase", return_value=db):
             course = courses.get_course_by_slug()
         self.assertEqual(course["id"], "python-id")
