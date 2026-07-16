@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, CheckCircle2, ChevronRight, Clock3, Compass, Layers3, Lock, RefreshCw, Trophy } from "lucide-react";
 import { getApiErrorMessage, modulesAPI, validationAPI } from "@/lib/api";
+import { DEFAULT_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import type { Module, ModuleStatus } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
 import Badge from "@/components/ui/Badge";
 
 type ModuleWithStatus = Module & { validation?: ModuleStatus };
@@ -22,24 +24,25 @@ function statusCopy(status?: ModuleStatus) {
 }
 
 export default function ModulesPage() {
+  const [courseSlug, setCourseSlug] = useState(DEFAULT_COURSE_SLUG);
   const [modules, setModules] = useState<Module[]>([]);
   const [statuses, setStatuses] = useState<ModuleStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [errorDetails, setErrorDetails] = useState("");
   const [statusWarning, setStatusWarning] = useState("");
 
   useEffect(() => {
     async function loadModules() {
+      const requestedCourse = readCourseSlug(window.location.search);
+      setCourseSlug(requestedCourse);
       setLoading(true);
       setError("");
-      setErrorDetails("");
       setStatusWarning("");
 
       try {
         const [modulesResponse, statusResponse] = await Promise.allSettled([
-          modulesAPI.getAll(),
-          validationAPI.getModuleStatuses(),
+          modulesAPI.getAll(requestedCourse),
+          validationAPI.getModuleStatuses(requestedCourse),
         ]);
 
         if (modulesResponse.status === "fulfilled") {
@@ -53,9 +56,8 @@ export default function ModulesPage() {
         } else {
           setStatusWarning(getApiErrorMessage(statusResponse.reason));
         }
-      } catch (err) {
+      } catch {
         setError("Impossible de charger les modules. Réessaie plus tard.");
-        setErrorDetails(getApiErrorMessage(err));
       } finally {
         setLoading(false);
       }
@@ -71,22 +73,26 @@ export default function ModulesPage() {
 
   const validatedCount = modulesWithStatus.filter((module) => module.validation?.is_validated).length;
   const totalPlatformPoints = modulesWithStatus.reduce((total, module) => total + Number(module.validation?.platform_points_awarded || 0), 0);
+  const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog[DEFAULT_COURSE_SLUG];
 
   return (
     <div className="kx-dark-page flex flex-col">
       <Navbar />
+      <LearnerCourseContext courseSlug={courseSlug} completed={validatedCount} total={modules.length} />
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-white/10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(59,130,246,0.25),transparent_34rem),radial-gradient(circle_at_82%_18%,rgba(14,165,233,0.12),transparent_28rem)]" />
           <div className="kx-container relative py-8 sm:py-12 lg:py-16">
             <div className="grid gap-8 lg:grid-cols-[1fr_24rem] lg:items-end">
               <div>
-                <span className="kx-dark-eyebrow">Parcours certifiant</span>
+                <span className="kx-dark-eyebrow">{courseMeta.title}</span>
                 <h1 className="mt-5 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-6xl">
                   Avance dans le bon ordre, valide chaque étape.
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                  Chaque module se débloque après validation du précédent. Les QCM réussis à partir de 12/20 alimentent ton score plateforme sur 40 points.
+                  {courseMeta.published
+                    ? "Chaque module se débloque après validation du précédent. Les QCM réussis à partir de 12/20 alimentent ton score plateforme sur 40 points."
+                    : "Ce parcours est encore en préparation. Son contenu restera fermé tant que la recette complète ne sera pas terminée."}
                 </p>
               </div>
               <div className="grid gap-3 rounded-3xl border border-white/10 bg-white/[0.08] p-5 shadow-2xl shadow-blue-950/30 backdrop-blur-xl">
@@ -114,7 +120,7 @@ export default function ModulesPage() {
 
         <section className="kx-container py-8 sm:py-12">
           {loading && (
-            <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center text-slate-300 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
+            <div aria-live="polite" aria-busy="true" className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center text-slate-300 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="mx-auto h-8 w-8 rounded-full border-2 border-blue-400 border-t-transparent" />
               <p className="mt-4 font-bold">Chargement du parcours…</p>
             </div>
@@ -129,7 +135,13 @@ export default function ModulesPage() {
                   <p className="mt-2 text-sm leading-6 text-red-100/80">Le backend peut être en réveil. Réessaie après quelques secondes.</p>
                 </div>
               </div>
-              {errorDetails && <pre className="mt-4 max-h-56 overflow-auto rounded-2xl bg-slate-950/70 p-4 text-xs text-red-50">{errorDetails}</pre>}
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-black text-slate-950 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
+              >
+                <RefreshCw size={16} /> Réessayer
+              </button>
             </div>
           )}
 
@@ -197,7 +209,7 @@ export default function ModulesPage() {
                 return (
                   <motion.div key={module.id} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
                     {accessible ? (
-                      <Link href={`/modules/${module.id}`} className={cardClass}>
+                      <Link href={courseRoutes.module(module.id, courseSlug)} className={cardClass}>
                         {content}
                       </Link>
                     ) : (
@@ -212,8 +224,20 @@ export default function ModulesPage() {
               {modules.length === 0 && (
                 <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
                   <Layers3 className="mx-auto h-10 w-10 text-blue-200" />
-                  <p className="mt-4 text-lg font-black text-white">Aucun module disponible.</p>
-                  <p className="mt-2 text-sm text-slate-400">Les modules apparaîtront ici dès qu’ils seront publiés.</p>
+                  <p className="mt-4 text-lg font-black text-white">
+                    {courseMeta.published ? "Aucun module disponible." : "Parcours encore fermé aux apprenants."}
+                  </p>
+                  <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-400">
+                    {courseMeta.published
+                      ? "Les modules apparaîtront ici dès qu’ils seront publiés."
+                      : "Le programme LLM RAG est structuré, mais ses modules resteront invisibles jusqu’à la fin de la recette pédagogique et technique."}
+                  </p>
+                  <Link
+                    href={courseMeta.landingPath}
+                    className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-black text-slate-950 transition hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+                  >
+                    Voir la présentation <ArrowRight size={16} />
+                  </Link>
                 </div>
               )}
             </div>

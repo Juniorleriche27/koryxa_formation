@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
+  AlertTriangle,
   BookOpen,
   CheckCircle2,
   ChevronRight,
@@ -21,10 +22,12 @@ import {
   Trophy,
 } from "lucide-react";
 import { modulesAPI, notebookAPI, validationAPI } from "@/lib/api";
+import { DEFAULT_COURSE_SLUG, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import { moduleZeroCells, moduleZeroResources } from "@/lib/moduleZeroContent";
 import type { Module, ModuleStatus } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
 import Badge from "@/components/ui/Badge";
 import NotebookViewer, { NotebookCell } from "@/components/modules/NotebookViewer";
 import AIAssistant from "@/components/modules/AIAssistant";
@@ -47,7 +50,10 @@ function getYouTubeId(url: string) {
 
 export default function ModuleDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [courseSlug, setCourseSlug] = useState(DEFAULT_COURSE_SLUG);
   const [module, setModule] = useState<Module | null>(null);
+  const [moduleLoading, setModuleLoading] = useState(true);
+  const [moduleError, setModuleError] = useState("");
   const [cells, setCells] = useState<NotebookCell[]>([]);
   const [loadingNb, setLoadingNb] = useState(false);
   const [tab, setTab] = useState<"cours" | "ressources">("cours");
@@ -56,7 +62,7 @@ export default function ModuleDetailPage() {
 
   const refreshModuleStatus = useCallback(async () => {
     try {
-      const response = await validationAPI.getModuleStatuses();
+      const response = await validationAPI.getModuleStatuses(courseSlug);
       const statuses = (response.data.modules || []) as ModuleStatus[];
       setModuleStatuses(statuses);
       setModuleStatus(statuses.find((status) => status.module_id === id) || null);
@@ -64,10 +70,18 @@ export default function ModuleDetailPage() {
       setModuleStatuses([]);
       setModuleStatus(null);
     }
-  }, [id]);
+  }, [courseSlug, id]);
 
   useEffect(() => {
-    modulesAPI.getOne(id).then((response) => setModule(response.data));
+    const requestedCourse = readCourseSlug(window.location.search);
+    setCourseSlug(requestedCourse);
+    setModuleLoading(true);
+    setModuleError("");
+    modulesAPI
+      .getOne(id)
+      .then((response) => setModule(response.data))
+      .catch(() => setModuleError("Impossible de charger ce module."))
+      .finally(() => setModuleLoading(false));
     refreshModuleStatus();
   }, [id, refreshModuleStatus]);
 
@@ -86,15 +100,31 @@ export default function ModuleDetailPage() {
 
   if (!module) {
     return (
-      <div className="kx-dark-page flex items-center justify-center">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-5 text-center shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="mx-auto h-8 w-8 rounded-full border-2 border-blue-400 border-t-transparent"
-          />
-          <p className="mt-4 text-sm font-semibold text-slate-300">Préparation du module…</p>
-        </div>
+      <div className="kx-dark-page flex min-h-screen flex-col">
+        <Navbar />
+        <LearnerCourseContext courseSlug={courseSlug} current="module" compact />
+        <main className="kx-container flex flex-1 items-center justify-center py-12">
+          {moduleError ? (
+            <div role="alert" className="w-full max-w-xl rounded-3xl border border-red-300/20 bg-red-400/10 px-6 py-10 text-center text-red-100 shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
+              <AlertTriangle className="mx-auto h-9 w-9" />
+              <p className="mt-4 text-xl font-black">{moduleError}</p>
+              <p className="mt-2 text-sm leading-6 text-red-100/75">Le module peut être indisponible ou ne pas appartenir à ce parcours.</p>
+              <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+                <Link href={courseRoutes.modules(courseSlug)} className="inline-flex h-11 items-center justify-center rounded-xl bg-white px-4 text-sm font-black text-slate-950">
+                  Retour au parcours
+                </Link>
+                <button type="button" onClick={() => window.location.reload()} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/20 px-4 text-sm font-black text-white">
+                  <RefreshCw size={16} /> Réessayer
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div aria-live="polite" aria-busy={moduleLoading} className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-8 text-center shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="mx-auto h-8 w-8 rounded-full border-2 border-blue-400 border-t-transparent" />
+              <p className="mt-4 text-sm font-semibold text-slate-300">Préparation du module…</p>
+            </div>
+          )}
+        </main>
       </div>
     );
   }
@@ -112,6 +142,7 @@ export default function ModuleDetailPage() {
   return (
     <div className="kx-dark-page flex flex-col">
       <Navbar />
+      <LearnerCourseContext courseSlug={courseSlug} current="module" compact />
 
       <header className="relative overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(59,130,246,0.28),transparent_34rem),radial-gradient(circle_at_80%_20%,rgba(20,184,166,0.14),transparent_28rem)]" />
@@ -119,7 +150,7 @@ export default function ModuleDetailPage() {
           <div className="grid gap-8 lg:grid-cols-[1fr_20rem] lg:items-start">
             <div className="max-w-3xl">
               <div className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-400">
-                <Link href="/modules" className="font-semibold text-slate-300 transition hover:text-white">
+                <Link href={courseRoutes.modules(courseSlug)} className="font-semibold text-slate-300 transition hover:text-white">
                   Modules
                 </Link>
                 <ChevronRight size={15} />
@@ -243,7 +274,7 @@ export default function ModuleDetailPage() {
                   <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-400">
                     Tu dois valider le module précédent avant d’ouvrir cette étape. Retourne au parcours pour voir ta progression et les QCM à refaire.
                   </p>
-                  <Link href="/modules" className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-blue-600 hover:text-white">
+                  <Link href={courseRoutes.modules(courseSlug)} className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-blue-600 hover:text-white">
                     Voir le parcours <ChevronRight size={16} />
                   </Link>
                 </div>
@@ -279,7 +310,7 @@ export default function ModuleDetailPage() {
                           </p>
                         </div>
                         <Link
-                          href={`/modules/${nextModuleStatus.module_id}`}
+                          href={courseRoutes.module(nextModuleStatus.module_id, courseSlug)}
                           className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-5 text-sm font-black text-slate-950 shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-emerald-50"
                         >
                           Passer au module suivant <ChevronRight size={17} />

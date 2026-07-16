@@ -58,30 +58,30 @@ api.interceptors.response.use(
 );
 
 export const modulesAPI = {
-  getAll: () => api.get("/modules/"),
+  getAll: (course?: string) => api.get("/modules/", { params: course ? { course } : undefined }),
   getOne: (id: string) => api.get(`/modules/${id}`),
 };
 
 export const progressAPI = {
-  getAll: () => api.get("/progress"),
-  getCompletion: () => api.get("/progress/completion"),
+  getAll: (course?: string) => api.get("/progress", { params: course ? { course } : undefined }),
+  getCompletion: (course?: string) => api.get("/progress/completion", { params: course ? { course } : undefined }),
   update: (module_id: string, completed: boolean) =>
     api.post("/progress", { module_id, completed }),
 };
 
 export const certificatesAPI = {
-  getMy: () => internalApi.get("/api/certificates/me"),
-  issue: () => internalApi.post("/api/certificates/issue"),
+  getMy: (course?: string) => internalApi.get("/api/certificates/me", { params: course ? { course } : undefined }),
+  issue: (course?: string) => internalApi.post("/api/certificates/issue", undefined, { params: course ? { course } : undefined }),
 };
 
 export const validationAPI = {
-  getModuleStatuses: () => internalApi.get("/api/validation/modules/status"),
+  getModuleStatuses: (course?: string) => internalApi.get("/api/validation/modules/status", { params: course ? { course } : undefined }),
   getQuiz: (module_id: string) => internalApi.get(`/api/validation/quiz/${module_id}`),
   submitQuiz: (module_id: string, answers: Record<string, string>) =>
     internalApi.post(`/api/validation/quiz/${module_id}/submit`, { answers }),
-  getCertificationStatus: () => internalApi.get("/api/validation/certification/me"),
-  submitFinalProject: (submission_url?: string, submission_notes?: string) =>
-    internalApi.post("/api/validation/final-project/submit", { submission_url, submission_notes }),
+  getCertificationStatus: (course?: string) => internalApi.get("/api/validation/certification/me", { params: course ? { course } : undefined }),
+  submitFinalProject: (submission_url?: string, submission_notes?: string, course?: string) =>
+    internalApi.post("/api/validation/final-project/submit", { submission_url, submission_notes }, { params: course ? { course } : undefined }),
 };
 
 export const notebookAPI = {

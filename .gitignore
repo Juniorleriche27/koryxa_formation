@@ -29,3 +29,6 @@ out/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ── Rapports locaux ──────────────────────────────
+qa-final-report.json

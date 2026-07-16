@@ -1,0 +1,10 @@
+DEFAULT_COURSE_SLUG = "python-data-analyst"
+LLM_RAG_COURSE_SLUG = "llm-rag"
+
+COURSE_NOT_FOUND = "Parcours introuvable ou non publié."
+MODULE_NOT_FOUND = "Module introuvable ou non publié."
+MODULE_SCOPE_ERROR = "Module introuvable dans ce parcours."
+LESSON_NOT_FOUND = "Leçon introuvable ou non publiée."
+EXERCISE_NOT_FOUND = "Exercice introuvable ou non publié."
+PROJECT_NOT_FOUND = "Projet introuvable ou non publié."
+THEORY_RESOURCE_NOT_FOUND = "Support théorique introuvable ou non publié."

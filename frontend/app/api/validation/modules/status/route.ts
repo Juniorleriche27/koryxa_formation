@@ -5,6 +5,11 @@ import { findGrantById, summarizeGrant } from "@/lib/formationAccessAdmin";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+type CourseRow = {
+  id: string;
+  slug: string;
+};
+
 type ModuleRow = {
   id: string;
   title: string | null;
@@ -79,8 +84,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: "Session formation invalide." }, { status: 401 });
   }
 
+  const requestedCourse = request.nextUrl.searchParams.get("course") || "python-data-analyst";
+  const courses = await supabaseGet<CourseRow[]>(
+    `/rest/v1/courses?select=id,slug&slug=eq.${encodeURIComponent(requestedCourse)}&is_published=eq.true&limit=1`
+  );
+  const course = courses[0];
+
+  if (!course) {
+    return NextResponse.json({ message: "Parcours introuvable ou non publié." }, { status: 404 });
+  }
+
+  if (grant.course_id !== course.id) {
+    return NextResponse.json({ message: "Cet accès ne couvre pas ce parcours." }, { status: 403 });
+  }
+
   const modules = await supabaseGet<ModuleRow[]>(
-    "/rest/v1/modules?select=id,title,duration,estimated_hours,platform_points,requires_quiz,quiz_pass_score,order_index&is_published=eq.true&order=order_index.asc"
+    `/rest/v1/modules?select=id,title,duration,estimated_hours,platform_points,requires_quiz,quiz_pass_score,order_index&is_published=eq.true&course_id=eq.${encodeURIComponent(course.id)}&order=order_index.asc`
   );
   const progressRows = await supabaseGet<ProgressRow[]>(
     `/rest/v1/formation_module_progress?select=module_id,completed,status,quiz_best_score,completed_at,validated_at,platform_points_awarded&access_code_id=eq.${encodeURIComponent(grant.id)}`

@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
 from app.database import supabase
 from app.middleware.auth import get_current_user
+from app.services.courses import DEFAULT_COURSE_SLUG, get_course_id
 
 router = APIRouter()
 
@@ -28,6 +29,7 @@ class FinalProjectSubmitRequest(BaseModel):
 
 class FinalProjectGradeRequest(BaseModel):
     user_id: str
+    course: str = DEFAULT_COURSE_SLUG
     score_points: float = Field(ge=0, le=60)
     status: str = Field(default="graded")
     feedback: str | None = None
@@ -53,11 +55,12 @@ def require_admin(user: Any) -> None:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Accès admin requis.")
 
 
-def fetch_modules() -> list[dict[str, Any]]:
+def fetch_modules(course: Optional[str] = None) -> list[dict[str, Any]]:
     response = (
         supabase.table("modules")
         .select("*")
         .eq("is_published", True)
+        .eq("course_id", get_course_id(course or DEFAULT_COURSE_SLUG))
         .order("order_index")
         .execute()
     )
@@ -72,13 +75,31 @@ def fetch_module(module_id: str) -> dict[str, Any]:
     return module
 
 
-def fetch_progress(user_id: str) -> list[dict[str, Any]]:
-    response = supabase.table("progress").select("*").eq("user_id", user_id).execute()
+def fetch_modules_by_module(module: dict[str, Any]) -> list[dict[str, Any]]:
+    response = (
+        supabase.table("modules")
+        .select("*")
+        .eq("is_published", True)
+        .eq("course_id", module["course_id"])
+        .order("order_index")
+        .execute()
+    )
     return response.data or []
 
 
-def progress_map(user_id: str) -> dict[str, dict[str, Any]]:
-    return {row["module_id"]: row for row in fetch_progress(user_id)}
+def fetch_progress(user_id: str, modules: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    query = supabase.table("progress").select("*").eq("user_id", user_id)
+    if modules is not None:
+        module_ids = [str(module["id"]) for module in modules]
+        if not module_ids:
+            return []
+        query = query.in_("module_id", module_ids)
+    response = query.execute()
+    return response.data or []
+
+
+def progress_map(user_id: str, modules: list[dict[str, Any]] | None = None) -> dict[str, dict[str, Any]]:
+    return {row["module_id"]: row for row in fetch_progress(user_id, modules)}
 
 
 def is_progress_validated(row: dict[str, Any] | None) -> bool:
@@ -135,14 +156,23 @@ def days_between(start_iso: str | None, end: datetime) -> int:
     return max(0, (end - start).days)
 
 
-def latest_final_project(user_id: str) -> dict[str, Any] | None:
-    response = supabase.table("final_projects").select("*").eq("user_id", user_id).limit(1).execute()
+def latest_final_project(user_id: str, course_id: str) -> dict[str, Any] | None:
+    response = (
+        supabase.table("final_projects")
+        .select("*")
+        .eq("user_id", user_id)
+        .eq("course_id", course_id)
+        .limit(1)
+        .execute()
+    )
     return (response.data or [None])[0]
 
 
-def compute_certification_status(user: Any) -> dict[str, Any]:
-    modules = fetch_modules()
-    by_module = progress_map(user.id)
+def compute_certification_status(user: Any, course: Optional[str] = None) -> dict[str, Any]:
+    selected_course = course or DEFAULT_COURSE_SLUG
+    course_id = get_course_id(selected_course)
+    modules = fetch_modules(selected_course)
+    by_module = progress_map(user.id, modules)
     required_modules = [item for item in modules if int(item.get("order_index", 0)) <= 6]
 
     platform_score = 0.0
@@ -157,7 +187,7 @@ def compute_certification_status(user: Any) -> dict[str, Any]:
         else:
             missing_modules.append(module.get("title") or f"Module {module.get('order_index')}")
 
-    final_project = latest_final_project(user.id)
+    final_project = latest_final_project(user.id, course_id)
     project_is_graded = bool(final_project and final_project.get("status") in {"graded", "validated"})
     project_score = float((final_project or {}).get("score_points") or 0) if project_is_graded else 0.0
     final_score = min(100.0, platform_score + project_score)
@@ -187,6 +217,7 @@ def compute_certification_status(user: Any) -> dict[str, Any]:
 
     snapshot = {
         "user_id": user.id,
+        "course_id": course_id,
         "platform_score": round(platform_score, 2),
         "project_score": round(project_score, 2),
         "final_score": round(final_score, 2),
@@ -214,9 +245,10 @@ def compute_certification_status(user: Any) -> dict[str, Any]:
 
 
 @router.get("/modules/status")
-def get_modules_status(user=Depends(get_current_user)):
-    modules = fetch_modules()
-    by_module = progress_map(user.id)
+def get_modules_status(course: Optional[str] = None, user=Depends(get_current_user)):
+    selected_course = course or DEFAULT_COURSE_SLUG
+    modules = fetch_modules(selected_course)
+    by_module = progress_map(user.id, modules)
 
     result = []
     for module in modules:
@@ -249,7 +281,7 @@ def get_module_quiz(module_id: str):
     module = fetch_module(module_id)
     response = (
         supabase.table("quiz_questions")
-        .select("id, order_index, question, options, difficulty, skill")
+        .select("id, order_index, question, options, difficulty, skill, question_type, is_final_test")
         .eq("module_id", module_id)
         .eq("is_active", True)
         .order("order_index")
@@ -273,14 +305,14 @@ def submit_module_quiz(module_id: str, payload: QuizSubmitRequest, user=Depends(
     if not bool(module.get("requires_quiz", True)):
         raise HTTPException(status_code=400, detail="Ce module ne demande pas de QCM de validation.")
 
-    modules = fetch_modules()
-    by_module = progress_map(user.id)
+    modules = fetch_modules_by_module(module)
+    by_module = progress_map(user.id, modules)
     if not module_accessible(module, modules, by_module):
         raise HTTPException(status_code=403, detail="Module bloqué. Valide le module précédent avant de soumettre ce QCM.")
 
     response = (
         supabase.table("quiz_questions")
-        .select("id, answer, skill, explanation")
+        .select("id, question, question_type, answer, skill, explanation")
         .eq("module_id", module_id)
         .eq("is_active", True)
         .execute()
@@ -291,19 +323,31 @@ def submit_module_quiz(module_id: str, payload: QuizSubmitRequest, user=Depends(
 
     correct = 0
     review_sections: list[str] = []
-    explanations: list[str] = []
+    corrections: list[dict[str, Any]] = []
     normalized_answers = {str(key): value.strip().upper() for key, value in payload.answers.items()}
 
     for question in questions:
         qid = str(question["id"])
-        if normalized_answers.get(qid) == question["answer"]:
+        selected_answer = normalized_answers.get(qid)
+        is_correct = selected_answer == question["answer"]
+        if is_correct:
             correct += 1
         else:
             skill = question.get("skill") or "partie du module"
             if skill not in review_sections:
                 review_sections.append(skill)
-            if question.get("explanation"):
-                explanations.append(question["explanation"])
+
+        corrections.append(
+            {
+                "question_id": qid,
+                "question": question.get("question"),
+                "question_type": question.get("question_type") or "qcm",
+                "selected_answer": selected_answer,
+                "correct_answer": question["answer"],
+                "is_correct": is_correct,
+                "explanation": question.get("explanation"),
+            }
+        )
 
     total = len(questions)
     score = round((correct / total) * 20) if total else 0
@@ -357,31 +401,34 @@ def submit_module_quiz(module_id: str, payload: QuizSubmitRequest, user=Depends(
         "total_questions": total,
         "review_sections": review_sections,
         "feedback": feedback,
-        "explanations": explanations[:5],
+        "corrections": corrections,
     }
 
 
 @router.get("/certification/me")
-def get_my_certification_status(user=Depends(get_current_user)):
-    return compute_certification_status(user)
+def get_my_certification_status(course: Optional[str] = None, user=Depends(get_current_user)):
+    return compute_certification_status(user, course)
 
 
 @router.post("/final-project/submit")
-def submit_final_project(payload: FinalProjectSubmitRequest, user=Depends(get_current_user)):
-    modules = fetch_modules()
-    by_module = progress_map(user.id)
+def submit_final_project(payload: FinalProjectSubmitRequest, course: Optional[str] = None, user=Depends(get_current_user)):
+    selected_course = course or DEFAULT_COURSE_SLUG
+    course_id = get_course_id(selected_course)
+    modules = fetch_modules(selected_course)
+    by_module = progress_map(user.id, modules)
     module_six = next((item for item in modules if int(item.get("order_index", -1)) == 6), None)
     if module_six and not is_progress_validated(by_module.get(module_six["id"])):
         raise HTTPException(status_code=403, detail="Projet final bloqué. Valide d'abord les modules 0 à 6.")
 
     data = {
         "user_id": user.id,
+        "course_id": course_id,
         "status": "submitted",
         "submission_url": payload.submission_url,
         "submission_notes": payload.submission_notes,
         "submitted_at": utc_now_iso(),
     }
-    response = supabase.table("final_projects").upsert(data, on_conflict="user_id").execute()
+    response = supabase.table("final_projects").upsert(data, on_conflict="user_id,course_id").execute()
     return response.data
 
 
@@ -393,6 +440,7 @@ def grade_final_project(payload: FinalProjectGradeRequest, user=Depends(get_curr
 
     data = {
         "user_id": payload.user_id,
+        "course_id": get_course_id(payload.course),
         "status": payload.status,
         "score_points": payload.score_points,
         "feedback": payload.feedback,
@@ -401,5 +449,5 @@ def grade_final_project(payload: FinalProjectGradeRequest, user=Depends(get_curr
         "reviewed_at": utc_now_iso(),
         "graded_at": utc_now_iso() if payload.status in {"graded", "validated"} else None,
     }
-    response = supabase.table("final_projects").upsert(data, on_conflict="user_id").execute()
+    response = supabase.table("final_projects").upsert(data, on_conflict="user_id,course_id").execute()
     return response.data

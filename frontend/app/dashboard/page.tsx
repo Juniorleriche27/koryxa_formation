@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, CheckCircle2, Flame, Sparkles } from "lucide-react";
 import { modulesAPI } from "@/lib/api";
+import { courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import { useProgress } from "@/hooks/useProgress";
 import type { Module } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -14,11 +15,14 @@ import ModuleCard from "@/components/modules/ModuleCard";
 
 export default function DashboardPage() {
   const [modules, setModules] = useState<Module[]>([]);
+  const [courseSlug, setCourseSlug] = useState("python-data-analyst");
   const { isCompleted } = useProgress();
 
   useEffect(() => {
+    const selectedCourse = readCourseSlug(window.location.search);
+    setCourseSlug(selectedCourse);
     modulesAPI
-      .getAll()
+      .getAll(selectedCourse)
       .then((response) => setModules(response.data))
       .catch(() => undefined);
   }, []);
@@ -27,6 +31,7 @@ export default function DashboardPage() {
   const completion = modules.length > 0 ? Math.round((completedCount / modules.length) * 100) : 0;
   const nextModule = useMemo(() => modules.find((module) => !isCompleted(module.id)) || modules[0], [modules, isCompleted]);
   const recentModules = modules.slice(0, 6);
+  const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
 
   return (
     <div className="kx-dark-page flex flex-col">
@@ -39,18 +44,18 @@ export default function DashboardPage() {
               <div>
                 <span className="kx-dark-eyebrow">Espace apprenant</span>
                 <h1 className="mt-5 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-6xl">
-                  Continue ton parcours Python Data avec clarté.
+                  {`Continue ton parcours ${courseMeta.title} avec clarté.`}
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
                   Reprends au bon endroit, suis ta progression et avance module par module jusqu’au certificat.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   {nextModule && (
-                    <Link href={`/modules/${nextModule.id}`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-blue-500">
+                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-blue-500">
                       Reprendre le prochain module <ArrowRight size={18} />
                     </Link>
                   )}
-                  <Link href="/modules" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-6 py-4 text-sm font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10">
+                  <Link href={courseRoutes.modules(courseSlug)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-6 py-4 text-sm font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10">
                     Voir tous les modules
                   </Link>
                 </div>
@@ -64,7 +69,7 @@ export default function DashboardPage() {
                     {nextModule ? nextModule.description : "Préparation de ton espace apprenant."}
                   </p>
                   {nextModule && (
-                    <Link href={`/modules/${nextModule.id}`} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-blue-600">
+                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-blue-600">
                       Ouvrir maintenant <ArrowRight size={16} />
                     </Link>
                   )}
@@ -87,7 +92,7 @@ export default function DashboardPage() {
                   <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-200">Modules recommandés</p>
                   <h2 className="mt-2 text-3xl font-black tracking-tight text-white">Continue dans l’ordre</h2>
                 </div>
-                <Link href="/modules" className="text-sm font-black text-blue-200 transition hover:text-white">Voir le parcours complet →</Link>
+                <Link href={courseRoutes.modules(courseSlug)} className="text-sm font-black text-blue-200 transition hover:text-white">Voir le parcours complet →</Link>
               </div>
 
               {recentModules.length > 0 ? (

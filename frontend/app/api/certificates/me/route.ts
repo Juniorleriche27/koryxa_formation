@@ -4,5 +4,8 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(request: Request) {
-  return proxyBackend(request, "/access/certificates/me");
+  const url = new URL(request.url);
+  const course = url.searchParams.get("course");
+  const target = course ? "/access/certificates/me?course=" + encodeURIComponent(course) : "/access/certificates/me";
+  return proxyBackend(request, target);
 }

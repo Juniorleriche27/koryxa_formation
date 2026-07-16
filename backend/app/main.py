@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, modules, progress, certificates, notebook, ai, validation, access
+from app.middleware.security import SecurityHeadersMiddleware, SensitiveRouteRateLimitMiddleware
+from app.routers import auth, courses, exercises, integrations, lessons, modules, progress, projects, certificates, notebook, ai, validation, access, theory
 
 app = FastAPI(title="KORYXA Formation API", version="1.0.0")
+
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(SensitiveRouteRateLimitMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,6 +18,12 @@ app.add_middleware(
 )
 
 app.include_router(auth.router,         prefix="/auth",         tags=["Auth"])
+app.include_router(courses.router,      prefix="/courses",      tags=["Courses"])
+app.include_router(lessons.router,      prefix="/lessons",      tags=["Lessons"])
+app.include_router(exercises.router,    prefix="/exercises",    tags=["Exercises"])
+app.include_router(integrations.router, prefix="/integrations", tags=["Integrations"])
+app.include_router(projects.router,     prefix="/projects",     tags=["Projects"])
+app.include_router(theory.router,       prefix="/theory",       tags=["Theory"])
 app.include_router(modules.router,      prefix="/modules",      tags=["Modules"])
 app.include_router(progress.router,     prefix="/progress",     tags=["Progress"])
 app.include_router(certificates.router, prefix="/certificates", tags=["Certificates"])

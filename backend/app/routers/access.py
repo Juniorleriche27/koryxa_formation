@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 from app.config import settings
 from app.database import get_service_supabase
+from app.services.courses import DEFAULT_COURSE_SLUG, get_course_id
 
 router = APIRouter(prefix="/access", tags=["Formation Access"])
 
@@ -210,10 +211,13 @@ def create_or_update_admin_grant(payload: dict[str, Any]) -> dict[str, Any]:
     email = str(payload.get("email") or "").strip().lower() or None
     name = str(payload.get("name") or "").strip() or email or clerk_user_id
     role_key = payload.get("role_key")
+    course_slug = str(payload.get("course_slug") or DEFAULT_COURSE_SLUG).strip()
+    course_id = get_course_id(course_slug)
     existing = find_admin_grant(clerk_user_id)
     client = service_client()
 
     common = {
+        "course_id": course_id,
         "student_name": name,
         "student_email": email,
         "status": "used" if not existing or existing.get("status") != "revoked" else "revoked",
@@ -297,7 +301,28 @@ def session_status(request: Request):
         "name": grant.get("student_name") or grant.get("koryxa_admin_name"),
         "email": grant.get("student_email") or grant.get("koryxa_admin_email"),
         "access_until": grant.get("access_until") or grant.get("expires_at"),
+        "course_id": grant.get("course_id"),
     }
+
+
+@router.get("/courses")
+def available_courses(request: Request):
+    grant = get_session_grant(request)
+    response = (
+        service_client()
+        .table("courses")
+        .select("id,slug,title,short_title,description,is_published,order_index")
+        .eq("is_published", True)
+        .order("order_index")
+        .execute()
+    )
+    return [
+        {
+            **course,
+            "has_access": course.get("id") == grant.get("course_id"),
+        }
+        for course in (response.data or [])
+    ]
 
 
 @router.post("/logout")
@@ -307,8 +332,16 @@ def logout():
     return response
 
 
-def fetch_modules() -> list[dict[str, Any]]:
-    response = service_client().table("modules").select("*").eq("is_published", True).order("order_index").execute()
+def fetch_modules(course_id: str) -> list[dict[str, Any]]:
+    response = (
+        service_client()
+        .table("modules")
+        .select("*")
+        .eq("is_published", True)
+        .eq("course_id", course_id)
+        .order("order_index")
+        .execute()
+    )
     return response.data or []
 
 
@@ -329,8 +362,11 @@ def is_validated(row: dict[str, Any] | None) -> bool:
     return bool(row and (row.get("completed") or row.get("status") == "validated"))
 
 
-def ensure_module_accessible(access_id: str, module: dict[str, Any]) -> None:
-    modules = fetch_modules()
+def ensure_module_accessible(grant: dict[str, Any], module: dict[str, Any]) -> None:
+    if str(module.get("course_id")) != str(grant.get("course_id")):
+        raise HTTPException(status_code=403, detail="Ce module n'appartient pas au parcours autorisé.")
+    access_id = str(grant["id"])
+    modules = fetch_modules(str(grant["course_id"]))
     progress = {row["module_id"]: row for row in fetch_progress(access_id)}
     previous = next((item for item in modules if int(item.get("order_index", -1)) == int(module.get("order_index", 0)) - 1), None)
     if module.get("order_index") == 0:
@@ -342,7 +378,7 @@ def ensure_module_accessible(access_id: str, module: dict[str, Any]) -> None:
 @router.get("/validation/modules/status")
 def modules_status(request: Request):
     grant = get_session_grant(request)
-    modules = fetch_modules()
+    modules = fetch_modules(str(grant["course_id"]))
     progress = {row["module_id"]: row for row in fetch_progress(grant["id"])}
     result = []
     for module in modules:
@@ -374,7 +410,7 @@ def modules_status(request: Request):
 def quiz(module_id: str, request: Request):
     grant = get_session_grant(request)
     module = fetch_module(module_id)
-    ensure_module_accessible(grant["id"], module)
+    ensure_module_accessible(grant, module)
     response = (
         service_client()
         .table("quiz_questions")
@@ -395,7 +431,7 @@ def submit_quiz(module_id: str, payload: QuizSubmitRequest, request: Request):
     grant = get_session_grant(request)
     access_id = grant["id"]
     module = fetch_module(module_id)
-    ensure_module_accessible(access_id, module)
+    ensure_module_accessible(grant, module)
     questions_response = service_client().table("quiz_questions").select("id,answer,skill,explanation").eq("module_id", module_id).eq("is_active", True).execute()
     questions = questions_response.data or []
     if not questions:
@@ -467,7 +503,9 @@ def submit_quiz(module_id: str, payload: QuizSubmitRequest, request: Request):
 def compute_certification(access_id: str) -> dict[str, Any]:
     client = service_client()
     grant = find_grant_by_id(access_id)
-    modules = fetch_modules()
+    if not grant:
+        raise HTTPException(status_code=404, detail="Accès formation introuvable")
+    modules = fetch_modules(str(grant["course_id"]))
     progress = fetch_progress(access_id)
     progress_by_module = {row["module_id"]: row for row in progress}
     required_modules = [module for module in modules if int(module.get("order_index", 0)) <= 6]
@@ -534,7 +572,7 @@ def certification_status(request: Request):
 def submit_final_project(payload: FinalProjectSubmitRequest, request: Request):
     grant = get_session_grant(request)
     access_id = grant["id"]
-    modules = fetch_modules()
+    modules = fetch_modules(str(grant["course_id"]))
     progress = {row["module_id"]: row for row in fetch_progress(access_id)}
     required_modules = [module for module in modules if int(module.get("order_index", 0)) <= 6]
     if not all(is_validated(progress.get(module["id"])) for module in required_modules):

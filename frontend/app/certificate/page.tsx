@@ -20,6 +20,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { certificatesAPI, getApiErrorMessage, validationAPI } from "@/lib/api";
 import type { Certificate, CertificationStatus } from "@/types";
+import { courseCatalog, readCourseSlug } from "@/lib/courseConfig";
 
 function formatDate(value?: string | null) {
   if (!value) return "—";
@@ -33,19 +34,22 @@ function getCertificateNumber(certificate?: Certificate | null) {
 
 export default function CertificatePage() {
   const [status, setStatus] = useState<CertificationStatus | null>(null);
+  const [courseSlug, setCourseSlug] = useState("python-data-analyst");
   const [certificate, setCertificate] = useState<Certificate | null>(null);
   const [loading, setLoading] = useState(true);
   const [issuing, setIssuing] = useState(false);
   const [error, setError] = useState("");
 
   const loadCertificateState = useCallback(async () => {
+    const selectedCourse = readCourseSlug(window.location.search);
+    setCourseSlug(selectedCourse);
     setLoading(true);
     setError("");
 
     try {
       const [statusResponse, certificateResponse] = await Promise.allSettled([
-        validationAPI.getCertificationStatus(),
-        certificatesAPI.getMy(),
+        validationAPI.getCertificationStatus(selectedCourse),
+        certificatesAPI.getMy(selectedCourse),
       ]);
 
       if (statusResponse.status === "fulfilled") {
@@ -76,7 +80,7 @@ export default function CertificatePage() {
     setError("");
 
     try {
-      const response = await certificatesAPI.issue();
+      const response = await certificatesAPI.issue(courseSlug);
       setCertificate(response.data);
       if (response.data.certification_status) {
         setStatus(response.data.certification_status);
@@ -93,6 +97,7 @@ export default function CertificatePage() {
   const validatedFinalScore = certificate?.final_score ?? status?.final_score ?? 0;
   const formattedIssuedAt = certificate?.issued_at ? formatDate(certificate.issued_at) : "—";
   const blockingReasons = status?.blocking_reasons || [];
+  const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
   const scoreRows = useMemo(() => [
     { label: "Plateforme", value: `${status?.platform_score ?? 0}/40`, icon: CheckCircle2 },
     { label: "Projet final", value: `${status?.project_score ?? 0}/60`, icon: FileCheck2 },
@@ -107,7 +112,7 @@ export default function CertificatePage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(59,130,246,0.24),transparent_34rem),radial-gradient(circle_at_80%_75%,rgba(168,85,247,0.14),transparent_28rem)]" />
           <div className="relative mx-auto max-w-6xl">
             <div className="mb-8 text-center">
-              <span className="kx-dark-eyebrow">Certificat KORYXA</span>
+              <span className="kx-dark-eyebrow">Certificat KORYXA · {courseMeta.title}</span>
               <h1 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-6xl">Certification Python Data</h1>
               <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-slate-300">
                 Le certificat est délivré uniquement si toutes les règles KORYXA sont validées : QCM, projet final, score minimum et délai pédagogique de 21 jours.

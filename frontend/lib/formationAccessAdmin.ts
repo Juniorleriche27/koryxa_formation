@@ -2,6 +2,7 @@ import { accessTokenFor } from "@/lib/accessControl";
 
 export type FormationAccessGrant = {
   id: string;
+  course_id: string;
   student_name: string;
   student_email: string | null;
   label: string | null;
@@ -24,6 +25,7 @@ export type FormationAccessStatus = "active" | "none" | "revoked" | "expired";
 
 const SELECT_COLUMNS = [
   "id",
+  "course_id",
   "student_name",
   "student_email",
   "label",
