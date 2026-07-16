@@ -125,53 +125,73 @@ COMMENT ON TABLE public.courses IS
 COMMENT ON COLUMN public.modules.course_id IS
     'Parcours auquel appartient le module. Les modules historiques sont rattachés à Python Data Analyst.';
 
-ALTER TABLE public.final_projects
-    ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
-UPDATE public.final_projects
-SET course_id = '00000000-0000-4000-8000-000000000001'
-WHERE course_id IS NULL;
-ALTER TABLE public.final_projects
-    ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
-    ALTER COLUMN course_id SET NOT NULL;
-ALTER TABLE public.final_projects
-    DROP CONSTRAINT IF EXISTS final_projects_user_id_key;
-CREATE UNIQUE INDEX IF NOT EXISTS uq_final_projects_user_course
-    ON public.final_projects(user_id, course_id);
+DO $$
+BEGIN
+    IF to_regclass('public.final_projects') IS NOT NULL THEN
+        ALTER TABLE public.final_projects
+            ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
+        UPDATE public.final_projects
+        SET course_id = '00000000-0000-4000-8000-000000000001'
+        WHERE course_id IS NULL;
+        ALTER TABLE public.final_projects
+            ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
+            ALTER COLUMN course_id SET NOT NULL;
+        ALTER TABLE public.final_projects
+            DROP CONSTRAINT IF EXISTS final_projects_user_id_key;
+        CREATE UNIQUE INDEX IF NOT EXISTS uq_final_projects_user_course
+            ON public.final_projects(user_id, course_id);
+    END IF;
+END $$;
 
-ALTER TABLE public.certification_snapshots
-    ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
-UPDATE public.certification_snapshots
-SET course_id = '00000000-0000-4000-8000-000000000001'
-WHERE course_id IS NULL;
-ALTER TABLE public.certification_snapshots
-    ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
-    ALTER COLUMN course_id SET NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_certification_snapshots_user_course
-    ON public.certification_snapshots(user_id, course_id, calculated_at DESC);
+DO $$
+BEGIN
+    IF to_regclass('public.certification_snapshots') IS NOT NULL THEN
+        ALTER TABLE public.certification_snapshots
+            ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
+        UPDATE public.certification_snapshots
+        SET course_id = '00000000-0000-4000-8000-000000000001'
+        WHERE course_id IS NULL;
+        ALTER TABLE public.certification_snapshots
+            ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
+            ALTER COLUMN course_id SET NOT NULL;
+        CREATE INDEX IF NOT EXISTS idx_certification_snapshots_user_course
+            ON public.certification_snapshots(user_id, course_id, calculated_at DESC);
+    END IF;
+END $$;
 
-ALTER TABLE public.certificates
-    ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
-UPDATE public.certificates
-SET course_id = '00000000-0000-4000-8000-000000000001'
-WHERE course_id IS NULL;
-ALTER TABLE public.certificates
-    ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
-    ALTER COLUMN course_id SET NOT NULL;
-ALTER TABLE public.certificates
-    DROP CONSTRAINT IF EXISTS certificates_user_id_key;
-CREATE UNIQUE INDEX IF NOT EXISTS uq_certificates_user_course
-    ON public.certificates(user_id, course_id);
+DO $$
+BEGIN
+    IF to_regclass('public.certificates') IS NOT NULL THEN
+        ALTER TABLE public.certificates
+            ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
+        UPDATE public.certificates
+        SET course_id = '00000000-0000-4000-8000-000000000001'
+        WHERE course_id IS NULL;
+        ALTER TABLE public.certificates
+            ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
+            ALTER COLUMN course_id SET NOT NULL;
+        ALTER TABLE public.certificates
+            DROP CONSTRAINT IF EXISTS certificates_user_id_key;
+        CREATE UNIQUE INDEX IF NOT EXISTS uq_certificates_user_course
+            ON public.certificates(user_id, course_id);
+    END IF;
+END $$;
 
-ALTER TABLE public.formation_access_codes
-    ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
-UPDATE public.formation_access_codes
-SET course_id = '00000000-0000-4000-8000-000000000001'
-WHERE course_id IS NULL;
-ALTER TABLE public.formation_access_codes
-    ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
-    ALTER COLUMN course_id SET NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_formation_access_codes_course
-    ON public.formation_access_codes(course_id);
+DO $$
+BEGIN
+    IF to_regclass('public.formation_access_codes') IS NOT NULL THEN
+        ALTER TABLE public.formation_access_codes
+            ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES public.courses(id) ON DELETE RESTRICT;
+        UPDATE public.formation_access_codes
+        SET course_id = '00000000-0000-4000-8000-000000000001'
+        WHERE course_id IS NULL;
+        ALTER TABLE public.formation_access_codes
+            ALTER COLUMN course_id SET DEFAULT '00000000-0000-4000-8000-000000000001',
+            ALTER COLUMN course_id SET NOT NULL;
+        CREATE INDEX IF NOT EXISTS idx_formation_access_codes_course
+            ON public.formation_access_codes(course_id);
+    END IF;
+END $$;
 
 DROP FUNCTION IF EXISTS public.get_user_completion(UUID);
 
