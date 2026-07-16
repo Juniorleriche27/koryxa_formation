@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -19,6 +20,10 @@ import {
   GraduationCap,
   Layers3,
   LineChart,
+  Mail,
+  MessageCircleMore,
+  Linkedin,
+  Facebook,
   Menu,
   MousePointerClick,
   ShieldCheck,
@@ -34,10 +39,10 @@ import {
 const HERO_VIDEO_URL = "https://videos.pexels.com/video-files/7693408/7693408-hd_1920_1080_25fps.mp4";
 
 const navItems = [
-  { label: "Formations", href: "#formations" },
-  { label: "Méthode", href: "#methode" },
-  { label: "Expérience", href: "#experience" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Formations", href: "/formations" },
+  { label: "Méthode", href: "/methode" },
+  { label: "Pour qui", href: "/pour-qui" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 const formations = [
@@ -169,8 +174,9 @@ function SectionLabel({ children, dark = false }: { children: React.ReactNode; d
   );
 }
 
-function Header() {
+export function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-950/10 bg-white/86 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
@@ -186,15 +192,18 @@ function Header() {
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-black text-slate-600 lg:flex" aria-label="Navigation principale">
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href} className="transition hover:text-emerald-700">
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) => {
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            return (
+              <Link key={item.href} href={item.href} className={`transition ${active ? "text-emerald-700" : "hover:text-emerald-700"}`}>
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <a
-          href="#formations"
+          href="/formations"
           className="hidden h-11 items-center justify-center rounded-full bg-[#06251c] px-5 text-sm font-black text-white shadow-lg shadow-emerald-950/12 transition hover:-translate-y-0.5 hover:bg-[#00bd72] hover:text-[#06251c] lg:inline-flex"
         >
           Voir les formations
@@ -221,18 +230,21 @@ function Header() {
             className="border-t border-slate-200 bg-white px-4 py-4 shadow-xl shadow-slate-950/10 lg:hidden"
           >
             <nav className="mx-auto grid max-w-7xl gap-2" aria-label="Navigation mobile">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-2xl px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-emerald-50 hover:text-[#06251c]"
-                >
-                  {item.label}
-                </a>
-              ))}
+              {navItems.map((item) => {
+                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`rounded-2xl px-4 py-3 text-sm font-black transition ${active ? "bg-emerald-50 text-emerald-700" : "text-slate-700 hover:bg-emerald-50 hover:text-[#06251c]"}`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
               <a
-                href="#formations"
+                href="/formations"
                 onClick={() => setOpen(false)}
                 className="mt-2 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#06251c] px-5 py-3 text-sm font-black text-white"
               >
@@ -284,13 +296,13 @@ function Hero() {
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a
-              href="#formations"
+              href="/formations"
               className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[#12d184] via-[#00bd72] to-[#0ea873] px-7 py-4 text-sm font-black text-[#06251c] shadow-2xl shadow-emerald-500/18 ring-1 ring-emerald-500/20 transition hover:-translate-y-1 hover:from-[#22dc92] hover:to-[#0ea873]"
             >
               Voir les formations <ArrowRight size={18} />
             </a>
             <a
-              href="#methode"
+              href="/methode"
               className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-emerald-200/80 bg-white/75 px-7 py-4 text-sm font-black text-slate-950 shadow-sm backdrop-blur-xl transition hover:-translate-y-1 hover:border-emerald-300 hover:bg-emerald-50"
             >
               Comprendre la méthode
@@ -363,20 +375,18 @@ function ProofStrip() {
   );
 }
 
-function FormationsSection() {
+export function FormationsSection() {
   return (
     <section id="formations" className="scroll-mt-24 bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-          <div>
-            <SectionLabel>
-              <Zap size={14} /> Toutes les formations
-            </SectionLabel>
-            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[#06251c] sm:text-6xl">
-              Choisissez le parcours qui correspond à votre objectif.
-            </h2>
-          </div>
-          <p className="max-w-2xl text-lg font-medium leading-9 text-slate-600 lg:justify-self-end">
+        <div className="mx-auto flex max-w-6xl flex-col items-center text-center">
+          <SectionLabel>
+            <Zap size={14} /> Toutes les formations
+          </SectionLabel>
+          <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[#06251c] sm:text-5xl lg:whitespace-nowrap lg:text-[3.35rem] xl:text-6xl">
+            Choisissez le parcours qui correspond à votre objectif.
+          </h2>
+          <p className="mt-6 max-w-4xl text-base font-medium leading-8 text-slate-600 sm:text-lg sm:leading-9">
             Cette page est le point d’entrée général. Chaque formation garde sa propre page dédiée avec son programme, ses détails et son parcours d’accès.
           </p>
         </div>
@@ -435,7 +445,7 @@ function FormationsSection() {
   );
 }
 
-function GeneralVisionSection() {
+export function GeneralVisionSection() {
   return (
     <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
@@ -486,7 +496,7 @@ function GeneralVisionSection() {
   );
 }
 
-function MethodSection() {
+export function MethodSection() {
   return (
     <section id="methode" className="relative scroll-mt-24 overflow-hidden border-y border-emerald-100/80 bg-[#f2fbf5] px-4 py-20 text-slate-950 sm:px-6 lg:px-8 lg:py-28">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_18%_0%,rgba(16,185,129,.115),transparent_24rem),radial-gradient(ellipse_at_86%_16%,rgba(20,184,166,.075),transparent_28rem),radial-gradient(ellipse_at_50%_100%,rgba(188,245,215,.22),transparent_30rem),linear-gradient(180deg,#f7fcf9_0%,#eef9f3_100%)]" aria-hidden="true" />
@@ -542,7 +552,7 @@ function MethodSection() {
   );
 }
 
-function ExperienceSection() {
+export function ExperienceSection() {
   return (
     <section id="experience" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
@@ -592,15 +602,15 @@ function ExperienceSection() {
   );
 }
 
-function AudienceSection() {
+export function AudienceSection() {
   return (
     <section className="bg-[#f2fbf5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="max-w-3xl">
+        <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
           <SectionLabel>
             <Users size={14} /> Pour qui
           </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-6xl">
+          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-5xl lg:whitespace-nowrap lg:text-[3.35rem] xl:text-6xl">
             Pour celles et ceux qui veulent apprendre utile.
           </h2>
         </div>
@@ -628,7 +638,7 @@ function AudienceSection() {
   );
 }
 
-function FAQSection() {
+export function FAQSection() {
   return (
     <section id="faq" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr]">
@@ -656,7 +666,7 @@ function FAQSection() {
   );
 }
 
-function FinalCTA() {
+export function FinalCTA() {
   return (
     <section className="relative overflow-hidden bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
       <Image
@@ -677,13 +687,13 @@ function FinalCTA() {
         </p>
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <a
-            href="#formations"
+            href="/formations"
             className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-7 py-4 text-sm font-black text-[#06251c] shadow-2xl shadow-emerald-500/18 transition hover:-translate-y-1 hover:bg-[#0ea873]"
           >
             Voir les formations <ArrowRight size={18} />
           </a>
           <a
-            href="#methode"
+            href="/methode"
             className="inline-flex min-h-14 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/[0.18]"
           >
             Voir la méthode
@@ -694,35 +704,58 @@ function FinalCTA() {
   );
 }
 
-function FooterSEO() {
+export function FooterSEO() {
+  const socialLinks = [
+    { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61588408132915", icon: Facebook },
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/107221300/", icon: Linkedin },
+    { label: "WhatsApp", href: "https://wa.me/22892092572?text=Bonjour%20KORYXA%2C%20je%20souhaite%20vous%20contacter.", icon: MessageCircleMore },
+    { label: "Email", href: "mailto:contact.koryxa@gmail.com", icon: Mail },
+  ];
+
   return (
-    <footer className="bg-[#06251c] px-4 py-10 text-slate-400 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
+    <footer className="border-t border-[#06251c]/8 bg-[#f5fbf7] px-4 py-14 text-[#06251c] sm:px-6 lg:px-8 lg:py-16">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.75fr_0.75fr_0.9fr]">
         <div>
-          <p className="text-lg font-black text-white">KORYXA Formation</p>
-          <p className="mt-3 max-w-md text-sm leading-6">Portail de formations pratiques en data, IA et automatisation. Chaque formation possède sa propre page dédiée.</p>
-        </div>
-        <div>
-          <p className="text-sm font-black uppercase tracking-[0.16em] text-white">Formations</p>
-          <div className="mt-4 space-y-3 text-sm font-semibold">
-            <Link href="/formations/python-data-analyst" className="block hover:text-white">Python Data Analyst</Link>
-            <a href="#formations" className="block hover:text-white">Chatbot IA avec documents</a>
-            <a href="#formations" className="block hover:text-white">Assistant IA pour métier</a>
-            <a href="#formations" className="block hover:text-white">Automatisation IA & no-code</a>
+          <p className="text-2xl font-black tracking-[-0.04em]">KORYXA Formation</p>
+          <p className="mt-3 max-w-md text-sm leading-7 text-slate-600">Portail de formations pratiques en data, IA et automatisation, intégré à l’écosystème KORYXA.</p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {socialLinks.map(({ label, href, icon: Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#06251c]/10 bg-white text-[#06251c] transition hover:-translate-y-0.5 hover:border-[#00bd72]/40 hover:text-[#008f58]">
+                <Icon size={18} />
+              </a>
+            ))}
           </div>
         </div>
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.16em] text-white">Portail</p>
-          <div className="mt-4 space-y-3 text-sm font-semibold">
-            <a href="#formations" className="block hover:text-white">Toutes les formations</a>
-            <a href="#methode" className="block hover:text-white">Méthode</a>
-            <a href="#experience" className="block hover:text-white">Expérience</a>
-            <a href="#faq" className="block hover:text-white">FAQ</a>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#008f58]">Formations</p>
+          <div className="mt-4 space-y-3 text-sm font-semibold text-slate-600">
+            <Link href="/formations/python-data-analyst" className="block hover:text-[#06251c]">Python Data Analyst</Link>
+            <Link href="/formations" className="block hover:text-[#06251c]">Chatbot IA avec documents</Link>
+            <Link href="/formations" className="block hover:text-[#06251c]">Assistant IA pour métier</Link>
+            <Link href="/formations" className="block hover:text-[#06251c]">Automatisation IA & no-code</Link>
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#008f58]">Navigation</p>
+          <div className="mt-4 space-y-3 text-sm font-semibold text-slate-600">
+            <Link href="/formations" className="block hover:text-[#06251c]">Toutes les formations</Link>
+            <Link href="/methode" className="block hover:text-[#06251c]">Méthode</Link>
+            <Link href="/pour-qui" className="block hover:text-[#06251c]">Pour qui</Link>
+            <Link href="/faq" className="block hover:text-[#06251c]">FAQ</Link>
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#008f58]">Contacts officiels</p>
+          <div className="mt-4 space-y-4 text-sm text-slate-600">
+            <a href="mailto:contact.koryxa@gmail.com" className="block hover:text-[#06251c]"><span className="block font-black text-[#06251c]">Email</span>contact.koryxa@gmail.com</a>
+            <a href="https://wa.me/22892092572?text=Bonjour%20KORYXA%2C%20je%20souhaite%20vous%20contacter." target="_blank" rel="noreferrer" className="block hover:text-[#06251c]"><span className="block font-black text-[#06251c]">WhatsApp</span>+228 92 09 25 72</a>
+            <a href="https://koryxa.fr/contact" target="_blank" rel="noreferrer" className="block font-black text-[#008f58] hover:text-[#06251c]">Page contact KORYXA →</a>
           </div>
         </div>
       </div>
-      <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-sm">
-        © {new Date().getFullYear()} KORYXA Formation — portail général des parcours pratiques.
+      <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-3 border-t border-[#06251c]/10 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <span>© {new Date().getFullYear()} KORYXA Formation. Tous droits réservés.</span>
+        <span>Un produit de l’écosystème KORYXA.</span>
       </div>
     </footer>
   );
@@ -730,7 +763,7 @@ function FooterSEO() {
 
 export function KoryxaFormationPortal() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-[#06251c]">
+    <main className="kx-marketing min-h-screen overflow-x-hidden bg-white text-[#06251c]">
       <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-black focus:text-[#06251c] focus:shadow-xl">
         Aller au contenu
       </a>

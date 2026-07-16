@@ -87,6 +87,26 @@ select {
 
 
 @layer components {
+
+  .kx-marketing {
+    --kx-ink: #06251c;
+    --kx-green: #00bd72;
+    --kx-mint: #bcf5d7;
+    --kx-paper: #f5fbf7;
+    background: #ffffff;
+  }
+
+  .kx-marketing h1,
+  .kx-marketing h2 {
+    font-family: var(--font-playfair), Georgia, serif;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+  }
+
+  .kx-marketing section {
+    scroll-margin-top: 6rem;
+  }
+
   .kx-page {
     @apply min-h-screen bg-[#f5fbf7] text-[#06251c];
   }
