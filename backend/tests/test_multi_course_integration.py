@@ -57,6 +57,23 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("slug = 'llm-rag'", migration)
         self.assertNotIn("UPDATE public.courses", migration)
 
+    def test_llm_rag_final_release_is_course_scoped(self):
+        validation = (ROOT / "backend/app/routers/validation.py").read_text()
+        certificates = (ROOT / "backend/app/routers/certificates.py").read_text()
+        progress = (ROOT / "backend/app/routers/progress.py").read_text()
+        certificate_page = (ROOT / "frontend/app/certificate/page.tsx").read_text()
+        learning_content = (ROOT / "frontend/components/modules/LlmRagLearningContent.tsx").read_text()
+        release = (ROOT / "supabase/migrations/20260717_finalize_llm_rag_release.sql").read_text()
+
+        self.assertIn("required_modules = [item for item in modules if bool(item.get(\"requires_quiz\", True))]", validation)
+        self.assertIn("get_access_record_for_user(user, course_id)", validation)
+        self.assertIn("published_only=False", certificates)
+        self.assertIn("published_only=False", progress)
+        self.assertIn("Certification {courseMeta.title}", certificate_page)
+        self.assertIn("submitFinalProject", learning_content)
+        self.assertIn("SET is_published = true", release)
+        self.assertIn("WHERE slug = 'llm-rag'", release)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()

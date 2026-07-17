@@ -16,7 +16,7 @@ def _course_module_ids(course: Optional[str]) -> list[str]:
     response = (
         supabase.table("modules")
         .select("id")
-        .eq("course_id", get_course_id(selected_course))
+        .eq("course_id", get_course_id(selected_course, published_only=False))
         .eq("is_published", True)
         .execute()
     )

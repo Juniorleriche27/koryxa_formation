@@ -18,9 +18,10 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
 import { certificatesAPI, getApiErrorMessage, validationAPI } from "@/lib/api";
 import type { Certificate, CertificationStatus } from "@/types";
-import { courseCatalog, readCourseSlug } from "@/lib/courseConfig";
+import { LLM_RAG_COURSE_SLUG, courseCatalog, readCourseSlug } from "@/lib/courseConfig";
 
 function formatDate(value?: string | null) {
   if (!value) return "—";
@@ -98,6 +99,11 @@ export default function CertificatePage() {
   const formattedIssuedAt = certificate?.issued_at ? formatDate(certificate.issued_at) : "—";
   const blockingReasons = status?.blocking_reasons || [];
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG;
+  const certificateTitle = dedicatedLearnerLayout ? "Développement d’applications LLM & RAG" : "Analyse de Données avec Python";
+  const certificateDescription = dedicatedLearnerLayout
+    ? "Ce certificat atteste la validation du parcours KORYXA LLM RAG Developer, incluant quiz, projet final, évaluation et réponses sourcées."
+    : "Ce certificat atteste la validation du parcours KORYXA Formation Python Data, incluant QCM, projet final et seuil de réussite.";
   const scoreRows = useMemo(() => [
     { label: "Plateforme", value: `${status?.platform_score ?? 0}/40`, icon: CheckCircle2 },
     { label: "Projet final", value: `${status?.project_score ?? 0}/60`, icon: FileCheck2 },
@@ -106,14 +112,15 @@ export default function CertificatePage() {
 
   return (
     <div className="kx-dark-page flex flex-col">
-      <Navbar />
+      {!dedicatedLearnerLayout && <Navbar />}
+      {dedicatedLearnerLayout && <LearnerCourseContext courseSlug={courseSlug} current="overview" />}
       <main className="flex-1">
         <section className="relative overflow-hidden px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(59,130,246,0.24),transparent_34rem),radial-gradient(circle_at_80%_75%,rgba(168,85,247,0.14),transparent_28rem)]" />
           <div className="relative mx-auto max-w-6xl">
             <div className="mb-8 text-center">
               <span className="kx-dark-eyebrow">Certificat KORYXA · {courseMeta.title}</span>
-              <h1 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-6xl">Certification Python Data</h1>
+              <h1 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-6xl">Certification {courseMeta.title}</h1>
               <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-slate-300">
                 Le certificat est délivré uniquement si toutes les règles KORYXA sont validées : QCM, projet final, score minimum et délai pédagogique de 21 jours.
               </p>
@@ -138,10 +145,10 @@ export default function CertificatePage() {
                     </div>
 
                     <p className="mt-8 text-sm font-black uppercase tracking-[0.24em] text-blue-700">KORYXA Tech Store présente</p>
-                    <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">Analyse de Données avec Python</h2>
+                    <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">{certificateTitle}</h2>
                     <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600">
                       {certificateIssued
-                        ? "Ce certificat atteste la validation du parcours KORYXA Formation Python Data, incluant QCM, projet final et seuil de réussite."
+                        ? certificateDescription
                         : isEligible
                         ? "Toutes les conditions sont validées. Tu peux générer ton certificat officiel."
                         : "Ton certificat n’est pas encore disponible. Les conditions restantes sont affichées à droite."}
@@ -247,7 +254,7 @@ export default function CertificatePage() {
           </div>
         </section>
       </main>
-      <Footer />
+      {!dedicatedLearnerLayout && <Footer />}
     </div>
   );
 }

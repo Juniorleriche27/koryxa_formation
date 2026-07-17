@@ -14,7 +14,7 @@ export const courseCatalog = {
     title: "LLM RAG Developer",
     shortDescription: "Documents, embeddings, Qdrant et réponses sourcées.",
     landingPath: "/formations/llm-rag",
-    published: false,
+    published: true,
   },
 } as const;
 

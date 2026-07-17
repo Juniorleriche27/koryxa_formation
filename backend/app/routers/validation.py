@@ -12,7 +12,6 @@ from app.services.courses import DEFAULT_COURSE_SLUG, get_course_id
 
 router = APIRouter()
 
-PLATFORM_REQUIRED_MODULES = 7  # Modules 0 à 6. Le module 7 est le projet final.
 QUIZ_PASS_SCORE = 12
 CERTIFICATE_MIN_DAYS = 21
 PASSING_SCORE = 60
@@ -128,14 +127,15 @@ def normalize_module_status(module: dict[str, Any], row: dict[str, Any] | None, 
     return "available"
 
 
-def get_access_record_for_user(user: Any) -> dict[str, Any] | None:
+def get_access_record_for_user(user: Any, course_id: str) -> dict[str, Any] | None:
     email = get_user_email(user)
     if not email:
         return None
 
     response = (
         supabase.table("formation_access_codes")
-        .select("activated_at, access_until, certificate_eligible_from, partner_email, student_email, status")
+        .select("activated_at, access_until, certificate_eligible_from, partner_email, student_email, status, course_id")
+        .eq("course_id", course_id)
         .or_(f"partner_email.eq.{email},student_email.eq.{email}")
         .order("activated_at", desc=True)
         .limit(1)
@@ -170,10 +170,10 @@ def latest_final_project(user_id: str, course_id: str) -> dict[str, Any] | None:
 
 def compute_certification_status(user: Any, course: Optional[str] = None) -> dict[str, Any]:
     selected_course = course or DEFAULT_COURSE_SLUG
-    course_id = get_course_id(selected_course)
+    course_id = get_course_id(selected_course, published_only=False)
     modules = fetch_modules(selected_course)
     by_module = progress_map(user.id, modules)
-    required_modules = [item for item in modules if int(item.get("order_index", 0)) <= 6]
+    required_modules = [item for item in modules if bool(item.get("requires_quiz", True))]
 
     platform_score = 0.0
     modules_validated = 0
@@ -192,7 +192,7 @@ def compute_certification_status(user: Any, course: Optional[str] = None) -> dic
     project_score = float((final_project or {}).get("score_points") or 0) if project_is_graded else 0.0
     final_score = min(100.0, platform_score + project_score)
 
-    access = get_access_record_for_user(user)
+    access = get_access_record_for_user(user, course_id)
     activated_at = (access or {}).get("activated_at")
     access_until = (access or {}).get("access_until")
     eligible_from = (access or {}).get("certificate_eligible_from")
@@ -222,7 +222,7 @@ def compute_certification_status(user: Any, course: Optional[str] = None) -> dic
         "project_score": round(project_score, 2),
         "final_score": round(final_score, 2),
         "modules_validated": modules_validated,
-        "modules_required": PLATFORM_REQUIRED_MODULES,
+        "modules_required": len(required_modules),
         "access_activated_at": activated_at,
         "access_until": access_until,
         "certificate_eligible_from": eligible_from,
@@ -413,12 +413,13 @@ def get_my_certification_status(course: Optional[str] = None, user=Depends(get_c
 @router.post("/final-project/submit")
 def submit_final_project(payload: FinalProjectSubmitRequest, course: Optional[str] = None, user=Depends(get_current_user)):
     selected_course = course or DEFAULT_COURSE_SLUG
-    course_id = get_course_id(selected_course)
+    course_id = get_course_id(selected_course, published_only=False)
     modules = fetch_modules(selected_course)
     by_module = progress_map(user.id, modules)
-    module_six = next((item for item in modules if int(item.get("order_index", -1)) == 6), None)
-    if module_six and not is_progress_validated(by_module.get(module_six["id"])):
-        raise HTTPException(status_code=403, detail="Projet final bloqué. Valide d'abord les modules 0 à 6.")
+    required_modules = [item for item in modules if bool(item.get("requires_quiz", True))]
+    missing = [item for item in required_modules if not is_progress_validated(by_module.get(item["id"]))]
+    if missing:
+        raise HTTPException(status_code=403, detail="Projet final bloqué. Valide d’abord tous les modules obligatoires.")
 
     data = {
         "user_id": user.id,
@@ -440,7 +441,7 @@ def grade_final_project(payload: FinalProjectGradeRequest, user=Depends(get_curr
 
     data = {
         "user_id": payload.user_id,
-        "course_id": get_course_id(payload.course),
+        "course_id": get_course_id(payload.course, published_only=False),
         "status": payload.status,
         "score_points": payload.score_points,
         "feedback": payload.feedback,

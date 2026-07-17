@@ -24,7 +24,7 @@ def build_certificate_payload(user_id: str, course_id: str, certification_status
 @router.get("/me")
 def get_my_certificate(course: Optional[str] = None, user=Depends(get_current_user)):
     selected_course = course or DEFAULT_COURSE_SLUG
-    course_id = get_course_id(selected_course)
+    course_id = get_course_id(selected_course, published_only=False)
     response = (
         supabase.table("certificates")
         .select("*")
@@ -52,7 +52,7 @@ def get_my_certificate(course: Optional[str] = None, user=Depends(get_current_us
 @router.post("/issue")
 def issue_my_certificate(course: Optional[str] = None, user=Depends(get_current_user)):
     selected_course = course or DEFAULT_COURSE_SLUG
-    course_id = get_course_id(selected_course)
+    course_id = get_course_id(selected_course, published_only=False)
     certification_status = compute_certification_status(user, selected_course)
 
     if not certification_status.get("is_eligible"):

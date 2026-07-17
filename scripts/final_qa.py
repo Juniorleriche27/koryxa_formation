@@ -46,12 +46,12 @@ def main() -> None:
         'DEFAULT_COURSE_SLUG = "python-data-analyst"',
         'published: true',
     ])
-    qa.require_text("catalog", "LLM RAG remains unpublished", "frontend/lib/courseConfig.ts", [
+    qa.require_text("catalog", "LLM RAG is published after final release", "frontend/lib/courseConfig.ts", [
         'LLM_RAG_COURSE_SLUG = "llm-rag"',
-        'published: false',
+        'published: true',
     ])
-    qa.require_text("catalog", "LLM RAG landing is preparation-only", "frontend/app/formations/llm-rag/page.tsx", [
-        "Parcours en préparation",
+    qa.require_text("catalog", "LLM RAG landing exposes learner access", "frontend/app/formations/llm-rag/page.tsx", [
+        "Entrer dans la formation",
     ])
 
     qa.require_text("access", "Course grants are scoped", "backend/app/routers/access.py", [

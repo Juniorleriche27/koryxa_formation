@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { BookOpenCheck, ChevronDown, ChevronUp, Download, FlaskConical, FolderKanban, Lightbulb, Loader2, Network, Target } from "lucide-react";
-import { contentAPI, getApiErrorMessage } from "@/lib/api";
+import { contentAPI, getApiErrorMessage, validationAPI } from "@/lib/api";
 import QuizBlock from "@/components/modules/QuizBlock";
 
 interface Lesson { id:string; slug:string; title:string; summary:string; order_index:number; lesson_type:string; estimated_minutes:number; objectives:string[]; content_md?:string; validation_prompt?:string; }
@@ -33,6 +33,10 @@ export default function LlmRagLearningContent({ moduleId, moduleOrder, completed
   const [openHints, setOpenHints] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [submissionUrl, setSubmissionUrl] = useState("");
+  const [submissionNotes, setSubmissionNotes] = useState("");
+  const [submittingProject, setSubmittingProject] = useState(false);
+  const [projectMessage, setProjectMessage] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -58,6 +62,19 @@ export default function LlmRagLearningContent({ moduleId, moduleOrder, completed
   const project = projects[0];
   const milestone = project?.milestones?.find((item) => item.module_id === moduleId);
   const notebook = notebookByOrder[moduleOrder];
+
+  const submitProject = async () => {
+    setSubmittingProject(true);
+    setProjectMessage("");
+    try {
+      await validationAPI.submitFinalProject(submissionUrl || undefined, submissionNotes || undefined, "llm-rag");
+      setProjectMessage("Projet envoyé pour évaluation.");
+    } catch (err) {
+      setProjectMessage(getApiErrorMessage(err));
+    } finally {
+      setSubmittingProject(false);
+    }
+  };
 
   if (loading) return <div className="flex items-center gap-3 rounded-3xl border border-white/10 bg-white/[0.05] p-6 text-slate-300"><Loader2 className="animate-spin" /> Chargement du contenu pédagogique…</div>;
   if (error) return <div className="rounded-3xl border border-red-300/20 bg-red-500/10 p-6 text-red-100">Impossible de charger ce module. {error}</div>;
@@ -85,7 +102,7 @@ export default function LlmRagLearningContent({ moduleId, moduleOrder, completed
 
     {milestone && <section className="rounded-3xl border border-purple-300/20 bg-purple-500/10 p-5 sm:p-7"><div className="flex items-center gap-3"><FolderKanban className="text-purple-200"/><div><p className="text-xs font-black uppercase tracking-[.16em] text-purple-100">Projet fil rouge · jalon {milestone.order_index}</p><h2 className="text-2xl font-black text-white">{milestone.title}</h2></div></div><p className="mt-4 leading-7 text-slate-200">{milestone.description}</p><div className="mt-5 grid gap-4 md:grid-cols-2"><div className="rounded-2xl bg-slate-950/30 p-4"><p className="font-black text-white">Livrables</p><ul className="mt-2 space-y-2 text-sm text-slate-200">{milestone.deliverables.map(x=><li key={x}>• {x}</li>)}</ul></div><div className="rounded-2xl bg-slate-950/30 p-4"><p className="font-black text-white">Critères d’acceptation</p><ul className="mt-2 space-y-2 text-sm text-slate-200">{milestone.acceptance_criteria.map(x=><li key={x}>• {x}</li>)}</ul></div></div></section>}
 
-    {project && moduleOrder >= 11 && <section className="rounded-3xl border border-emerald-300/20 bg-emerald-500/10 p-5 sm:p-7"><p className="text-xs font-black uppercase tracking-[.16em] text-emerald-100">Projet final</p><h2 className="mt-2 text-3xl font-black text-white">{project.title}</h2><p className="mt-3 text-slate-200">{project.summary}</p><div className="mt-5"><Markdown>{project.brief_md}</Markdown></div></section>}
+    {project && moduleOrder >= 11 && <section className="rounded-3xl border border-emerald-300/20 bg-emerald-500/10 p-5 sm:p-7"><p className="text-xs font-black uppercase tracking-[.16em] text-emerald-100">Projet final</p><h2 className="mt-2 text-3xl font-black text-white">{project.title}</h2><p className="mt-3 text-slate-200">{project.summary}</p><div className="mt-5"><Markdown>{project.brief_md}</Markdown></div><div className="mt-6 grid gap-4"><label className="text-sm font-black text-white">Lien du dépôt ou de la démonstration<input value={submissionUrl} onChange={(event)=>setSubmissionUrl(event.target.value)} type="url" placeholder="https://..." className="mt-2 min-h-12 w-full rounded-2xl border border-white/15 bg-slate-950/40 px-4 text-sm text-white outline-none focus:ring-2 focus:ring-emerald-300" /></label><label className="text-sm font-black text-white">Notes de livraison<textarea value={submissionNotes} onChange={(event)=>setSubmissionNotes(event.target.value)} rows={5} placeholder="Décris les choix techniques, tests et limites." className="mt-2 w-full rounded-2xl border border-white/15 bg-slate-950/40 p-4 text-sm text-white outline-none focus:ring-2 focus:ring-emerald-300" /></label><button onClick={submitProject} disabled={submittingProject || (!submissionUrl.trim() && !submissionNotes.trim())} className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-white px-5 text-sm font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-50">{submittingProject ? "Envoi en cours…" : "Envoyer le projet pour évaluation"}</button>{projectMessage && <p role="status" className="rounded-2xl bg-slate-950/30 p-4 text-sm font-bold text-emerald-100">{projectMessage}</p>}</div></section>}
 
     <QuizBlock moduleId={moduleId} passScore={passScore} isValidated={completed} onValidated={onValidated}/>
   </div>;
