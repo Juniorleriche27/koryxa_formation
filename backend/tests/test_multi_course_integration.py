@@ -178,6 +178,31 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("'Power BI Service et collaboration'", migration)
         self.assertIn("'Sécurité, performance et qualité'", migration)
 
+    def test_power_bi_data_analyst_lesson_content_is_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text()
+
+        self.assertIn("power-bi-data-analyst", migration)
+        self.assertIn("24 leçons", migration)
+        self.assertEqual(migration.count("$lesson$# "), 24)
+        self.assertIn("Comprendre l’écosystème Power BI", migration)
+        self.assertIn("Fusionner des requêtes avec les bonnes jointures", migration)
+        self.assertIn("Écrire des mesures DAX lisibles", migration)
+        self.assertIn("Configurer la sécurité RLS", migration)
+        self.assertIn("is_published = FALSE", migration)
+
+    def test_power_bi_data_analyst_lesson_content_is_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text()
+
+        self.assertIn("power-bi-data-analyst", migration)
+        self.assertIn("24 leçons", migration)
+        self.assertEqual(migration.count("$lesson$# "), 24)
+        self.assertIn("Comprendre l’écosystème Power BI", migration)
+        self.assertIn("Combiner des fichiers mensuels", migration)
+        self.assertIn("Différencier mesures et colonnes calculées", migration)
+        self.assertIn("Publier dans Power BI Service", migration)
+        self.assertIn("Configurer la sécurité RLS", migration)
+        self.assertIn("is_published = FALSE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
