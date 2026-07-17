@@ -101,6 +101,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Assembler un dashboard interactif", migration)
         self.assertIn("is_published = FALSE", migration)
 
+    def test_excel_data_analyst_exercises_resources_and_files_are_complete(self):
+        migration = (ROOT / "supabase/migrations/20260720_seed_excel_data_analyst_exercises_resources.sql").read_text()
+        resources = ROOT / "frontend/public/resources/excel-data-analyst"
+
+        self.assertIn("EXCEL DATA ANALYST — CHANTIER 3", migration)
+        self.assertGreaterEqual(migration.count("is_published = FALSE"), 2)
+        self.assertIn("consolider-fichiers-power-query", migration)
+        self.assertIn("assembler-dashboard-commercial", migration)
+        self.assertIn("microsoft-recherchex", migration)
+        self.assertIn("microsoft-power-query", migration)
+        self.assertIn("microsoft-power-pivot", migration)
+        self.assertEqual(len(list(resources.glob("*.xlsx"))), 4)
+        self.assertEqual(len(list(resources.glob("*.csv"))), 4)
+        self.assertTrue((resources / "01_fondamentaux_formules.xlsx").stat().st_size > 3000)
+        self.assertTrue((resources / "04_power_query_modele_dashboard.xlsx").stat().st_size > 3000)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
