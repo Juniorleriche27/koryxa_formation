@@ -89,6 +89,18 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("'Modèle de données et Power Pivot'", migration)
         self.assertIn("'Dashboard professionnel'", migration)
 
+    def test_excel_data_analyst_lesson_content_is_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260719_seed_excel_data_analyst_lesson_content.sql").read_text()
+
+        self.assertIn("excel-data-analyst", migration)
+        self.assertIn("24 leçons", migration)
+        self.assertEqual(migration.count("$lesson$# "), 24)
+        self.assertIn("Construire un tableau croisé dynamique", migration)
+        self.assertIn("Importer et transformer avec Power Query", migration)
+        self.assertIn("Créer des mesures simples avec DAX", migration)
+        self.assertIn("Assembler un dashboard interactif", migration)
+        self.assertIn("is_published = FALSE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
