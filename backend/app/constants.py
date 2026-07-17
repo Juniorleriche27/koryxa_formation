@@ -1,5 +1,6 @@
 DEFAULT_COURSE_SLUG = "python-data-analyst"
 LLM_RAG_COURSE_SLUG = "llm-rag"
+EXCEL_DATA_ANALYST_COURSE_SLUG = "excel-data-analyst"
 
 COURSE_NOT_FOUND = "Parcours introuvable ou non publié."
 MODULE_NOT_FOUND = "Module introuvable ou non publié."

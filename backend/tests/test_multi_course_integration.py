@@ -74,6 +74,21 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("SET is_published = true", release)
         self.assertIn("WHERE slug = 'llm-rag'", release)
 
+    def test_excel_data_analyst_foundation_is_unpublished_and_complete(self):
+        migration = (ROOT / "supabase/migrations/20260719_seed_excel_data_analyst_foundation.sql").read_text()
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
+        constants = (ROOT / "backend/app/constants.py").read_text()
+
+        self.assertIn("EXCEL_DATA_ANALYST_COURSE_SLUG", course_config)
+        self.assertIn('EXCEL_DATA_ANALYST_COURSE_SLUG = "excel-data-analyst"', constants)
+        self.assertIn("'excel-data-analyst'", migration)
+        self.assertIn("'Excel Data Analyst'", migration)
+        self.assertIn("is_published = FALSE", migration)
+        self.assertEqual(migration.count("TRUE)"), 12)
+        self.assertIn("'Power Query'", migration)
+        self.assertIn("'Modèle de données et Power Pivot'", migration)
+        self.assertIn("'Dashboard professionnel'", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()

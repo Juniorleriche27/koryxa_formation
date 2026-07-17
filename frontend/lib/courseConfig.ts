@@ -1,7 +1,11 @@
 export const DEFAULT_COURSE_SLUG = "python-data-analyst";
 export const LLM_RAG_COURSE_SLUG = "llm-rag";
+export const EXCEL_DATA_ANALYST_COURSE_SLUG = "excel-data-analyst";
 
-export type CourseSlug = typeof DEFAULT_COURSE_SLUG | typeof LLM_RAG_COURSE_SLUG;
+export type CourseSlug =
+  | typeof DEFAULT_COURSE_SLUG
+  | typeof LLM_RAG_COURSE_SLUG
+  | typeof EXCEL_DATA_ANALYST_COURSE_SLUG;
 
 export const courseCatalog = {
   "python-data-analyst": {
@@ -15,6 +19,12 @@ export const courseCatalog = {
     shortDescription: "Documents, embeddings, Qdrant et réponses sourcées.",
     landingPath: "/formations/llm-rag",
     published: true,
+  },
+  "excel-data-analyst": {
+    title: "Excel Data Analyst",
+    shortDescription: "Formules, Power Query, tableaux croisés et dashboard professionnel.",
+    landingPath: "/formations",
+    published: false,
   },
 } as const;
 
@@ -36,5 +46,7 @@ export function readCourseSlug(search: string): string {
 }
 
 export function normalizeCourseSlug(value?: string | null): CourseSlug {
-  return value === LLM_RAG_COURSE_SLUG ? LLM_RAG_COURSE_SLUG : DEFAULT_COURSE_SLUG;
+  if (value === LLM_RAG_COURSE_SLUG) return LLM_RAG_COURSE_SLUG;
+  if (value === EXCEL_DATA_ANALYST_COURSE_SLUG) return EXCEL_DATA_ANALYST_COURSE_SLUG;
+  return DEFAULT_COURSE_SLUG;
 }
