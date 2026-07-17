@@ -23,7 +23,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { modulesAPI, notebookAPI, validationAPI } from "@/lib/api";
-import { DEFAULT_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
+import { DEFAULT_COURSE_SLUG, EXCEL_DATA_ANALYST_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import { moduleZeroCells, moduleZeroResources } from "@/lib/moduleZeroContent";
 import type { Module, ModuleStatus } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -35,6 +35,7 @@ import AIAssistant from "@/components/modules/AIAssistant";
 import QuizBlock from "@/components/modules/QuizBlock";
 import DocumentViewer from "@/components/modules/DocumentViewer";
 import LlmRagLearningContent from "@/components/modules/LlmRagLearningContent";
+import ExcelLearningContent from "@/components/modules/ExcelLearningContent";
 
 const tabClasses = {
   active: "bg-white text-slate-950 shadow-lg shadow-slate-950/10",
@@ -103,7 +104,7 @@ export default function ModuleDetailPage() {
   if (!module) {
     return (
       <div className="kx-dark-page flex min-h-screen flex-col">
-        {courseSlug !== LLM_RAG_COURSE_SLUG && <Navbar />}
+        {courseSlug !== LLM_RAG_COURSE_SLUG && courseSlug !== EXCEL_DATA_ANALYST_COURSE_SLUG && <Navbar />}
         <LearnerCourseContext courseSlug={courseSlug} current="module" compact />
         <main className="kx-container flex flex-1 items-center justify-center py-12">
           {moduleError ? (
@@ -132,7 +133,7 @@ export default function ModuleDetailPage() {
   }
 
   const downloadUrl = notebookAPI.getDownloadUrl(id);
-  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG;
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG || courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG;
   const completed = Boolean(moduleStatus?.is_validated);
   const isLocked = module.order_index > 0 && (!moduleStatus || moduleStatus.status === "locked" || moduleStatus.is_accessible === false);
   const hasFallbackModuleZero = isModuleZero(module) && cells === moduleZeroCells;
@@ -290,8 +291,16 @@ export default function ModuleDetailPage() {
                     Voir le parcours <ChevronRight size={16} />
                   </Link>
                 </div>
-              ) : dedicatedLearnerLayout ? (
+              ) : courseSlug === LLM_RAG_COURSE_SLUG ? (
                 <LlmRagLearningContent
+                  moduleId={id}
+                  moduleOrder={module.order_index}
+                  completed={completed}
+                  passScore={moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}
+                  onValidated={() => refreshModuleStatus(courseSlug)}
+                />
+              ) : courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG ? (
+                <ExcelLearningContent
                   moduleId={id}
                   moduleOrder={module.order_index}
                   completed={completed}

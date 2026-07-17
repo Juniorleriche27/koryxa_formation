@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, CheckCircle2, Flame, Sparkles } from "lucide-react";
 import { modulesAPI } from "@/lib/api";
-import { LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
+import { EXCEL_DATA_ANALYST_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import { useProgress } from "@/hooks/useProgress";
 import type { Module } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -33,7 +33,7 @@ export default function DashboardPage() {
   const nextModule = useMemo(() => modules.find((module) => !isCompleted(module.id)) || modules[0], [modules, isCompleted]);
   const recentModules = modules.slice(0, 6);
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
-  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG;
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG || courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG;
 
   return (
     <div className="kx-dark-page flex flex-col">

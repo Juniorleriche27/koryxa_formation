@@ -38,6 +38,22 @@ const tracks = [
     tags: ["Python", "Pandas", "Visualisation", "Portfolio"],
   },
   {
+    title: "Excel Data Analyst",
+    eyebrow: "Parcours en préparation",
+    description: "Maîtrisez l’outil le plus utilisé en entreprise pour nettoyer, analyser, automatiser et présenter des données utiles à la décision.",
+    objective: "Construire un dashboard commercial actualisable et professionnel.",
+    level: "Débutant à intermédiaire avancé",
+    format: "12 modules + fichiers pratiques + projet final",
+    icon: BarChart3,
+    href: "/formations/excel-data-analyst",
+    active: false,
+    featured: false,
+    price: "39 000 FCFA",
+    oldPrice: "49 000 FCFA",
+    outcome: "Dashboard Excel professionnel",
+    tags: ["Excel", "Power Query", "Power Pivot", "Dashboard"],
+  },
+  {
     title: "LLM RAG Developer",
     eyebrow: "Parcours disponible",
     description: "Apprenez à construire des assistants IA capables d’exploiter des documents privés, retrouver les bons passages et répondre avec des sources vérifiables.",
@@ -166,8 +182,8 @@ export default function FormationsPage() {
 
       <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-6xl gap-8 rounded-[2.25rem] bg-[#06251c] p-7 text-white sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
-          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><CheckCircle2 size={15} /> Deux parcours disponibles</span><h2 className="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Choisissez entre analyse de données et IA documentaire.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">Python Data Analyst développe vos compétences data. LLM RAG Developer vous apprend à construire des assistants IA fondés sur des sources privées et vérifiables.</p></div>
-          <Link href="/formations/llm-rag" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:bg-[#bcf5d7]">Explorer LLM RAG <ArrowRight size={17} /></Link>
+          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><CheckCircle2 size={15} /> Trois parcours structurés</span><h2 className="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Choisissez entre Excel, Python et IA documentaire.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">Excel Data Analyst développe les compétences les plus demandées dans les opérations quotidiennes. Python approfondit l’analyse par le code. LLM RAG vous apprend à construire des assistants IA fondés sur des sources privées et vérifiables.</p></div>
+          <Link href="/formations/excel-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:bg-[#bcf5d7]">Découvrir Excel Data Analyst <ArrowRight size={17} /></Link>
         </div>
       </section>
 

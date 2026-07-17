@@ -130,6 +130,21 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("recette-remise", migration)
         self.assertIn("is_published=FALSE", migration)
 
+    def test_excel_data_analyst_landing_and_learning_navigation_exist(self):
+        landing = (ROOT / "frontend/app/formations/excel-data-analyst/page.tsx").read_text()
+        catalog = (ROOT / "frontend/app/formations/page.tsx").read_text()
+        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text()
+        navigation = (ROOT / "supabase/migrations/20260722_enable_excel_data_analyst_learning_navigation.sql").read_text()
+
+        self.assertIn("Excel Data Analyst", landing)
+        self.assertIn("39 000 FCFA", landing)
+        self.assertIn("Power Query", landing)
+        self.assertIn("Dashboard commercial actualisable", landing)
+        self.assertIn('/formations/excel-data-analyst', catalog)
+        self.assertIn("ExcelLearningContent", module_page)
+        self.assertIn("UPDATE public.modules", navigation)
+        self.assertIn("SET is_published = FALSE", navigation)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()

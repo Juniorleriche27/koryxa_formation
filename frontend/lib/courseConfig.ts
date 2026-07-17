@@ -23,7 +23,7 @@ export const courseCatalog = {
   "excel-data-analyst": {
     title: "Excel Data Analyst",
     shortDescription: "Formules, Power Query, tableaux croisés et dashboard professionnel.",
-    landingPath: "/formations",
+    landingPath: "/formations/excel-data-analyst",
     published: false,
   },
 } as const;
@@ -32,6 +32,7 @@ export const courseRoutes = {
   catalog: "/formations",
   pythonLanding: "/formations/python-data-analyst",
   llmRagLanding: "/formations/llm-rag",
+  excelLanding: "/formations/excel-data-analyst",
   learn: (slug: string) => `/learn/${encodeURIComponent(slug)}`,
   access: (slug: string = DEFAULT_COURSE_SLUG) =>
     `/access?course=${encodeURIComponent(slug)}&redirect=${encodeURIComponent(`/dashboard?course=${slug}`)}`,
