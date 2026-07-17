@@ -5,6 +5,8 @@ import {
   createAccessSession,
 } from "@/lib/accessControl";
 import { verifyPartnerBridgeContext } from "@/lib/partnerBridge";
+import { findGrantByCodeHash, findGrantById, grantMatchesCourse } from "@/lib/formationAccessAdmin";
+import { normalizeCourseSlug } from "@/lib/courseConfig";
 
 type RedeemAccessResponse = {
   ok?: boolean;
@@ -63,6 +65,7 @@ async function redeemCodeWithSupabase(
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const code = typeof body?.code === "string" ? body.code.trim() : "";
+  const courseSlug = normalizeCourseSlug(typeof body?.course === "string" ? body.course : null);
   const partner = verifyPartnerBridgeContext(
     typeof body?.partner_ctx === "string" ? body.partner_ctx : null,
     typeof body?.partner_sig === "string" ? body.partner_sig : null
@@ -72,6 +75,15 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { message: "Entre le code reçu après validation du paiement." },
       { status: 400 }
+    );
+  }
+
+  const codeHash = await accessTokenFor(code);
+  const requestedGrant = await findGrantByCodeHash(codeHash);
+  if (!requestedGrant || !(await grantMatchesCourse(requestedGrant, courseSlug))) {
+    return NextResponse.json(
+      { message: "Ce code ne donne pas accès au parcours sélectionné." },
+      { status: 403 }
     );
   }
 
@@ -85,12 +97,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ message }, { status: redeemResult.reason === "server_error" ? 503 : 401 });
   }
 
+  const grant = await findGrantById(redeemResult.id as string);
+  if (!grant || !(await grantMatchesCourse(grant, courseSlug))) {
+    return NextResponse.json(
+      { message: "Ce code ne donne pas accès au parcours sélectionné." },
+      { status: 403 }
+    );
+  }
+
   const maxAge = 60 * 60 * 24 * 90;
   const accessSession = await createAccessSession(
     {
       sub: redeemResult.id as string,
       name: redeemResult.student_name || partner?.partner_name || "Apprenant KORYXA",
       email: redeemResult.student_email || redeemResult.partner_email || partner?.partner_email || null,
+      course: courseSlug,
     },
     maxAge
   );

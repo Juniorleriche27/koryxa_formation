@@ -67,6 +67,31 @@ function getSupabaseConfig() {
   };
 }
 
+export async function findCourseBySlug(slug: string) {
+  const config = getSupabaseConfig();
+  if (!config) throw new Error("Supabase formation non configuré.");
+
+  const response = await fetchSupabase(
+    `${config.url}/rest/v1/courses?select=id,slug,title&slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    {
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+      },
+      cache: "no-store",
+    },
+    "Lecture parcours formation"
+  );
+
+  const rows = (await response.json()) as Array<{ id: string; slug: string; title: string }>;
+  return rows[0] || null;
+}
+
+export async function grantMatchesCourse(grant: FormationAccessGrant, slug: string) {
+  const course = await findCourseBySlug(slug);
+  return Boolean(course && grant.course_id === course.id);
+}
+
 export function getInternalSecret() {
   return (process.env.KORYXA_IDENTITY_BRIDGE_KEY || "").trim();
 }
@@ -128,6 +153,26 @@ export function summarizeGrant(grant: FormationAccessGrant | null) {
   }
 
   return { status: "active" as FormationAccessStatus, grant, access_until: grant.access_until || grant.expires_at };
+}
+
+export async function findGrantByCodeHash(codeHash: string) {
+  const config = getSupabaseConfig();
+  if (!config) throw new Error("Supabase formation non configuré.");
+
+  const response = await fetchSupabase(
+    `${config.url}/rest/v1/formation_access_codes?select=${SELECT_COLUMNS}&code_hash=eq.${encodeURIComponent(codeHash)}&limit=1`,
+    {
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+      },
+      cache: "no-store",
+    },
+    "Lecture accès formation par code"
+  );
+
+  const rows = (await response.json()) as FormationAccessGrant[];
+  return rows[0] || null;
 }
 
 export async function findGrantById(id: string) {

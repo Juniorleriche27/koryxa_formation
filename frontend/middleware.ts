@@ -4,7 +4,8 @@ import {
   ACCESS_COOKIE_NAME,
   getAccessSessionPayload,
 } from "@/lib/accessControl";
-import { findGrantById, summarizeGrant } from "@/lib/formationAccessAdmin";
+import { findGrantById, grantMatchesCourse, summarizeGrant } from "@/lib/formationAccessAdmin";
+import { normalizeCourseSlug } from "@/lib/courseConfig";
 
 
 function redirectToAccess(request: NextRequest) {
@@ -39,7 +40,10 @@ export async function middleware(request: NextRequest) {
     const grant = await findGrantById(sessionPayload.sub);
     const summary = summarizeGrant(grant);
 
-    if (summary.status !== "active") {
+    const requestedCourse = normalizeCourseSlug(request.nextUrl.searchParams.get("course"));
+    const sessionCourse = normalizeCourseSlug(sessionPayload.course);
+
+    if (summary.status !== "active" || requestedCourse !== sessionCourse || !(await grantMatchesCourse(grant!, requestedCourse))) {
       return redirectToAccess(request);
     }
   } catch {

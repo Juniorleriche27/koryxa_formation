@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { courseRoutes, LLM_RAG_COURSE_SLUG } from "@/lib/courseConfig";
 import {
   ArrowRight,
   BookOpenCheck,
@@ -80,9 +81,9 @@ export default function LlmRagLandingPage() {
               Apprenez à transformer des documents en réponses utiles, traçables et sourcées avec Python, embeddings, Qdrant et Streamlit.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#programme" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">
-                Voir le programme <ArrowRight size={17} />
-              </a>
+              <Link href={courseRoutes.access(LLM_RAG_COURSE_SLUG)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">
+                Accéder à la formation <ArrowRight size={17} />
+              </Link>
               <Link href="/faq" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/8 px-6 py-3.5 text-sm font-black text-white backdrop-blur-md transition hover:bg-white/14">
                 Poser une question
               </Link>
@@ -199,12 +200,12 @@ export default function LlmRagLandingPage() {
           <span className="inline-flex items-center gap-2 rounded-full bg-[#06251c]/6 px-4 py-2 text-xs font-black uppercase tracking-[0.16em]">
             Parcours en préparation
           </span>
-          <h2 className="mt-6 text-3xl font-black tracking-[-0.04em] sm:text-5xl">L’accès apprenant ouvrira après la recette complète.</h2>
+          <h2 className="mt-6 text-3xl font-black tracking-[-0.04em] sm:text-5xl">Prêt à entrer dans le parcours LLM RAG ?</h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600">
-            Le programme est structuré, mais les modules restent volontairement non publiés pour protéger l’expérience des apprenants et le parcours Python existant.
+            Passe par le contrôle d’accès KORYXA, puis retrouve ton tableau de bord dédié au parcours.
           </p>
-          <Link href="/formations" className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#06251c] px-6 py-3.5 text-sm font-black text-white transition hover:bg-[#00bd72] hover:text-[#06251c]">
-            Retour au catalogue <ArrowRight size={17} />
+          <Link href={courseRoutes.access(LLM_RAG_COURSE_SLUG)} className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#06251c] px-6 py-3.5 text-sm font-black text-white transition hover:bg-[#00bd72] hover:text-[#06251c]">
+            Entrer dans la formation <ArrowRight size={17} />
           </Link>
         </div>
       </section>

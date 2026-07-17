@@ -21,6 +21,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn('"has_access": course.get("id") == grant.get("course_id")', source)
         self.assertIn('.eq("is_published", True)', source)
 
+    def test_llm_rag_entry_flow_keeps_course_context(self):
+        landing = (ROOT / "frontend/app/formations/llm-rag/page.tsx").read_text()
+        access = (ROOT / "frontend/app/access/page.tsx").read_text()
+        access_api = (ROOT / "frontend/app/api/access/route.ts").read_text()
+        middleware = (ROOT / "frontend/middleware.ts").read_text()
+        config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
+
+        self.assertIn("courseRoutes.access(LLM_RAG_COURSE_SLUG)", landing)
+        self.assertIn('searchParams.get("course")', access)
+        self.assertIn("courseRoutes.dashboard(courseSlug)", access)
+        self.assertIn("course: courseSlug", access)
+        self.assertIn("grantMatchesCourse(requestedGrant, courseSlug)", access_api)
+        self.assertIn("sessionPayload.course", middleware)
+        self.assertIn("access: (slug: string", config)
+        self.assertIn("dashboard: (slug: string", config)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()

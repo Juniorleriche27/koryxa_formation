@@ -23,6 +23,9 @@ export const courseRoutes = {
   pythonLanding: "/formations/python-data-analyst",
   llmRagLanding: "/formations/llm-rag",
   learn: (slug: string) => `/learn/${encodeURIComponent(slug)}`,
+  access: (slug: string = DEFAULT_COURSE_SLUG) =>
+    `/access?course=${encodeURIComponent(slug)}&redirect=${encodeURIComponent(`/dashboard?course=${slug}`)}`,
+  dashboard: (slug: string = DEFAULT_COURSE_SLUG) => `/dashboard?course=${encodeURIComponent(slug)}`,
   modules: (slug: string = DEFAULT_COURSE_SLUG) => `/modules?course=${encodeURIComponent(slug)}`,
   module: (moduleId: string, slug: string = DEFAULT_COURSE_SLUG) =>
     `/modules/${encodeURIComponent(moduleId)}?course=${encodeURIComponent(slug)}`,
@@ -30,4 +33,8 @@ export const courseRoutes = {
 
 export function readCourseSlug(search: string): string {
   return new URLSearchParams(search).get("course") || DEFAULT_COURSE_SLUG;
+}
+
+export function normalizeCourseSlug(value?: string | null): CourseSlug {
+  return value === LLM_RAG_COURSE_SLUG ? LLM_RAG_COURSE_SLUG : DEFAULT_COURSE_SLUG;
 }

@@ -4,6 +4,7 @@ type AccessSessionPayload = {
   sub: string;
   name?: string | null;
   email?: string | null;
+  course?: string | null;
   iat: number;
   exp: number;
 };
@@ -58,7 +59,7 @@ export async function accessTokenFor(code: string) {
 }
 
 export async function createAccessSession(
-  payload: Pick<AccessSessionPayload, "sub" | "name" | "email">,
+  payload: Pick<AccessSessionPayload, "sub" | "name" | "email" | "course">,
   maxAgeSeconds = 60 * 60 * 24 * 90
 ) {
   const secret = getAccessSecret();
@@ -72,6 +73,7 @@ export async function createAccessSession(
     sub: payload.sub,
     name: payload.name ?? null,
     email: payload.email ?? null,
+    course: payload.course ?? "python-data-analyst",
     iat: now,
     exp: now + maxAgeSeconds,
   };

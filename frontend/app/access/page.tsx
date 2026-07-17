@@ -3,6 +3,7 @@
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { courseCatalog, courseRoutes, normalizeCourseSlug } from "@/lib/courseConfig";
 import {
   ArrowRight,
   CheckCircle2,
@@ -16,7 +17,9 @@ import {
 
 function AccessForm() {
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/dashboard";
+  const courseSlug = normalizeCourseSlug(searchParams.get("course"));
+  const course = courseCatalog[courseSlug];
+  const redirect = searchParams.get("redirect") || courseRoutes.dashboard(courseSlug);
   const partnerCtx = searchParams.get("partner_ctx");
   const partnerSig = searchParams.get("partner_sig");
   const [code, setCode] = useState("");
@@ -36,7 +39,7 @@ function AccessForm() {
       const response = await fetch("/api/access/partner", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ partner_ctx: partnerCtx, partner_sig: partnerSig }),
+        body: JSON.stringify({ partner_ctx: partnerCtx, partner_sig: partnerSig, course: courseSlug }),
       }).catch(() => null);
 
       if (cancelled) return;
@@ -54,7 +57,7 @@ function AccessForm() {
     return () => {
       cancelled = true;
     };
-  }, [partnerCtx, partnerSig, redirect]);
+  }, [partnerCtx, partnerSig, redirect, courseSlug]);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,7 +67,7 @@ function AccessForm() {
     const response = await fetch("/api/access", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, partner_ctx: partnerCtx, partner_sig: partnerSig }),
+      body: JSON.stringify({ code, partner_ctx: partnerCtx, partner_sig: partnerSig, course: courseSlug }),
     });
 
     if (response.ok) {
@@ -91,7 +94,7 @@ function AccessForm() {
             <ShieldCheck size={15} /> Accès sécurisé
           </div>
           <h1 className="mt-6 text-4xl font-black tracking-tight text-white sm:text-6xl">
-            Entre dans ton espace formation.
+            Entre dans ton espace {course.title}.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
             Si ton accès partenaire est déjà attribué, la plateforme te connecte automatiquement. Le code manuel reste disponible pour les tests et les cas de dépannage.
@@ -119,6 +122,7 @@ function AccessForm() {
             </div>
             <h2 className="mt-6 text-2xl font-black tracking-tight sm:text-3xl">Accès formation</h2>
             <p className="mt-3 text-sm leading-7 text-slate-600">
+              <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-blue-700">{course.title}</span>
               {checkingPartnerAccess
                 ? "Vérification de ton accès partenaire en cours. Tu seras redirigé automatiquement si l’accès est actif."
                 : "Entre ton code seulement si l’accès direct partenaire n’est pas encore disponible pour ton compte."}

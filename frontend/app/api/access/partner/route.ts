@@ -4,7 +4,8 @@ import {
   createAccessSession,
 } from "@/lib/accessControl";
 import { verifyPartnerBridgeContext } from "@/lib/partnerBridge";
-import { findGrantByPartnerCode, summarizeGrant } from "@/lib/formationAccessAdmin";
+import { findGrantByPartnerCode, grantMatchesCourse, summarizeGrant } from "@/lib/formationAccessAdmin";
+import { normalizeCourseSlug } from "@/lib/courseConfig";
 
 function jsonError(message: string, status = 400) {
   return NextResponse.json({ ok: false, message }, { status });
@@ -12,6 +13,7 @@ function jsonError(message: string, status = 400) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
+  const courseSlug = normalizeCourseSlug(typeof body?.course === "string" ? body.course : null);
   const partner = verifyPartnerBridgeContext(
     typeof body?.partner_ctx === "string" ? body.partner_ctx : null,
     typeof body?.partner_sig === "string" ? body.partner_sig : null
@@ -24,7 +26,7 @@ export async function POST(request: NextRequest) {
   const grant = await findGrantByPartnerCode(partner.partner_code);
   const summary = summarizeGrant(grant);
 
-  if (summary.status !== "active" || !grant) {
+  if (summary.status !== "active" || !grant || !(await grantMatchesCourse(grant, courseSlug))) {
     return NextResponse.json({ ok: false, status: summary.status, access_until: summary.access_until }, { status: 404 });
   }
 
@@ -34,6 +36,7 @@ export async function POST(request: NextRequest) {
       sub: grant.id,
       name: grant.student_name || grant.partner_name || partner.partner_name || "Apprenant KORYXA",
       email: grant.student_email || grant.partner_email || partner.partner_email || null,
+      course: courseSlug,
     },
     maxAge
   );
