@@ -145,6 +145,23 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("UPDATE public.modules", navigation)
         self.assertIn("SET is_published = FALSE", navigation)
 
+    def test_excel_data_analyst_final_release_is_complete(self):
+        migration = (ROOT / "supabase/migrations/20260723_finalize_excel_data_analyst_release.sql").read_text()
+        certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
+        config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
+        catalog = (ROOT / "frontend/app/formations/page.tsx").read_text()
+
+        self.assertIn("Publication Excel incomplète", migration)
+        self.assertIn("module_count<>12", migration)
+        self.assertIn("lesson_count<>24", migration)
+        self.assertIn("exercise_count<>12", migration)
+        self.assertIn("quiz_count<>60", migration)
+        self.assertIn("total_points<>40", migration)
+        self.assertIn("Analyse de données avec Excel", certificate)
+        self.assertIn('"excel-data-analyst"', config)
+        self.assertIn("published: true", config)
+        self.assertIn("Parcours disponible", catalog)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()

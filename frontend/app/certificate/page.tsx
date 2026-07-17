@@ -21,7 +21,7 @@ import Footer from "@/components/layout/Footer";
 import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
 import { certificatesAPI, getApiErrorMessage, validationAPI } from "@/lib/api";
 import type { Certificate, CertificationStatus } from "@/types";
-import { LLM_RAG_COURSE_SLUG, courseCatalog, readCourseSlug } from "@/lib/courseConfig";
+import { EXCEL_DATA_ANALYST_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseCatalog, readCourseSlug } from "@/lib/courseConfig";
 
 function formatDate(value?: string | null) {
   if (!value) return "—";
@@ -99,11 +99,17 @@ export default function CertificatePage() {
   const formattedIssuedAt = certificate?.issued_at ? formatDate(certificate.issued_at) : "—";
   const blockingReasons = status?.blocking_reasons || [];
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
-  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG;
-  const certificateTitle = dedicatedLearnerLayout ? "Développement d’applications LLM & RAG" : "Analyse de Données avec Python";
-  const certificateDescription = dedicatedLearnerLayout
-    ? "Ce certificat atteste la validation du parcours KORYXA LLM RAG Developer, incluant quiz, projet final, évaluation et réponses sourcées."
-    : "Ce certificat atteste la validation du parcours KORYXA Formation Python Data, incluant QCM, projet final et seuil de réussite.";
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG || courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG;
+  const certificateTitle = courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG
+    ? "Analyse de données avec Excel"
+    : courseSlug === LLM_RAG_COURSE_SLUG
+      ? "Développement d’applications LLM & RAG"
+      : "Analyse de Données avec Python";
+  const certificateDescription = courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG
+    ? "Ce certificat atteste la validation du parcours KORYXA Excel Data Analyst, incluant formules, Power Query, Power Pivot, dashboard, quiz et projet final."
+    : courseSlug === LLM_RAG_COURSE_SLUG
+      ? "Ce certificat atteste la validation du parcours KORYXA LLM RAG Developer, incluant quiz, projet final, évaluation et réponses sourcées."
+      : "Ce certificat atteste la validation du parcours KORYXA Formation Python Data, incluant QCM, projet final et seuil de réussite.";
   const scoreRows = useMemo(() => [
     { label: "Plateforme", value: `${status?.platform_score ?? 0}/40`, icon: CheckCircle2 },
     { label: "Projet final", value: `${status?.project_score ?? 0}/60`, icon: FileCheck2 },

@@ -24,7 +24,7 @@ export const courseCatalog = {
     title: "Excel Data Analyst",
     shortDescription: "Formules, Power Query, tableaux croisés et dashboard professionnel.",
     landingPath: "/formations/excel-data-analyst",
-    published: false,
+    published: true,
   },
 } as const;
 
