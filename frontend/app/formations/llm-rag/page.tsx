@@ -7,6 +7,7 @@ import {
   Bot,
   Braces,
   CheckCircle2,
+  BriefcaseBusiness,
   Clock3,
   Database,
   FileSearch,
@@ -14,12 +15,14 @@ import {
   Layers3,
   LockKeyhole,
   MessageSquareText,
+  Rocket,
   Network,
   PlayCircle,
   SearchCheck,
   ShieldCheck,
   Sparkles,
   Star,
+  TrendingUp,
   Target,
   Workflow,
 } from "lucide-react";
@@ -64,6 +67,32 @@ const skills = [
   "Évaluer la qualité d’un pipeline RAG",
   "Créer une interface Streamlit",
   "Sécuriser et documenter le projet",
+];
+
+
+const importancePoints = [
+  {
+    title: "Les entreprises veulent exploiter leurs propres données",
+    text: "Un chatbot généraliste ne connaît ni les procédures internes, ni les contrats, ni les documents métier. Le RAG permet de connecter l’IA à une base documentaire contrôlée.",
+    icon: Database,
+  },
+  {
+    title: "La confiance exige des sources vérifiables",
+    text: "Dans un contexte professionnel, une réponse fluide ne suffit pas. Il faut retrouver les bons passages, citer les sources et refuser lorsque le contexte est insuffisant.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Le marché a besoin de profils capables de livrer",
+    text: "Cette formation vous apprend à passer du prototype à une application démontrable : ingestion, recherche vectorielle, interface, évaluation, sécurité et déploiement.",
+    icon: BriefcaseBusiness,
+  },
+];
+
+const careerOutcomes = [
+  "Développeur d’assistants documentaires",
+  "Intégrateur IA pour PME et organisations",
+  "Consultant automatisation et recherche documentaire",
+  "Prototypeur de produits IA internes",
 ];
 
 function CourseHeader() {
@@ -167,6 +196,27 @@ export default function LlmRagLandingPage() {
         </div>
       </section>
 
+
+      <section className="bg-white px-4 py-20 text-[#06251c] sm:px-6 lg:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
+            <div className="lg:sticky lg:top-28">
+              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-xs font-black uppercase tracking-[.16em] text-emerald-800"><TrendingUp size={14}/> Pourquoi cette compétence compte maintenant</span>
+              <h2 className="mt-6 text-4xl font-black leading-[.98] tracking-[-.05em] sm:text-5xl">L’IA devient vraiment utile quand elle sait travailler avec les documents de l’entreprise.</h2>
+              <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">Le RAG répond à un problème concret : permettre à une organisation d’interroger ses procédures, contrats, guides, rapports ou bases de connaissances sans laisser le modèle inventer librement.</p>
+              <div className="mt-8 rounded-[1.75rem] bg-[#06251c] p-6 text-white">
+                <p className="text-xs font-black uppercase tracking-[.16em] text-emerald-200">Débouchés possibles</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">{careerOutcomes.map(item => <p key={item} className="flex gap-2 text-sm font-bold leading-6 text-slate-200"><CheckCircle2 size={16} className="mt-1 shrink-0 text-emerald-300"/>{item}</p>)}</div>
+              </div>
+            </div>
+            <div className="grid gap-5">
+              {importancePoints.map(({ title, text, icon: Icon }, index) => <article key={title} className="rounded-[1.75rem] border border-emerald-950/10 bg-[#f4fbf7] p-6 sm:p-8"><div className="flex items-start gap-4"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-200 text-emerald-950"><Icon size={22}/></span><div><p className="text-xs font-black uppercase tracking-[.16em] text-emerald-700">Enjeu {index + 1}</p><h3 className="mt-2 text-2xl font-black tracking-[-.03em]">{title}</h3><p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">{text}</p></div></div></article>)}
+              <div className="rounded-[1.75rem] border border-emerald-300/30 bg-emerald-100 p-6 sm:p-8"><div className="flex gap-4"><Rocket className="mt-1 shrink-0 text-emerald-800"/><div><p className="font-black text-emerald-950">À la fin, vous ne présentez pas seulement un certificat.</p><p className="mt-2 text-sm leading-7 text-emerald-950/75">Vous présentez un assistant documentaire RAG complet, testable, sourcé et suffisamment structuré pour devenir une preuve de compétence ou la base d’un service client.</p></div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="methode" className="bg-[#f4fbf7] px-4 py-20 text-[#06251c] sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
           <div className="lg:sticky lg:top-28">
@@ -215,8 +265,9 @@ export default function LlmRagLandingPage() {
             </div>
             <div className="rounded-[1.75rem] bg-white p-6 text-slate-950 shadow-2xl">
               <p className="text-xs font-black uppercase tracking-[.18em] text-emerald-700">Prix de la formation</p>
-              <p className="mt-4 text-3xl font-black tracking-tight">Tarif de lancement</p>
-              <p className="mt-3 text-sm font-semibold leading-6 text-slate-500">Le montant exact est affiché dans le sas d’accès sécurisé. Ressources et certificat inclus.</p>
+              <p className="mt-4 text-4xl font-black tracking-tight">49 000 FCFA</p>
+              <div className="mt-2 flex items-center gap-3"><span className="text-sm font-bold text-slate-400 line-through">69 000 FCFA</span><span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black uppercase tracking-[.12em] text-emerald-800">Tarif de lancement</span></div>
+              <p className="mt-4 text-sm font-semibold leading-6 text-slate-500">Paiement unique. Leçons, notebooks, ressources officielles, exercices, projet final et certificat inclus.</p>
               <Link href={accessUrl} className="mt-6 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-5 py-4 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-emerald-700">Accéder à la formation <ArrowRight size={17}/></Link>
             </div>
           </div>
