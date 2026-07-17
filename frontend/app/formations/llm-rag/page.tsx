@@ -1,7 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
-import { courseRoutes, LLM_RAG_COURSE_SLUG } from "@/lib/courseConfig";
 import {
   ArrowRight,
+  Award,
   BookOpenCheck,
   Bot,
   Braces,
@@ -14,14 +15,15 @@ import {
   LockKeyhole,
   MessageSquareText,
   Network,
+  PlayCircle,
   SearchCheck,
   ShieldCheck,
   Sparkles,
+  Star,
   Target,
   Workflow,
 } from "lucide-react";
-
-import { FooterSEO, Header } from "@/components/marketing/KoryxaFormationPortal";
+import { courseRoutes, LLM_RAG_COURSE_SLUG } from "@/lib/courseConfig";
 import {
   LlmRagExercisePreview,
   LlmRagProjectPreview,
@@ -31,10 +33,12 @@ import {
 } from "@/components/marketing/llm-rag";
 
 export const metadata = {
-  title: "Formation LLM RAG Developer | KORYXA Pôle Formation",
+  title: "Formation LLM RAG Developer | KORYXA Formation",
   description:
     "Construisez un assistant documentaire avec Python, embeddings, Qdrant, génération sourcée et interface Streamlit.",
 };
+
+const accessUrl = courseRoutes.access(LLM_RAG_COURSE_SLUG);
 
 const modules = [
   ["01", "Comprendre les LLM et le RAG", "Modèles de langage, hallucinations, recherche augmentée et architecture globale.", "1h30", Bot],
@@ -47,7 +51,7 @@ const modules = [
   ["08", "Construire le prompt RAG", "Contexte, citations, refus hors sujet et protection contre les injections.", "2h30", MessageSquareText],
   ["09", "Générer et évaluer", "Réponses sourcées, fidélité, coût, latence et jeu de tests.", "3h", Workflow],
   ["10", "Créer l’interface Streamlit", "Expérience de question-réponse, historique, sources et erreurs.", "2h30", Sparkles],
-  ["11", "Sécuriser et préparer la mise en ligne", "Tests, secrets, fichiers, logs, quotas et checklist de déploiement.", "2h", ShieldCheck],
+  ["11", "Sécuriser et mettre en ligne", "Tests, secrets, fichiers, logs, quotas et checklist de déploiement.", "2h", ShieldCheck],
   ["12", "Projet final", "Un assistant documentaire RAG complet, testé, documenté et présentable.", "3h", GraduationCap],
 ] as const;
 
@@ -62,106 +66,132 @@ const skills = [
   "Sécuriser et documenter le projet",
 ];
 
+function CourseHeader() {
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-300/10 bg-[#041b15]/88 backdrop-blur-2xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:h-20 lg:px-8">
+        <Link href="/formations/llm-rag" className="flex items-center gap-3" aria-label="Accueil Formation LLM RAG">
+          <Image src="/assets/brand/koryxa-logo.webp" alt="KORYXA" width={42} height={42} className="h-10 w-10 rounded-2xl object-cover ring-1 ring-white/15" priority />
+          <span className="leading-tight">
+            <span className="block text-sm font-black tracking-[0.08em] text-white sm:text-base">KORYXA FORMATION</span>
+            <span className="block text-xs font-semibold text-emerald-200/70">LLM RAG Developer</span>
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-7 text-sm font-black text-slate-300 lg:flex" aria-label="Navigation de la formation LLM RAG">
+          <a href="#programme" className="transition hover:text-white">Programme</a>
+          <a href="#methode" className="transition hover:text-white">Méthode</a>
+          <a href="#projet" className="transition hover:text-white">Projet</a>
+          <a href="#prix" className="transition hover:text-white">Prix</a>
+        </nav>
+
+        <Link href={accessUrl} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-xs font-black text-[#06251c] shadow-xl transition hover:-translate-y-0.5 hover:bg-emerald-100 sm:px-5 sm:text-sm">
+          Accéder <ArrowRight size={16} />
+        </Link>
+      </div>
+    </header>
+  );
+}
+
+function CourseFooter() {
+  return (
+    <footer className="border-t border-white/10 bg-[#03140f] px-4 py-10 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <Image src="/assets/brand/koryxa-logo.webp" alt="KORYXA" width={40} height={40} className="h-10 w-10 rounded-2xl object-cover" />
+          <div><p className="font-black">KORYXA Formation</p><p className="text-sm text-slate-400">Parcours LLM RAG Developer</p></div>
+        </div>
+        <div className="flex flex-wrap gap-5 text-sm font-bold text-slate-300">
+          <Link href="/formations" className="hover:text-white">Toutes les formations</Link>
+          <Link href="/faq" className="hover:text-white">FAQ</Link>
+          <Link href={accessUrl} className="text-emerald-300 hover:text-emerald-200">Espace apprenant</Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export default function LlmRagLandingPage() {
   return (
-    <main className="kx-marketing min-h-screen bg-white pt-16 text-[#06251c] lg:pt-20">
-      <Header />
+    <main className="min-h-screen bg-[#041b15] text-white">
+      <CourseHeader />
 
-      <section className="relative overflow-hidden bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(0,189,114,.28),transparent_30rem),radial-gradient(circle_at_88%_70%,rgba(188,245,215,.14),transparent_26rem)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr_0.75fr] lg:items-center">
+      <section className="relative overflow-hidden px-4 pb-20 pt-32 sm:px-6 sm:pt-36 lg:px-8 lg:pb-28 lg:pt-44">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(16,185,129,.26),transparent_28rem),radial-gradient(circle_at_86%_36%,rgba(34,211,238,.12),transparent_30rem),linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[length:auto,auto,64px_64px,64px_64px]" />
+        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.12fr_.72fr] lg:items-center">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#bcf5d7]/30 bg-[#bcf5d7]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]">
-              <Sparkles size={14} /> Parcours en préparation
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.17em] text-emerald-200">
+              <Sparkles size={14} /> Formation LLM RAG · Projet portfolio · Certificat
             </span>
-            <h1 className="mt-6 max-w-5xl text-4xl font-black leading-[0.95] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-              Construisez un assistant documentaire avec LLM et RAG.
+            <h1 className="mt-7 max-w-5xl text-5xl font-black leading-[0.9] tracking-[-0.06em] sm:text-7xl lg:text-[5.8rem]">
+              De documents bruts à un <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-300 bg-clip-text text-transparent">assistant RAG fiable</span> et présentable.
             </h1>
-            <p className="mt-6 max-w-3xl text-base font-medium leading-8 text-white/75 sm:text-lg">
-              Apprenez à transformer des documents en réponses utiles, traçables et sourcées avec Python, embeddings, Qdrant et Streamlit.
+            <p className="mt-7 max-w-3xl text-base font-semibold leading-8 text-slate-300 sm:text-xl sm:leading-9">
+              Apprenez Python, embeddings, Qdrant, retrieval, prompting et Streamlit en construisant un assistant documentaire qui répond avec ses sources.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href={courseRoutes.access(LLM_RAG_COURSE_SLUG)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">
-                Accéder à la formation <ArrowRight size={17} />
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link href={accessUrl} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-7 py-4 text-sm font-black text-[#05261c] shadow-2xl shadow-emerald-500/20 transition hover:-translate-y-1 hover:bg-emerald-300">
+                Accéder à la formation <ArrowRight size={18} />
               </Link>
-              <Link href="/faq" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/8 px-6 py-3.5 text-sm font-black text-white backdrop-blur-md transition hover:bg-white/14">
-                Poser une question
-              </Link>
+              <a href="#programme" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/10">
+                <PlayCircle size={18} /> Voir le programme
+              </a>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-bold text-slate-300">
+              <span className="inline-flex items-center gap-2"><LockKeyhole size={15} className="text-emerald-300" /> Accès sécurisé</span>
+              <span className="inline-flex items-center gap-2"><Star size={15} className="text-amber-300" /> Tarif visible à l’accès</span>
+              <span className="inline-flex items-center gap-2"><Award size={15} className="text-cyan-300" /> Certificat inclus</span>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/12 bg-white/8 p-6 backdrop-blur-xl sm:p-8">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {[
-                [Clock3, "Durée estimée", "28 heures"],
-                [GraduationCap, "Niveau", "Débutant technique à intermédiaire"],
-                [BookOpenCheck, "Format", "12 modules + exercices + quiz"],
-                [Target, "Livrable", "Assistant RAG avec sources"],
-              ].map(([Icon, label, value]) => {
-                const ItemIcon = Icon as typeof Clock3;
-                return (
-                  <div key={label as string} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
-                    <ItemIcon size={20} className="text-[#bcf5d7]" />
-                    <p className="mt-4 text-xs font-black uppercase tracking-[0.14em] text-white/45">{label as string}</p>
-                    <p className="mt-2 text-sm font-black leading-6 text-white">{value as string}</p>
+          <aside className="rounded-[2rem] border border-white/12 bg-white/[0.07] p-5 shadow-2xl shadow-emerald-950/40 backdrop-blur-2xl sm:p-7">
+            <div className="rounded-[1.5rem] border border-emerald-300/15 bg-[#092d23] p-5">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">Projet final</p>
+              <h2 className="mt-3 text-2xl font-black">Assistant documentaire avec réponses sourcées</h2>
+              <div className="mt-6 space-y-3">
+                {["Ingestion de documents", "Recherche vectorielle", "Réponses avec citations", "Interface Streamlit", "Tests et sécurité"].map((item, index) => (
+                  <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.05] p-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-300/10 text-xs font-black text-emerald-200">{index + 1}</span>
+                    <span className="text-sm font-bold text-slate-200">{item}</span>
                   </div>
-                );
+                ))}
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              {[[Clock3, "28 h", "Durée"], [GraduationCap, "12", "Modules"], [BookOpenCheck, "26", "Leçons"], [Target, "1", "Projet"]].map(([Icon, value, label]) => {
+                const ItemIcon = Icon as typeof Clock3;
+                return <div key={label as string} className="rounded-2xl border border-white/10 bg-white/[0.05] p-4"><ItemIcon size={18} className="text-emerald-300"/><p className="mt-3 text-xl font-black">{value as string}</p><p className="text-xs font-bold uppercase tracking-[.12em] text-slate-500">{label as string}</p></div>;
               })}
             </div>
-          </div>
+          </aside>
         </div>
       </section>
 
-      <section className="bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <section id="methode" className="bg-[#f4fbf7] px-4 py-20 text-[#06251c] sm:px-6 lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
           <div className="lg:sticky lg:top-28">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#bcf5d7] px-4 py-2 text-xs font-black uppercase tracking-[0.16em]">
-              <Target size={14} /> Résultat attendu
-            </span>
-            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] sm:text-5xl">
-              Vous ne construisez pas un simple chatbot.
-            </h2>
-            <p className="mt-5 text-base leading-8 text-slate-600">
-              Le projet final doit répondre à partir d’un corpus réel, montrer les passages utilisés, refuser les réponses non couvertes et rester testable.
-            </p>
+            <span className="inline-flex items-center gap-2 rounded-full bg-emerald-200 px-4 py-2 text-xs font-black uppercase tracking-[.16em]"><Target size={14}/> Résultat concret</span>
+            <h2 className="mt-6 text-4xl font-black leading-[.98] tracking-[-.05em] sm:text-5xl">Vous ne construisez pas un simple chatbot.</h2>
+            <p className="mt-5 text-base leading-8 text-slate-600">Vous construisez une application capable de retrouver les bons passages, citer ses sources, refuser ce qu’elle ne sait pas et rester testable.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {skills.map((skill) => (
-              <div key={skill} className="flex gap-3 rounded-[1.5rem] border border-[#06251c]/10 bg-white p-5 shadow-sm">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#00bd72]" />
-                <p className="text-sm font-bold leading-7 text-[#06251c]">{skill}</p>
-              </div>
-            ))}
+            {skills.map((skill) => <div key={skill} className="flex gap-3 rounded-[1.5rem] border border-emerald-950/10 bg-white p-5 shadow-sm"><CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600"/><p className="text-sm font-bold leading-7">{skill}</p></div>)}
           </div>
         </div>
       </section>
 
-      <section id="programme" className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section id="programme" className="bg-white px-4 py-20 text-[#06251c] sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#06251c] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]">
-              <Layers3 size={14} /> Programme complet
-            </span>
-            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
-              Une progression du concept au projet déployable.
-            </h2>
-            <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-              Chaque module débouche sur une preuve concrète : schéma, script, index, moteur de recherche, prompt, interface ou test.
-            </p>
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#06251c] px-4 py-2 text-xs font-black uppercase tracking-[.16em] text-emerald-200"><Layers3 size={14}/> Programme complet</span>
+            <h2 className="mt-6 text-4xl font-black leading-[.98] tracking-[-.05em] sm:text-6xl">Du concept au produit déployable.</h2>
+            <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">Chaque module produit une preuve concrète : schéma, script, index, moteur de recherche, prompt, interface ou test.</p>
           </div>
-
           <div className="mt-14 grid gap-4 lg:grid-cols-2">
             {modules.map(([number, title, description, duration, Icon]) => (
-              <article key={number} className="group rounded-[1.75rem] border border-[#06251c]/10 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#00bd72]/35 hover:shadow-lg">
-                <div className="flex items-start justify-between gap-4">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#bcf5d7] text-[#06251c]">
-                    <Icon size={22} />
-                  </span>
-                  <span className="rounded-full bg-[#f2fbf5] px-3 py-1.5 text-xs font-black text-[#008f58]">{duration}</span>
-                </div>
-                <p className="mt-6 text-xs font-black uppercase tracking-[0.16em] text-[#00bd72]">Module {number}</p>
-                <h3 className="mt-2 text-2xl font-black tracking-[-0.03em]">{title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
+              <article key={number} className="group rounded-[1.75rem] border border-emerald-950/10 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-emerald-400/50 hover:shadow-xl">
+                <div className="flex items-start justify-between gap-4"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100"><Icon size={22}/></span><span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700">{duration}</span></div>
+                <p className="mt-6 text-xs font-black uppercase tracking-[.16em] text-emerald-600">Module {number}</p><h3 className="mt-2 text-2xl font-black tracking-[-.03em]">{title}</h3><p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
               </article>
             ))}
           </div>
@@ -171,46 +201,29 @@ export default function LlmRagLandingPage() {
       <LlmRagTheoryPreview />
       <LlmRagExercisePreview />
       <LlmRagQuizPreview />
-      <LlmRagProjectPreview />
+      <div id="projet"><LlmRagProjectPreview /></div>
       <LlmRagSecurityPreview />
 
-      <section className="bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2">
-          <div className="rounded-[2rem] border border-white/12 bg-white/8 p-7 sm:p-9">
-            <LockKeyhole className="h-7 w-7 text-[#bcf5d7]" />
-            <h2 className="mt-6 text-3xl font-black tracking-[-0.04em]">Prérequis</h2>
-            <div className="mt-6 space-y-3 text-sm leading-7 text-white/70">
-              <p>• Bases simples de Python.</p>
-              <p>• Savoir utiliser un terminal et installer des dépendances.</p>
-              <p>• Notions de Git recommandées, mais pas obligatoires.</p>
+      <section id="prix" className="bg-[#041b15] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-[2.25rem] border border-white/12 bg-white/[0.07] p-6 shadow-2xl shadow-emerald-950/40 sm:p-10">
+          <div className="grid gap-9 lg:grid-cols-[1fr_22rem] lg:items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-300/10 px-4 py-2 text-xs font-black uppercase tracking-[.16em] text-emerald-200"><Award size={14}/> Formation complète</span>
+              <h2 className="mt-6 text-4xl font-black tracking-[-.05em] sm:text-5xl">Apprenez, construisez et présentez votre assistant RAG.</h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300">Leçons guidées, notebooks, exercices, quiz, projet fil rouge, assistant IA et certificat KORYXA.</p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">{["12 modules progressifs", "5 notebooks pratiques", "Projet final portfolio", "Certificat inclus"].map(item=><p key={item} className="flex items-center gap-2 text-sm font-bold text-slate-200"><CheckCircle2 size={16} className="text-emerald-300"/>{item}</p>)}</div>
+            </div>
+            <div className="rounded-[1.75rem] bg-white p-6 text-slate-950 shadow-2xl">
+              <p className="text-xs font-black uppercase tracking-[.18em] text-emerald-700">Prix de la formation</p>
+              <p className="mt-4 text-3xl font-black tracking-tight">Tarif de lancement</p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-slate-500">Le montant exact est affiché dans le sas d’accès sécurisé. Ressources et certificat inclus.</p>
+              <Link href={accessUrl} className="mt-6 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-5 py-4 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-emerald-700">Accéder à la formation <ArrowRight size={17}/></Link>
             </div>
           </div>
-          <div className="rounded-[2rem] bg-[#00bd72] p-7 text-[#06251c] sm:p-9">
-            <GraduationCap className="h-7 w-7" />
-            <h2 className="mt-6 text-3xl font-black tracking-[-0.04em]">Projet final</h2>
-            <p className="mt-4 text-sm font-semibold leading-7 text-[#06251c]/75">
-              Une application RAG complète qui ingère des documents, retrouve les passages pertinents, produit une réponse sourcée et affiche clairement ses références.
-            </p>
-          </div>
         </div>
       </section>
 
-      <section className="bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl rounded-[2.25rem] border border-[#06251c]/10 bg-white p-7 text-center shadow-sm sm:p-12">
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#06251c]/6 px-4 py-2 text-xs font-black uppercase tracking-[0.16em]">
-            Parcours en préparation
-          </span>
-          <h2 className="mt-6 text-3xl font-black tracking-[-0.04em] sm:text-5xl">Prêt à entrer dans le parcours LLM RAG ?</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600">
-            Passe par le contrôle d’accès KORYXA, puis retrouve ton tableau de bord dédié au parcours.
-          </p>
-          <Link href={courseRoutes.access(LLM_RAG_COURSE_SLUG)} className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#06251c] px-6 py-3.5 text-sm font-black text-white transition hover:bg-[#00bd72] hover:text-[#06251c]">
-            Entrer dans la formation <ArrowRight size={17} />
-          </Link>
-        </div>
-      </section>
-
-      <FooterSEO />
+      <CourseFooter />
     </main>
   );
 }

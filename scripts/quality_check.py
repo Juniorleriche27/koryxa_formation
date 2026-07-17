@@ -26,8 +26,9 @@ def check_frontend_invariants() -> None:
         "llm slug": 'LLM_RAG_COURSE_SLUG = "llm-rag"' in course_config,
         "module list uses route helper": "courseRoutes.module(module.id, courseSlug)" in modules_page,
         "module page keeps course context": "courseRoutes.modules(courseSlug)" in module_page,
-        "llm landing stays preparation-only": "Parcours en préparation" in llm_page,
-        "llm learner CTA not exposed": "/learn/llm-rag" not in llm_page,
+        "llm landing is autonomous": "CourseHeader" in llm_page and "KORYXA FORMATION" in llm_page,
+        "llm preparation badge removed": "Parcours en préparation" not in llm_page,
+        "llm learner CTA exposed": "courseRoutes.access(LLM_RAG_COURSE_SLUG)" in llm_page,
     }
     failed = [name for name, ok in checks.items() if not ok]
     if failed:

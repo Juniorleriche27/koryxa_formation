@@ -51,7 +51,8 @@ def main() -> None:
         'published: true',
     ])
     qa.require_text("catalog", "LLM RAG landing exposes learner access", "frontend/app/formations/llm-rag/page.tsx", [
-        "Entrer dans la formation",
+        "Accéder à la formation",
+        "CourseHeader",
     ])
 
     qa.require_text("access", "Course grants are scoped", "backend/app/routers/access.py", [
