@@ -117,6 +117,19 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertTrue((resources / "01_fondamentaux_formules.xlsx").stat().st_size > 3000)
         self.assertTrue((resources / "04_power_query_modele_dashboard.xlsx").stat().st_size > 3000)
 
+    def test_excel_data_analyst_quizzes_final_test_and_project_are_complete(self):
+        migration = (ROOT / "supabase/migrations/20260721_seed_excel_data_analyst_quizzes_project.sql").read_text()
+
+        self.assertIn("EXCEL DATA ANALYST — CHANTIER 4", migration)
+        self.assertIn("quiz_count<>48", migration)
+        self.assertIn("final_count<>12", migration)
+        self.assertIn("milestone_count<>7", migration)
+        self.assertIn("rubric_total<>60", migration)
+        self.assertIn("dashboard-analyse-commerciale", migration)
+        self.assertIn("pipeline-power-query", migration)
+        self.assertIn("recette-remise", migration)
+        self.assertIn("is_published=FALSE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
