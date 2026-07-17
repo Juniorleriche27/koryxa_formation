@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, BookOpenCheck, FlaskConical, GraduationCap, Layers3 } from "lucide-react";
+import { ArrowLeft, BookOpenCheck, FlaskConical, GraduationCap, LayoutDashboard, Layers3 } from "lucide-react";
 
 import { courseCatalog, courseRoutes, type CourseSlug } from "@/lib/courseConfig";
 
@@ -37,6 +37,12 @@ export default function LearnerCourseContext({
           </div>
 
           <nav aria-label="Navigation du parcours" className="flex flex-wrap items-center gap-2">
+            <Link
+              href={courseRoutes.dashboard(courseSlug)}
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-white/[0.06] px-3 text-sm font-bold text-slate-200 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+            >
+              <LayoutDashboard size={15} /> Tableau de bord
+            </Link>
             <Link
               href={courseRoutes.modules(courseSlug)}
               aria-current={current === "overview" ? "page" : undefined}

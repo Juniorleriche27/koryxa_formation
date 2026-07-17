@@ -107,7 +107,7 @@ def main() -> None:
     qa.require_text("ux", "Module list has loading error empty states", "frontend/app/modules/page.tsx", [
         'aria-busy="true"',
         "Réessayer",
-        "Parcours encore fermé aux apprenants.",
+        "Aucun module disponible.",
     ])
     qa.require_text("ux", "Module page handles errors", "frontend/app/modules/[id]/page.tsx", [
         'role="alert"',

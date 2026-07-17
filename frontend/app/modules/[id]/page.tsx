@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   BookOpen,
   CheckCircle2,
+  ChevronLeft,
   ChevronRight,
   Clock,
   Download,
@@ -22,7 +23,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { modulesAPI, notebookAPI, validationAPI } from "@/lib/api";
-import { DEFAULT_COURSE_SLUG, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
+import { DEFAULT_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import { moduleZeroCells, moduleZeroResources } from "@/lib/moduleZeroContent";
 import type { Module, ModuleStatus } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -60,9 +61,9 @@ export default function ModuleDetailPage() {
   const [moduleStatus, setModuleStatus] = useState<ModuleStatus | null>(null);
   const [moduleStatuses, setModuleStatuses] = useState<ModuleStatus[]>([]);
 
-  const refreshModuleStatus = useCallback(async () => {
+  const refreshModuleStatus = useCallback(async (selectedCourse = courseSlug) => {
     try {
-      const response = await validationAPI.getModuleStatuses(courseSlug);
+      const response = await validationAPI.getModuleStatuses(selectedCourse);
       const statuses = (response.data.modules || []) as ModuleStatus[];
       setModuleStatuses(statuses);
       setModuleStatus(statuses.find((status) => status.module_id === id) || null);
@@ -78,11 +79,11 @@ export default function ModuleDetailPage() {
     setModuleLoading(true);
     setModuleError("");
     modulesAPI
-      .getOne(id)
+      .getOne(id, requestedCourse)
       .then((response) => setModule(response.data))
       .catch(() => setModuleError("Impossible de charger ce module."))
       .finally(() => setModuleLoading(false));
-    refreshModuleStatus();
+    refreshModuleStatus(requestedCourse);
   }, [id, refreshModuleStatus]);
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export default function ModuleDetailPage() {
   if (!module) {
     return (
       <div className="kx-dark-page flex min-h-screen flex-col">
-        <Navbar />
+        {courseSlug !== LLM_RAG_COURSE_SLUG && <Navbar />}
         <LearnerCourseContext courseSlug={courseSlug} current="module" compact />
         <main className="kx-container flex flex-1 items-center justify-center py-12">
           {moduleError ? (
@@ -130,18 +131,20 @@ export default function ModuleDetailPage() {
   }
 
   const downloadUrl = notebookAPI.getDownloadUrl(id);
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG;
   const completed = Boolean(moduleStatus?.is_validated);
   const isLocked = module.order_index > 0 && (!moduleStatus || moduleStatus.status === "locked" || moduleStatus.is_accessible === false);
   const hasFallbackModuleZero = isModuleZero(module) && cells === moduleZeroCells;
   const resourcesCount = (module.resources?.length ?? 0) + (isModuleZero(module) ? moduleZeroResources.length : 0);
   const videos = module.resources?.filter((resource) => resource.type === "video") ?? [];
   const others = module.resources?.filter((resource) => resource.type !== "video") ?? [];
+  const previousModuleStatus = moduleStatuses.find((status) => Number(status.order_index ?? -1) === Number(module.order_index ?? -1) - 1) || null;
   const nextModuleStatus = moduleStatuses.find((status) => Number(status.order_index ?? -1) === Number(module.order_index ?? -1) + 1) || null;
   const canGoToNextModule = completed && nextModuleStatus?.module_id && nextModuleStatus.is_accessible !== false && nextModuleStatus.status !== "locked";
 
   return (
     <div className="kx-dark-page flex flex-col">
-      <Navbar />
+      {!dedicatedLearnerLayout && <Navbar />}
       <LearnerCourseContext courseSlug={courseSlug} current="module" compact />
 
       <header className="relative overflow-hidden border-b border-white/10">
@@ -155,6 +158,14 @@ export default function ModuleDetailPage() {
                 </Link>
                 <ChevronRight size={15} />
                 <span>Module {module.order_index}</span>
+                {previousModuleStatus?.module_id && (
+                  <Link
+                    href={courseRoutes.module(previousModuleStatus.module_id, courseSlug)}
+                    className="ml-auto inline-flex items-center gap-1 rounded-xl bg-white/[0.06] px-3 py-2 text-xs font-black text-slate-200 transition hover:bg-white/10 hover:text-white"
+                  >
+                    <ChevronLeft size={14} /> Module précédent
+                  </Link>
+                )}
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -485,7 +496,7 @@ export default function ModuleDetailPage() {
       </main>
 
       <AIAssistant moduleId={id} moduleTitle={module.title} />
-      <Footer />
+      {!dedicatedLearnerLayout && <Footer />}
     </div>
   );
 }

@@ -37,6 +37,26 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("access: (slug: string", config)
         self.assertIn("dashboard: (slug: string", config)
 
+    def test_llm_rag_learning_space_keeps_navigation_scoped(self):
+        dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
+        modules_page = (ROOT / "frontend/app/modules/page.tsx").read_text()
+        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text()
+        module_card = (ROOT / "frontend/components/modules/ModuleCard.tsx").read_text()
+        modules_router = (ROOT / "backend/app/routers/modules.py").read_text()
+        migration = (ROOT / "supabase/migrations/20260717_enable_llm_rag_learning_navigation.sql").read_text()
+
+        self.assertIn("LearnerCourseContext", dashboard)
+        self.assertIn("courseSlug={courseSlug}", dashboard)
+        self.assertIn("courseRoutes.module(module.id, courseSlug)", module_card)
+        self.assertIn("dedicatedLearnerLayout", modules_page)
+        self.assertIn("getOne(id, requestedCourse)", module_page)
+        self.assertIn("Module précédent", module_page)
+        self.assertIn("Passer au module suivant", module_page)
+        self.assertIn('get_course_id(selected_course, published_only=False)', modules_router)
+        self.assertIn("SET is_published = true", migration)
+        self.assertIn("slug = 'llm-rag'", migration)
+        self.assertNotIn("UPDATE public.courses", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()

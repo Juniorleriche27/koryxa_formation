@@ -59,7 +59,7 @@ api.interceptors.response.use(
 
 export const modulesAPI = {
   getAll: (course?: string) => api.get("/modules/", { params: course ? { course } : undefined }),
-  getOne: (id: string) => api.get(`/modules/${id}`),
+  getOne: (id: string, course?: string) => api.get(`/modules/${id}`, { params: course ? { course } : undefined }),
 };
 
 export const progressAPI = {

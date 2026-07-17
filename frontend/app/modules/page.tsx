@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, CheckCircle2, ChevronRight, Clock3, Compass, Layers3, Lock, RefreshCw, Trophy } from "lucide-react";
 import { getApiErrorMessage, modulesAPI, validationAPI } from "@/lib/api";
-import { DEFAULT_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
+import { DEFAULT_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import type { Module, ModuleStatus } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -74,10 +74,11 @@ export default function ModulesPage() {
   const validatedCount = modulesWithStatus.filter((module) => module.validation?.is_validated).length;
   const totalPlatformPoints = modulesWithStatus.reduce((total, module) => total + Number(module.validation?.platform_points_awarded || 0), 0);
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog[DEFAULT_COURSE_SLUG];
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG;
 
   return (
     <div className="kx-dark-page flex flex-col">
-      <Navbar />
+      {!dedicatedLearnerLayout && <Navbar />}
       <LearnerCourseContext courseSlug={courseSlug} completed={validatedCount} total={modules.length} />
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-white/10">
@@ -90,9 +91,7 @@ export default function ModulesPage() {
                   Avance dans le bon ordre, valide chaque étape.
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                  {courseMeta.published
-                    ? "Chaque module se débloque après validation du précédent. Les QCM réussis à partir de 12/20 alimentent ton score plateforme sur 40 points."
-                    : "Ce parcours est encore en préparation. Son contenu restera fermé tant que la recette complète ne sera pas terminée."}
+                  Chaque module se débloque après validation du précédent. Avance dans l’ordre et reprends toujours au dernier point atteint.
                 </p>
               </div>
               <div className="grid gap-3 rounded-3xl border border-white/10 bg-white/[0.08] p-5 shadow-2xl shadow-blue-950/30 backdrop-blur-xl">
@@ -225,12 +224,10 @@ export default function ModulesPage() {
                 <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
                   <Layers3 className="mx-auto h-10 w-10 text-blue-200" />
                   <p className="mt-4 text-lg font-black text-white">
-                    {courseMeta.published ? "Aucun module disponible." : "Parcours encore fermé aux apprenants."}
+                    Aucun module disponible.
                   </p>
                   <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-400">
-                    {courseMeta.published
-                      ? "Les modules apparaîtront ici dès qu’ils seront publiés."
-                      : "Le programme LLM RAG est structuré, mais ses modules resteront invisibles jusqu’à la fin de la recette pédagogique et technique."}
+                    Les modules apparaîtront ici dès qu’ils seront disponibles pour ce parcours.
                   </p>
                   <Link
                     href={courseMeta.landingPath}
@@ -244,7 +241,7 @@ export default function ModulesPage() {
           )}
         </section>
       </main>
-      <Footer />
+      {!dedicatedLearnerLayout && <Footer />}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, CheckCircle2, Flame, Sparkles } from "lucide-react";
 import { modulesAPI } from "@/lib/api";
-import { courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
+import { LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import { useProgress } from "@/hooks/useProgress";
 import type { Module } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -12,6 +12,7 @@ import Footer from "@/components/layout/Footer";
 import ProgressBar from "@/components/dashboard/ProgressBar";
 import Stats from "@/components/dashboard/Stats";
 import ModuleCard from "@/components/modules/ModuleCard";
+import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
 
 export default function DashboardPage() {
   const [modules, setModules] = useState<Module[]>([]);
@@ -32,10 +33,12 @@ export default function DashboardPage() {
   const nextModule = useMemo(() => modules.find((module) => !isCompleted(module.id)) || modules[0], [modules, isCompleted]);
   const recentModules = modules.slice(0, 6);
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG;
 
   return (
     <div className="kx-dark-page flex flex-col">
-      <Navbar />
+      {!dedicatedLearnerLayout && <Navbar />}
+      <LearnerCourseContext courseSlug={courseSlug} completed={completedCount} total={modules.length} current="overview" />
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-white/10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(59,130,246,0.25),transparent_34rem),radial-gradient(circle_at_82%_20%,rgba(20,184,166,0.12),transparent_28rem)]" />
@@ -98,7 +101,7 @@ export default function DashboardPage() {
               {recentModules.length > 0 ? (
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                   {recentModules.map((module) => (
-                    <ModuleCard key={module.id} module={module} completed={isCompleted(module.id)} />
+                    <ModuleCard key={module.id} module={module} completed={isCompleted(module.id)} courseSlug={courseSlug} />
                   ))}
                 </div>
               ) : (
@@ -135,7 +138,7 @@ export default function DashboardPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      {!dedicatedLearnerLayout && <Footer />}
     </div>
   );
 }

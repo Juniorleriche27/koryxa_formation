@@ -23,7 +23,7 @@ def get_modules(course: Optional[str] = None):
         .table("modules")
         .select(MODULE_COLUMNS)
         .eq("is_published", True)
-        .eq("course_id", get_course_id(selected_course))
+        .eq("course_id", get_course_id(selected_course, published_only=False))
         .order("order_index")
         .execute()
     )
@@ -31,12 +31,15 @@ def get_modules(course: Optional[str] = None):
 
 
 @router.get("/{module_id}")
-def get_module(module_id: str):
+def get_module(module_id: str, course: Optional[str] = None):
+    selected_course = course or DEFAULT_COURSE_SLUG
+    course_id = get_course_id(selected_course, published_only=False)
     module = (
         service_db()
         .table("modules")
         .select(MODULE_COLUMNS)
         .eq("id", module_id)
+        .eq("course_id", course_id)
         .eq("is_published", True)
         .maybe_single()
         .execute()

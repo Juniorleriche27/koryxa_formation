@@ -2,16 +2,18 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock3, FileText } from "lucide-react";
 import type { Module } from "@/types";
 import Badge from "@/components/ui/Badge";
+import { courseRoutes } from "@/lib/courseConfig";
 
 interface ModuleCardProps {
   module: Module;
   completed: boolean;
+  courseSlug?: string;
 }
 
-export default function ModuleCard({ module, completed }: ModuleCardProps) {
+export default function ModuleCard({ module, completed, courseSlug = "python-data-analyst" }: ModuleCardProps) {
   return (
     <Link
-      href={`/modules/${module.id}`}
+      href={courseRoutes.module(module.id, courseSlug)}
       className="group relative block overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl transition hover:-translate-y-1 hover:border-blue-300/35 hover:bg-white/[0.085] sm:p-6"
     >
       <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-500/10 blur-2xl transition group-hover:bg-cyan-400/20" />

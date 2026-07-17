@@ -60,7 +60,7 @@ def fetch_modules(course: Optional[str] = None) -> list[dict[str, Any]]:
         supabase.table("modules")
         .select("*")
         .eq("is_published", True)
-        .eq("course_id", get_course_id(course or DEFAULT_COURSE_SLUG))
+        .eq("course_id", get_course_id(course or DEFAULT_COURSE_SLUG, published_only=False))
         .order("order_index")
         .execute()
     )
