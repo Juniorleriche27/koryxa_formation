@@ -84,6 +84,13 @@ export const validationAPI = {
     internalApi.post("/api/validation/final-project/submit", { submission_url, submission_notes }, { params: course ? { course } : undefined }),
 };
 
+export const contentAPI = {
+  lessons: (course: string, moduleId: string) => api.get(`/lessons/${course}/modules/${moduleId}`),
+  exercises: (course: string, moduleId: string) => api.get(`/exercises/${course}/modules/${moduleId}`),
+  theory: (course: string) => api.get(`/theory/${course}`),
+  projects: (course: string) => api.get(`/projects/${course}`),
+};
+
 export const notebookAPI = {
   getContent: (moduleId: string) => api.get(`/modules/${moduleId}/notebook`),
   getDownloadUrl: (moduleId: string) => `${API_BASE_URL}/modules/${moduleId}/download`,

@@ -28,7 +28,7 @@ def _attach_milestones(project: dict) -> dict:
 
 @router.get("/{course_slug}", response_model=list[CourseProjectResponse])
 def get_course_projects(course_slug: str):
-    course_id = get_course_id(course_slug)
+    course_id = get_course_id(course_slug, published_only=False)
     projects = list_published_rows(
         "course_projects",
         PUBLIC_PROJECT_COLUMNS,
@@ -40,7 +40,7 @@ def get_course_projects(course_slug: str):
 
 @router.get("/{course_slug}/{project_slug}", response_model=CourseProjectResponse)
 def get_course_project(course_slug: str, project_slug: str):
-    course_id = get_course_id(course_slug)
+    course_id = get_course_id(course_slug, published_only=False)
     project = get_published_row(
         "course_projects",
         PUBLIC_PROJECT_COLUMNS,

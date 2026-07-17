@@ -13,7 +13,7 @@ RESOURCE_COLUMNS = "id,slug,title,summary,content_md,resource_type,order_index,m
 
 @router.get("/{course_slug}")
 def get_theory_library(course_slug: str):
-    course_id = get_course_id(course_slug)
+    course_id = get_course_id(course_slug, published_only=False)
     return {
         "glossary": list_published_rows("course_glossary", GLOSSARY_COLUMNS, course_id=course_id),
         "diagrams": list_published_rows("theory_diagrams", DIAGRAM_COLUMNS, course_id=course_id),
@@ -26,6 +26,6 @@ def get_theory_resource(course_slug: str, resource_slug: str):
     return get_published_row(
         "theory_resources",
         RESOURCE_COLUMNS,
-        filters={"course_id": get_course_id(course_slug), "slug": resource_slug},
+        filters={"course_id": get_course_id(course_slug, published_only=False), "slug": resource_slug},
         not_found_message=THEORY_RESOURCE_NOT_FOUND,
     )

@@ -39,7 +39,7 @@ def get_exercise_solution(course_slug: str, module_id: str, exercise_slug: str, 
         "exercises",
         SOLUTION_COLUMNS,
         filters={
-            "course_id": get_course_id(course_slug),
+            "course_id": get_course_id(course_slug, published_only=False),
             "module_id": module_id,
             "slug": exercise_slug,
         },

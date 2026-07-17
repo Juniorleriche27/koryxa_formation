@@ -34,6 +34,7 @@ import NotebookViewer, { NotebookCell } from "@/components/modules/NotebookViewe
 import AIAssistant from "@/components/modules/AIAssistant";
 import QuizBlock from "@/components/modules/QuizBlock";
 import DocumentViewer from "@/components/modules/DocumentViewer";
+import LlmRagLearningContent from "@/components/modules/LlmRagLearningContent";
 
 const tabClasses = {
   active: "bg-white text-slate-950 shadow-lg shadow-slate-950/10",
@@ -289,6 +290,14 @@ export default function ModuleDetailPage() {
                     Voir le parcours <ChevronRight size={16} />
                   </Link>
                 </div>
+              ) : dedicatedLearnerLayout ? (
+                <LlmRagLearningContent
+                  moduleId={id}
+                  moduleOrder={module.order_index}
+                  completed={completed}
+                  passScore={moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}
+                  onValidated={() => refreshModuleStatus(courseSlug)}
+                />
               ) : loadingNb ? (
                 <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center text-slate-300 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
                   <motion.div

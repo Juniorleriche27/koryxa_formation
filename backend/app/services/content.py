@@ -15,7 +15,7 @@ def service_db():
 
 
 def ensure_published_module_in_course(course_slug: str, module_id: str) -> dict[str, Any]:
-    course_id = get_course_id(course_slug)
+    course_id = get_course_id(course_slug, published_only=False)
     response = (
         service_db()
         .table("modules")
