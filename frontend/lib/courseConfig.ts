@@ -1,11 +1,13 @@
 export const DEFAULT_COURSE_SLUG = "python-data-analyst";
 export const LLM_RAG_COURSE_SLUG = "llm-rag";
 export const EXCEL_DATA_ANALYST_COURSE_SLUG = "excel-data-analyst";
+export const POWER_BI_DATA_ANALYST_COURSE_SLUG = "power-bi-data-analyst";
 
 export type CourseSlug =
   | typeof DEFAULT_COURSE_SLUG
   | typeof LLM_RAG_COURSE_SLUG
-  | typeof EXCEL_DATA_ANALYST_COURSE_SLUG;
+  | typeof EXCEL_DATA_ANALYST_COURSE_SLUG
+  | typeof POWER_BI_DATA_ANALYST_COURSE_SLUG;
 
 export const courseCatalog = {
   "python-data-analyst": {
@@ -26,6 +28,12 @@ export const courseCatalog = {
     landingPath: "/formations/excel-data-analyst",
     published: true,
   },
+  "power-bi-data-analyst": {
+    title: "Power BI Data Analyst",
+    shortDescription: "Power Query, modélisation, DAX, visualisation et publication.",
+    landingPath: "/formations/power-bi-data-analyst",
+    published: false,
+  },
 } as const;
 
 export const courseRoutes = {
@@ -33,6 +41,7 @@ export const courseRoutes = {
   pythonLanding: "/formations/python-data-analyst",
   llmRagLanding: "/formations/llm-rag",
   excelLanding: "/formations/excel-data-analyst",
+  powerBiLanding: "/formations/power-bi-data-analyst",
   learn: (slug: string) => `/learn/${encodeURIComponent(slug)}`,
   access: (slug: string = DEFAULT_COURSE_SLUG) =>
     `/access?course=${encodeURIComponent(slug)}&redirect=${encodeURIComponent(`/dashboard?course=${slug}`)}`,
@@ -49,5 +58,6 @@ export function readCourseSlug(search: string): string {
 export function normalizeCourseSlug(value?: string | null): CourseSlug {
   if (value === LLM_RAG_COURSE_SLUG) return LLM_RAG_COURSE_SLUG;
   if (value === EXCEL_DATA_ANALYST_COURSE_SLUG) return EXCEL_DATA_ANALYST_COURSE_SLUG;
+  if (value === POWER_BI_DATA_ANALYST_COURSE_SLUG) return POWER_BI_DATA_ANALYST_COURSE_SLUG;
   return DEFAULT_COURSE_SLUG;
 }

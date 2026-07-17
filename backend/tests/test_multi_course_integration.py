@@ -162,6 +162,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("published: true", config)
         self.assertIn("Parcours disponible", catalog)
 
+    def test_power_bi_data_analyst_foundation_is_unpublished_and_complete(self):
+        migration = (ROOT / "supabase/migrations/20260724_seed_power_bi_data_analyst_foundation.sql").read_text()
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
+        constants = (ROOT / "backend/app/constants.py").read_text()
+
+        self.assertIn("POWER_BI_DATA_ANALYST_COURSE_SLUG", course_config)
+        self.assertIn('POWER_BI_DATA_ANALYST_COURSE_SLUG = "power-bi-data-analyst"', constants)
+        self.assertIn("'power-bi-data-analyst'", migration)
+        self.assertIn("'Power BI Data Analyst'", migration)
+        self.assertIn("is_published = FALSE", migration)
+        self.assertEqual(migration.count("TRUE)"), 12)
+        self.assertIn("'Préparer les données avec Power Query'", migration)
+        self.assertIn("'Introduction à DAX'", migration)
+        self.assertIn("'Power BI Service et collaboration'", migration)
+        self.assertIn("'Sécurité, performance et qualité'", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
