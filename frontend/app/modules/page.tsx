@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, CheckCircle2, ChevronRight, Clock3, Compass, Layers3, Lock, RefreshCw, Trophy } from "lucide-react";
 import { getApiErrorMessage, modulesAPI, validationAPI } from "@/lib/api";
-import { DEFAULT_COURSE_SLUG, EXCEL_DATA_ANALYST_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
+import { DEFAULT_COURSE_SLUG, EXCEL_DATA_ANALYST_COURSE_SLUG, POWER_BI_DATA_ANALYST_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import type { Module, ModuleStatus } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -74,7 +74,7 @@ export default function ModulesPage() {
   const validatedCount = modulesWithStatus.filter((module) => module.validation?.is_validated).length;
   const totalPlatformPoints = modulesWithStatus.reduce((total, module) => total + Number(module.validation?.platform_points_awarded || 0), 0);
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog[DEFAULT_COURSE_SLUG];
-  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG || courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG;
+  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG || courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG || courseSlug === POWER_BI_DATA_ANALYST_COURSE_SLUG;
 
   return (
     <div className="kx-dark-page flex flex-col">
