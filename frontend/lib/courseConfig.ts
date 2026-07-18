@@ -32,7 +32,7 @@ export const courseCatalog = {
     title: "Power BI Data Analyst",
     shortDescription: "Power Query, modélisation, DAX, visualisation et publication.",
     landingPath: "/formations/power-bi-data-analyst",
-    published: false,
+    published: true,
   },
 } as const;
 
