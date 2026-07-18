@@ -55,29 +55,19 @@ const catalogJsonLd = {
   "@type": "OfferCatalog",
   name: "Formations KORYXA",
   itemListElement: [
-    {
-      "@type": "Course",
-      name: "Python Data Analyst",
-      description: "Formation pratique pour apprendre Python, organiser des données, créer des graphiques et construire un projet portfolio.",
-      provider: {
-        "@type": "EducationalOrganization",
-        name: "KORYXA Formation",
-      },
-      courseMode: "online",
-      inLanguage: "fr-FR",
-    },
-    {
-      "@type": "Course",
-      name: "Chatbot IA avec documents",
-      description: "Parcours à venir pour apprendre à relier des documents, une recherche intelligente et une interface chatbot.",
-      provider: {
-        "@type": "EducationalOrganization",
-        name: "KORYXA Formation",
-      },
-      courseMode: "online",
-      inLanguage: "fr-FR",
-    },
-  ],
+    ["Python Data Analyst", "Apprendre Python, organiser des données, créer des analyses et construire un projet portfolio."],
+    ["Excel Data Analyst", "Nettoyer, analyser et automatiser des données avec Excel, Power Query et Power Pivot."],
+    ["LLM RAG Developer", "Construire des assistants IA documentaires avec recherche vectorielle et réponses sourcées."],
+    ["Power BI Data Analyst", "Préparer, modéliser et visualiser les données avec Power Query, DAX et Power BI Service."],
+    ["SQL Data Analyst avec PostgreSQL", "Interroger, relier et analyser les données avec SQL, PostgreSQL, CTE et fonctions de fenêtre."],
+  ].map(([name, description]) => ({
+    "@type": "Course",
+    name,
+    description,
+    provider: { "@type": "EducationalOrganization", name: "KORYXA Formation" },
+    courseMode: "online",
+    inLanguage: "fr-FR",
+  })),
 };
 
 const faqJsonLd = {
@@ -97,7 +87,7 @@ const faqJsonLd = {
       name: "Quelle formation est disponible aujourd'hui ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "La formation Python Data Analyst est actuellement disponible. Les autres parcours sont présentés comme bientôt disponibles ou en préparation.",
+        text: "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst et SQL Data Analyst avec PostgreSQL sont actuellement disponibles.",
       },
     },
     {

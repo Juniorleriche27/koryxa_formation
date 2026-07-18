@@ -50,26 +50,56 @@ const formations = [
     title: "Python Data Analyst",
     status: "Disponible",
     href: "/formations/python-data-analyst",
-    cta: "Voir la page dédiée",
-    description: "Apprendre Python, organiser des données, créer des graphiques et construire un projet portfolio.",
+    cta: "Voir le programme",
+    description: "Apprenez Python, organisez les données, créez des analyses et construisez un projet portfolio crédible.",
     icon: BarChart3,
     active: true,
-    tags: ["Python", "Data", "Portfolio"],
+    tags: ["Python", "Pandas", "Visualisation"],
   },
   {
-    title: "Chatbot IA avec documents",
-    status: "Bientôt",
-    href: "#faq",
-    cta: "Voir ce qui arrive",
-    description: "Comprendre comment relier des documents, une recherche intelligente et une interface chatbot.",
+    title: "Excel Data Analyst",
+    status: "Disponible",
+    href: "/formations/excel-data-analyst",
+    cta: "Voir le programme",
+    description: "Nettoyez, analysez et automatisez les données avec Excel, Power Query, Power Pivot et un dashboard professionnel.",
+    icon: LineChart,
+    active: true,
+    tags: ["Excel", "Power Query", "Dashboard"],
+  },
+  {
+    title: "LLM RAG Developer",
+    status: "Disponible",
+    href: "/formations/llm-rag",
+    cta: "Voir le programme",
+    description: "Construisez des assistants IA capables d’exploiter des documents privés et de répondre avec des sources vérifiables.",
     icon: BrainCircuit,
-    active: false,
-    tags: ["IA", "Documents", "Chatbot"],
+    active: true,
+    tags: ["LLM", "RAG", "Qdrant"],
+  },
+  {
+    title: "Power BI Data Analyst",
+    status: "Disponible",
+    href: "/formations/power-bi-data-analyst",
+    cta: "Voir le programme",
+    description: "Préparez, modélisez et visualisez les données avec Power Query, DAX et des rapports interactifs professionnels.",
+    icon: TrendingUp,
+    active: true,
+    tags: ["Power BI", "DAX", "Power Query"],
+  },
+  {
+    title: "SQL Data Analyst avec PostgreSQL",
+    status: "Disponible",
+    href: "/formations/sql-data-analyst",
+    cta: "Voir le programme",
+    description: "Interrogez, reliez et analysez les données avec SQL, PostgreSQL, CTE, fonctions de fenêtre et vues analytiques.",
+    icon: Database,
+    active: true,
+    tags: ["SQL", "PostgreSQL", "CTE"],
   },
   {
     title: "Assistant IA pour métier",
     status: "Bientôt",
-    href: "#faq",
+    href: "/formations",
     cta: "En préparation",
     description: "Utiliser l’IA pour écrire, synthétiser, vendre, organiser et produire plus vite dans un contexte réel.",
     icon: Bot,
@@ -79,7 +109,7 @@ const formations = [
   {
     title: "Automatisation IA & no-code",
     status: "Bientôt",
-    href: "#faq",
+    href: "/formations",
     cta: "En préparation",
     description: "Créer des workflows simples pour réduire les tâches répétitives et structurer des opérations.",
     icon: Workflow,
@@ -141,7 +171,7 @@ const faqs = [
   {
     question: "Quelle formation est disponible aujourd’hui ?",
     answer:
-      "La formation Python Data Analyst est actuellement disponible. Les autres parcours sont présentés comme bientôt disponibles ou en préparation.",
+      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst et SQL Data Analyst avec PostgreSQL sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
   },
   {
     question: "Où voir le détail d’une formation ?",
@@ -149,9 +179,9 @@ const faqs = [
       "Depuis la section Formations, chaque parcours renvoie vers sa page dédiée lorsque celle-ci est disponible. La page générale sert d’entrée principale.",
   },
   {
-    question: "Les parcours IA sont-ils déjà ouverts ?",
+    question: "Quels parcours IA sont déjà ouverts ?",
     answer:
-      "Pas encore. Le parcours autour du chatbot IA avec documents est annoncé comme bientôt disponible, sans bouton de paiement sur cette page générale.",
+      "Le parcours LLM RAG Developer est disponible. Les parcours Assistant IA pour métier et Automatisation IA & no-code restent en préparation.",
   },
   {
     question: "Ai-je besoin d’être développeur ?",
@@ -377,7 +407,7 @@ export function FormationsSection() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-5 lg:grid-cols-4">
+        <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {formations.map((formation, index) => {
             const Icon = formation.icon;
             const CardContent = (
@@ -716,9 +746,10 @@ export function FooterSEO() {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#008f58]">Formations</p>
           <div className="mt-4 space-y-3 text-sm font-semibold text-slate-600">
             <Link href="/formations/python-data-analyst" className="block hover:text-[#06251c]">Python Data Analyst</Link>
-            <Link href="/formations" className="block hover:text-[#06251c]">Chatbot IA avec documents</Link>
-            <Link href="/formations" className="block hover:text-[#06251c]">Assistant IA pour métier</Link>
-            <Link href="/formations" className="block hover:text-[#06251c]">Automatisation IA & no-code</Link>
+            <Link href="/formations/excel-data-analyst" className="block hover:text-[#06251c]">Excel Data Analyst</Link>
+            <Link href="/formations/llm-rag" className="block hover:text-[#06251c]">LLM RAG Developer</Link>
+            <Link href="/formations/power-bi-data-analyst" className="block hover:text-[#06251c]">Power BI Data Analyst</Link>
+            <Link href="/formations/sql-data-analyst" className="block hover:text-[#06251c]">SQL Data Analyst</Link>
           </div>
         </div>
         <div>
