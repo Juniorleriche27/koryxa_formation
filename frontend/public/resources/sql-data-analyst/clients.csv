@@ -1,0 +1,41 @@
+﻿code_client;client;segment;code_region;email
+C001;Client 001;Grand compte;R02;client001@example.com
+C002;Client 002;Particulier;R03;client002@example.com
+C003;Client 003;PME;R04;client003@example.com
+C004;Client 004;Grand compte;R01;client004@example.com
+C005;Client 005;Particulier;R02;client005@example.com
+C006;Client 006;PME;R03;client006@example.com
+C007;Client 007;Grand compte;R04;client007@example.com
+C008;Client 008;Particulier;R01;client008@example.com
+C009;Client 009;PME;R02;client009@example.com
+C010;Client 010;Grand compte;R03;client010@example.com
+C011;Client 011;Particulier;R04;client011@example.com
+C012;Client 012;PME;R01;client012@example.com
+C013;Client 013;Grand compte;R02;client013@example.com
+C014;Client 014;Particulier;R03;client014@example.com
+C015;Client 015;PME;R04;client015@example.com
+C016;Client 016;Grand compte;R01;client016@example.com
+C017;Client 017;Particulier;R02;client017@example.com
+C018;Client 018;PME;R03;client018@example.com
+C019;Client 019;Grand compte;R04;client019@example.com
+C020;Client 020;Particulier;R01;client020@example.com
+C021;Client 021;PME;R02;client021@example.com
+C022;Client 022;Grand compte;R03;client022@example.com
+C023;Client 023;Particulier;R04;client023@example.com
+C024;Client 024;PME;R01;client024@example.com
+C025;Client 025;Grand compte;R02;client025@example.com
+C026;Client 026;Particulier;R03;client026@example.com
+C027;Client 027;PME;R04;client027@example.com
+C028;Client 028;Grand compte;R01;client028@example.com
+C029;Client 029;Particulier;R02;client029@example.com
+C030;Client 030;PME;R03;client030@example.com
+C031;Client 031;Grand compte;R04;client031@example.com
+C032;Client 032;Particulier;R01;client032@example.com
+C033;Client 033;PME;R02;client033@example.com
+C034;Client 034;Grand compte;R03;client034@example.com
+C035;Client 035;Particulier;R04;client035@example.com
+C036;Client 036;PME;R01;client036@example.com
+C037;Client 037;Grand compte;R02;client037@example.com
+C038;Client 038;Particulier;R03;client038@example.com
+C039;Client 039;PME;R04;client039@example.com
+C040;Client 040;Grand compte;R01;client040@example.com
