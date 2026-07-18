@@ -40,7 +40,7 @@ export const courseCatalog = {
     title: "SQL Data Analyst avec PostgreSQL",
     shortDescription: "Requêtes, jointures, agrégations, CTE, fenêtres et vues analytiques.",
     landingPath: "/formations/sql-data-analyst",
-    published: false,
+    published: true,
   },
 } as const;
 
