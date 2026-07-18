@@ -211,14 +211,16 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-950/10 bg-white/86 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
-        <Link href="/" className="flex items-center gap-3" aria-label="Accueil KORYXA — Pôle Formation">
-          <span className="relative h-11 w-11 overflow-hidden rounded-2xl border border-[#06251c]/10 bg-white shadow-sm sm:h-12 sm:w-12">
-            <Image src="/assets/brand/koryxa-logo.webp" alt="Logo KORYXA" fill className="object-cover" sizes="48px" priority />
-          </span>
-          <span className="leading-tight">
-            <span className="block text-sm font-black tracking-[0.08em] text-[#06251c] sm:text-base">KORYXA</span>
-            <span className="block text-[0.7rem] font-semibold text-slate-500 sm:text-xs">Pôle Formation</span>
-          </span>
+        <Link href="/" className="flex items-center" aria-label="Accueil KORYXA Formation">
+          <Image
+            src="/assets/brand/koryxa-formation-logo.webp"
+            alt="KORYXA Formation"
+            width={205}
+            height={76}
+            className="h-11 w-auto object-contain sm:h-12 lg:h-14"
+            sizes="(max-width: 640px) 150px, 205px"
+            priority
+          />
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-black text-slate-600 lg:flex" aria-label="Navigation principale">

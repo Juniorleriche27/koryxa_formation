@@ -100,7 +100,7 @@ function CourseHeader() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-300/10 bg-[#041b15]/88 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:h-20 lg:px-8">
         <Link href="/formations/llm-rag" className="flex items-center gap-3" aria-label="Accueil Formation LLM RAG">
-          <Image src="/assets/brand/koryxa-logo.webp" alt="KORYXA" width={42} height={42} className="h-10 w-10 rounded-2xl object-cover ring-1 ring-white/15" priority />
+          <Image src="/assets/brand/koryxa-formation-mark.webp" alt="KORYXA Formation" width={42} height={42} className="h-10 w-10 object-contain" priority />
           <span className="leading-tight">
             <span className="block text-sm font-black tracking-[0.08em] text-white sm:text-base">KORYXA FORMATION</span>
             <span className="block text-xs font-semibold text-emerald-200/70">LLM RAG Developer</span>
@@ -127,7 +127,7 @@ function CourseFooter() {
     <footer className="border-t border-white/10 bg-[#03140f] px-4 py-10 text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <Image src="/assets/brand/koryxa-logo.webp" alt="KORYXA" width={40} height={40} className="h-10 w-10 rounded-2xl object-cover" />
+          <Image src="/assets/brand/koryxa-formation-mark.webp" alt="KORYXA Formation" width={40} height={40} className="h-10 w-10 object-contain" />
           <div><p className="font-black">KORYXA Formation</p><p className="text-sm text-slate-400">Parcours LLM RAG Developer</p></div>
         </div>
         <div className="flex flex-wrap gap-5 text-sm font-bold text-slate-300">
