@@ -7,6 +7,7 @@ import {
   BrainCircuit,
   CheckCircle2,
   Clock3,
+  Database,
   GraduationCap,
   Layers3,
   Sparkles,
@@ -68,6 +69,22 @@ const tracks = [
     oldPrice: "69 000 FCFA",
     outcome: "Assistant documentaire RAG déployable",
     tags: ["LLM", "RAG", "Qdrant", "Streamlit"],
+  },
+  {
+    title: "SQL Data Analyst avec PostgreSQL",
+    eyebrow: "Ouverture prochaine",
+    description: "Interrogez, reliez et analysez les données avec SQL, PostgreSQL, CTE, fonctions de fenêtre et vues analytiques.",
+    objective: "Livrer une analyse commerciale complète depuis une base PostgreSQL.",
+    level: "Débutant à intermédiaire avancé",
+    format: "12 modules + scripts SQL + datasets + projet final",
+    icon: Database,
+    href: "/formations/sql-data-analyst",
+    active: false,
+    featured: false,
+    price: "39 000 FCFA",
+    oldPrice: "49 000 FCFA",
+    outcome: "Analyse PostgreSQL professionnelle",
+    tags: ["SQL", "PostgreSQL", "CTE", "Power BI"],
   },
   {
     title: "Power BI Data Analyst",
@@ -198,7 +215,7 @@ export default function FormationsPage() {
 
       <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-6xl gap-8 rounded-[2.25rem] bg-[#06251c] p-7 text-white sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
-          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><CheckCircle2 size={15} /> Quatre parcours structurés</span><h2 className="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Choisissez entre Excel, Python, Power BI et IA documentaire.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">Excel structure l’analyse opérationnelle. Python approfondit le travail par le code. Power BI transforme les sources en rapports partagés. LLM RAG permet de construire des assistants IA fondés sur des documents vérifiables.</p></div>
+          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><CheckCircle2 size={15} /> Cinq parcours structurés</span><h2 className="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Choisissez entre Excel, SQL, Python, Power BI et IA documentaire.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">Excel structure l’analyse opérationnelle. SQL donne un accès direct aux bases de données. Python approfondit le travail par le code. Power BI transforme les sources en rapports partagés. LLM RAG permet de construire des assistants IA fondés sur des documents vérifiables.</p></div>
           <Link href="/formations/excel-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:bg-[#bcf5d7]">Découvrir Excel Data Analyst <ArrowRight size={17} /></Link>
         </div>
       </section>
