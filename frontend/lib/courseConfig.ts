@@ -3,13 +3,15 @@ export const LLM_RAG_COURSE_SLUG = "llm-rag";
 export const EXCEL_DATA_ANALYST_COURSE_SLUG = "excel-data-analyst";
 export const POWER_BI_DATA_ANALYST_COURSE_SLUG = "power-bi-data-analyst";
 export const SQL_DATA_ANALYST_COURSE_SLUG = "sql-data-analyst";
+export const STATISTICS_DATA_SCIENCE_PYTHON_COURSE_SLUG = "statistics-data-science-python";
 
 export type CourseSlug =
   | typeof DEFAULT_COURSE_SLUG
   | typeof LLM_RAG_COURSE_SLUG
   | typeof EXCEL_DATA_ANALYST_COURSE_SLUG
   | typeof POWER_BI_DATA_ANALYST_COURSE_SLUG
-  | typeof SQL_DATA_ANALYST_COURSE_SLUG;
+  | typeof SQL_DATA_ANALYST_COURSE_SLUG
+  | typeof STATISTICS_DATA_SCIENCE_PYTHON_COURSE_SLUG;
 
 export const courseCatalog = {
   "python-data-analyst": {
@@ -42,6 +44,12 @@ export const courseCatalog = {
     landingPath: "/formations/sql-data-analyst",
     published: true,
   },
+  "statistics-data-science-python": {
+    title: "Statistiques & Data Science avec Python",
+    shortDescription: "Statistiques, segmentation, prévision, évaluation et recommandations métier.",
+    landingPath: "/formations/statistics-data-science-python",
+    published: false,
+  },
 } as const;
 
 export const courseRoutes = {
@@ -51,6 +59,7 @@ export const courseRoutes = {
   excelLanding: "/formations/excel-data-analyst",
   powerBiLanding: "/formations/power-bi-data-analyst",
   sqlLanding: "/formations/sql-data-analyst",
+  statisticsDataScienceLanding: "/formations/statistics-data-science-python",
   learn: (slug: string) => `/learn/${encodeURIComponent(slug)}`,
   access: (slug: string = DEFAULT_COURSE_SLUG) =>
     `/access?course=${encodeURIComponent(slug)}&redirect=${encodeURIComponent(`/dashboard?course=${slug}`)}`,
@@ -69,5 +78,6 @@ export function normalizeCourseSlug(value?: string | null): CourseSlug {
   if (value === EXCEL_DATA_ANALYST_COURSE_SLUG) return EXCEL_DATA_ANALYST_COURSE_SLUG;
   if (value === POWER_BI_DATA_ANALYST_COURSE_SLUG) return POWER_BI_DATA_ANALYST_COURSE_SLUG;
   if (value === SQL_DATA_ANALYST_COURSE_SLUG) return SQL_DATA_ANALYST_COURSE_SLUG;
+  if (value === STATISTICS_DATA_SCIENCE_PYTHON_COURSE_SLUG) return STATISTICS_DATA_SCIENCE_PYTHON_COURSE_SLUG;
   return DEFAULT_COURSE_SLUG;
 }
