@@ -257,7 +257,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("milestone_count <> 7", migration)
         self.assertIn("total_points <> 40", migration)
         self.assertIn("rubric_total <> 60", migration)
-        self.assertIn("course_hours <> 30", migration)
+        self.assertIn("course_hours <> 62", migration)
         self.assertIn("published_course IS NOT TRUE", migration)
 
     def test_dashboard_and_certificate_keep_course_context(self):

@@ -43,9 +43,9 @@ WHERE q.module_id = m.id AND m.course_id = c.id;
 
 UPDATE public.courses
 SET is_published = TRUE,
-    estimated_hours = 30,
+    estimated_hours = 62,
     final_project_title = 'Prévision des ventes et segmentation des clients avec Python',
-    final_project_description = 'Étude Data Science complète combinant préparation des données, analyse statistique, segmentation KMeans, prévision temporelle, évaluation rigoureuse des modèles et recommandations métier responsables.'
+    final_project_description = 'Projet autonome estimé à 20 heures : préparation et audit des données, analyse statistique, segmentation KMeans, prévision temporelle, évaluation des modèles, notebook reproductible et recommandations métier responsables.'
 WHERE slug = 'statistics-data-science-python';
 
 DO $$
@@ -111,7 +111,7 @@ BEGIN
        OR milestone_count <> 7
        OR total_points <> 40
        OR rubric_total <> 60
-       OR course_hours <> 30
+       OR course_hours <> 62
        OR published_course IS NOT TRUE THEN
         RAISE EXCEPTION 'Publication Statistiques incomplète: modules %, leçons %, quiz %, quiz finaux %, projets %, jalons %, points plateforme %, barème projet %, heures %, publié %',
             module_count, lesson_count, quiz_count, final_quiz_count,
