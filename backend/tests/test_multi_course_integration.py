@@ -229,6 +229,21 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_published=FALSE", migration)
         self.assertIn("is_active=FALSE", migration)
 
+    def test_statistics_data_science_learning_navigation_is_enabled(self):
+        migration = (ROOT / "supabase/migrations/20260809_enable_statistics_data_science_learning_navigation.sql").read_text()
+
+        self.assertIn("STATISTIQUES & DATA SCIENCE AVEC PYTHON — CHANTIER 5", migration)
+        self.assertIn("UPDATE public.modules", migration)
+        self.assertIn("UPDATE public.lessons", migration)
+        self.assertIn("UPDATE public.course_projects", migration)
+        self.assertIn("UPDATE public.course_project_milestones", migration)
+        self.assertIn("UPDATE public.quiz_questions", migration)
+        self.assertIn("module_count <> 12", migration)
+        self.assertIn("lesson_count <> 24", migration)
+        self.assertIn("milestone_count <> 7", migration)
+        self.assertIn("quiz_count <> 60", migration)
+        self.assertIn("SET is_published = FALSE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
