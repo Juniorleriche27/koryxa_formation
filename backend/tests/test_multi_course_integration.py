@@ -215,6 +215,20 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Configurer la sécurité RLS", migration)
         self.assertIn("is_published = FALSE", migration)
 
+    def test_statistics_data_science_quizzes_and_project_are_complete(self):
+        migration = (ROOT / "supabase/migrations/20260808_seed_statistics_data_science_quizzes_project.sql").read_text()
+
+        self.assertIn("STATISTIQUES & DATA SCIENCE AVEC PYTHON — CHANTIER 4", migration)
+        self.assertIn("quiz_count<>48", migration)
+        self.assertIn("final_count<>12", migration)
+        self.assertIn("milestone_count<>7", migration)
+        self.assertIn("rubric_total<>60", migration)
+        self.assertIn("prevision-ventes-segmentation-clients-python", migration)
+        self.assertIn("segmenter-clients", migration)
+        self.assertIn("prevoir-ventes", migration)
+        self.assertIn("is_published=FALSE", migration)
+        self.assertIn("is_active=FALSE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
