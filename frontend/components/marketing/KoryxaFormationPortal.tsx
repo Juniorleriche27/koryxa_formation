@@ -36,8 +36,6 @@ import {
   Zap,
 } from "lucide-react";
 
-const HERO_VIDEO_URL = "https://videos.pexels.com/video-files/7693408/7693408-hd_1920_1080_25fps.mp4";
-
 const navItems = [
   { label: "Formations", href: "/formations" },
   { label: "Méthode", href: "/methode" },
@@ -95,6 +93,16 @@ const formations = [
     icon: Database,
     active: true,
     tags: ["SQL", "PostgreSQL", "CTE"],
+  },
+  {
+    title: "Statistiques & Data Science avec Python",
+    status: "Disponible",
+    href: "/formations",
+    cta: "Voir le catalogue",
+    description: "Maîtrisez le raisonnement statistique, la segmentation client, la prévision des ventes et l’évaluation rigoureuse des modèles.",
+    icon: BrainCircuit,
+    active: true,
+    tags: ["Statistiques", "Data Science", "Python"],
   },
   {
     title: "Assistant IA pour métier",
@@ -171,7 +179,7 @@ const faqs = [
   {
     question: "Quelle formation est disponible aujourd’hui ?",
     answer:
-      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst et SQL Data Analyst avec PostgreSQL sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
+      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL et Statistiques & Data Science avec Python sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
   },
   {
     question: "Où voir le détail d’une formation ?",
@@ -280,14 +288,13 @@ function Hero() {
   return (
     <section id="contenu" className="relative min-h-[92vh] overflow-hidden bg-[#f2fbf5] px-4 pb-12 pt-28 text-slate-950 sm:px-6 lg:px-8 lg:pt-32">
       <div className="absolute inset-0">
-        <video
-          className="h-full w-full scale-105 object-cover opacity-[0.26] saturate-[0.86] contrast-[0.96]"
-          src={HERO_VIDEO_URL}
-          poster="/assets/landing/hero/koryxa-learning-hero.jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
+        <Image
+          src="/assets/landing/hero/koryxa-learning-hero.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="scale-105 object-cover opacity-[0.26] saturate-[0.86] contrast-[0.96]"
           aria-hidden="true"
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-8%,rgba(16,185,129,.12),transparent_34rem),radial-gradient(ellipse_at_12%_18%,rgba(20,184,166,.06),transparent_30rem),radial-gradient(ellipse_at_88%_20%,rgba(188,245,215,.12),transparent_34rem),linear-gradient(180deg,rgba(247,252,249,.42)_0%,rgba(238,249,243,.50)_48%,rgba(251,254,252,.62)_100%)]" />
@@ -656,6 +663,35 @@ export function AudienceSection() {
   );
 }
 
+
+export function PartnerSection() {
+  return (
+    <section className="border-y border-emerald-100 bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] border border-emerald-100 bg-[#f5fbf7] p-6 shadow-sm sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center lg:p-10">
+        <div>
+          <SectionLabel>
+            <Users size={14} /> Partenaires
+          </SectionLabel>
+          <h2 className="mt-5 text-3xl font-black tracking-[-0.04em] text-[#06251c] sm:text-4xl">
+            Vous représentez une école, une entreprise ou une communauté ?
+          </h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600">
+            KORYXA étudie les collaborations pédagogiques, cohortes privées et partenariats de diffusion. Cette page reste informative et ne remplace pas le portail partenaire dédié.
+          </p>
+        </div>
+        <a
+          href="https://koryxa.fr/contact"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-emerald-200 bg-white px-6 py-3 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:border-emerald-400"
+        >
+          Nous contacter <ArrowRight size={17} />
+        </a>
+      </div>
+    </section>
+  );
+}
+
 export function FAQSection() {
   return (
     <section id="faq" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
@@ -752,6 +788,7 @@ export function FooterSEO() {
             <Link href="/formations/llm-rag" className="block hover:text-[#06251c]">LLM RAG Developer</Link>
             <Link href="/formations/power-bi-data-analyst" className="block hover:text-[#06251c]">Power BI Data Analyst</Link>
             <Link href="/formations/sql-data-analyst" className="block hover:text-[#06251c]">SQL Data Analyst</Link>
+            <Link href="/formations" className="block hover:text-[#06251c]">Statistiques & Data Science</Link>
           </div>
         </div>
         <div>
@@ -794,6 +831,7 @@ export function KoryxaFormationPortal() {
       <MethodSection />
       <ExperienceSection />
       <AudienceSection />
+      <PartnerSection />
       <FAQSection />
       <FinalCTA />
       <FooterSEO />
