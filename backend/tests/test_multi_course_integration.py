@@ -244,6 +244,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("quiz_count <> 60", migration)
         self.assertIn("SET is_published = FALSE", migration)
 
+    def test_statistics_data_science_release_is_finalized(self):
+        migration = (ROOT / "supabase/migrations/20260810_finalize_statistics_data_science_release.sql").read_text()
+
+        self.assertIn("STATISTIQUES & DATA SCIENCE AVEC PYTHON — CHANTIER 6", migration)
+        self.assertIn("SET is_published = TRUE", migration)
+        self.assertIn("platform_points = p.platform_points", migration)
+        self.assertIn("module_count <> 12", migration)
+        self.assertIn("lesson_count <> 24", migration)
+        self.assertIn("quiz_count <> 60", migration)
+        self.assertIn("final_quiz_count <> 12", migration)
+        self.assertIn("milestone_count <> 7", migration)
+        self.assertIn("total_points <> 40", migration)
+        self.assertIn("rubric_total <> 60", migration)
+        self.assertIn("course_hours <> 30", migration)
+        self.assertIn("published_course IS NOT TRUE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
