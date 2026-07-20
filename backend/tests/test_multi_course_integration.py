@@ -276,6 +276,18 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("'Pipelines et validation sans fuite'", migration)
         self.assertIn("'Interprétabilité des modèles'", migration)
 
+    def test_machine_learning_foundation_lessons_are_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260813_seed_machine_learning_foundations_lessons.sql").read_text()
+
+        self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 2", migration)
+        self.assertIn("lesson_count<>12", migration)
+        self.assertIn("module_coverage<>6", migration)
+        self.assertIn("published_count<>0", migration)
+        self.assertIn("duplicate_orders<>0", migration)
+        self.assertIn("ON CONFLICT (module_id,slug) DO UPDATE", migration)
+        self.assertIn("is_published = FALSE", migration)
+        self.assertEqual(migration.count("$lesson$# "), 12)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
