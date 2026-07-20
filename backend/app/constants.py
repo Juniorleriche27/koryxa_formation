@@ -4,6 +4,7 @@ EXCEL_DATA_ANALYST_COURSE_SLUG = "excel-data-analyst"
 POWER_BI_DATA_ANALYST_COURSE_SLUG = "power-bi-data-analyst"
 SQL_DATA_ANALYST_COURSE_SLUG = "sql-data-analyst"
 STATISTICS_DATA_SCIENCE_PYTHON_COURSE_SLUG = "statistics-data-science-python"
+MACHINE_LEARNING_PYTHON_COURSE_SLUG = "machine-learning-python"
 
 COURSE_NOT_FOUND = "Parcours introuvable ou non publié."
 MODULE_NOT_FOUND = "Module introuvable ou non publié."

@@ -260,6 +260,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("course_hours <> 62", migration)
         self.assertIn("published_course IS NOT TRUE", migration)
 
+    def test_machine_learning_python_foundation_is_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260812_seed_machine_learning_python_foundation.sql").read_text()
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
+        constants = (ROOT / "backend/app/constants.py").read_text()
+
+        self.assertIn('MACHINE_LEARNING_PYTHON_COURSE_SLUG = "machine-learning-python"', constants)
+        self.assertIn('export const MACHINE_LEARNING_PYTHON_COURSE_SLUG = "machine-learning-python"', course_config)
+        self.assertIn("'Machine Learning avec Python'", migration)
+        self.assertIn("'Prédiction du churn client avec Python'", migration)
+        self.assertIn("module_count<>12", migration)
+        self.assertIn("hour_total<>44", migration)
+        self.assertIn("course_hours<>60", migration)
+        self.assertIn("is_published = FALSE", migration)
+        self.assertIn("'Pipelines et validation sans fuite'", migration)
+        self.assertIn("'Interprétabilité des modèles'", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
