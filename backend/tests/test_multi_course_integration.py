@@ -455,6 +455,25 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("DAG Airflow", migration)
         self.assertIn("Docker Compose", migration)
 
+    def test_data_engineering_release_is_complete_and_published(self):
+        migration = (ROOT / "supabase/migrations/20260825_finalize_data_engineering_release.sql").read_text()
+
+        self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 7", migration)
+        self.assertIn("module_count<>12", migration)
+        self.assertIn("lesson_count<>24", migration)
+        self.assertIn("exercise_count<>12", migration)
+        self.assertIn("resource_count<>12", migration)
+        self.assertIn("quiz_count<>60", migration)
+        self.assertIn("final_quiz_count<>12", migration)
+        self.assertIn("project_count<>1", migration)
+        self.assertIn("milestone_count<>11", migration)
+        self.assertIn("total_points<>40", migration)
+        self.assertIn("rubric_total<>60", migration)
+        self.assertIn("module_hours<>48", migration)
+        self.assertIn("course_hours<>64", migration)
+        self.assertIn("SET is_published = TRUE", migration)
+        self.assertIn("SET is_active = TRUE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
