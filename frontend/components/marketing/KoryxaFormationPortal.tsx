@@ -105,6 +105,16 @@ const formations = [
     tags: ["Statistiques", "Data Science", "Python"],
   },
   {
+    title: "Machine Learning avec Python",
+    status: "Disponible",
+    href: "/formations/machine-learning-python",
+    cta: "Voir le programme",
+    description: "Construisez, comparez et interprétez des modèles prédictifs avec Python, scikit-learn et un projet churn complet.",
+    icon: BrainCircuit,
+    active: true,
+    tags: ["Machine Learning", "scikit-learn", "SHAP"],
+  },
+  {
     title: "Assistant IA pour métier",
     status: "Bientôt",
     href: "/formations",
@@ -179,7 +189,7 @@ const faqs = [
   {
     question: "Quelle formation est disponible aujourd’hui ?",
     answer:
-      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL et Statistiques & Data Science avec Python sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
+      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL, Statistiques & Data Science avec Python et Machine Learning avec Python sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
   },
   {
     question: "Où voir le détail d’une formation ?",

@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     "formation Python",
     "formation statistiques Python",
     "formation data science Python",
+    "formation machine learning Python",
+    "formation scikit-learn",
     "formation automatisation IA",
     "formation chatbot IA",
     "formation IA appliquée",
@@ -63,6 +65,7 @@ const catalogJsonLd = {
     ["Power BI Data Analyst", "Préparer, modéliser et visualiser les données avec Power Query, DAX et Power BI Service."],
     ["SQL Data Analyst avec PostgreSQL", "Interroger, relier et analyser les données avec SQL, PostgreSQL, CTE et fonctions de fenêtre."],
     ["Statistiques & Data Science avec Python", "Maîtriser les statistiques, la segmentation client, la prévision des ventes et l’évaluation des modèles avec Python."],
+    ["Machine Learning avec Python", "Préparer les données, construire, comparer, optimiser et interpréter des modèles prédictifs avec scikit-learn."],
   ].map(([name, description]) => ({
     "@type": "Course",
     name,
@@ -90,7 +93,7 @@ const faqJsonLd = {
       name: "Quelle formation est disponible aujourd'hui ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL et Statistiques & Data Science avec Python sont actuellement disponibles.",
+        text: "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL, Statistiques & Data Science avec Python et Machine Learning avec Python sont actuellement disponibles.",
       },
     },
     {
