@@ -310,6 +310,8 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("resource_count<>12", migration)
         self.assertIn("published_exercises<>0", migration)
         self.assertIn("published_resources<>0", migration)
+        self.assertNotIn("'project'", migration)
+        self.assertIn("'selectionner-restituer','Sélectionner et documenter le modèle','challenge'", migration)
         self.assertTrue((resources / "clients_churn.csv").exists())
         self.assertTrue((resources / "biens_immobiliers.csv").exists())
         self.assertEqual(len(list((resources / "notebooks").glob("*.ipynb"))), 12)
