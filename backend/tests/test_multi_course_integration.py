@@ -361,6 +361,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("SET is_published = TRUE", migration)
         self.assertIn("SET is_active = TRUE", migration)
 
+    def test_data_engineering_python_sql_foundation_is_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260819_seed_data_engineering_python_sql_foundation.sql").read_text()
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
+        constants = (ROOT / "backend/app/constants.py").read_text()
+
+        self.assertIn('DATA_ENGINEERING_PYTHON_SQL_COURSE_SLUG = "data-engineering-python-sql"', constants)
+        self.assertIn('export const DATA_ENGINEERING_PYTHON_SQL_COURSE_SLUG = "data-engineering-python-sql"', course_config)
+        self.assertIn("'Data Engineering avec Python et SQL'", migration)
+        self.assertIn("'Plateforme analytique de ventes avec Python, SQL, dbt et Airflow'", migration)
+        self.assertIn("module_count<>12", migration)
+        self.assertIn("hour_total<>48", migration)
+        self.assertIn("course_hours<>64", migration)
+        self.assertIn("is_published = FALSE", migration)
+        self.assertIn("'Transformations avec dbt'", migration)
+        self.assertIn("'Orchestration avec Apache Airflow'", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
