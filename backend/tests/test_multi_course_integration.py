@@ -391,6 +391,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Consommer une API avec pagination et reprise", migration)
         self.assertIn("Tests de qualité des données", migration)
 
+    def test_data_engineering_advanced_lessons_are_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260821_seed_data_engineering_advanced_lessons.sql").read_text()
+
+        self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 3", migration)
+        self.assertIn("lesson_count<>12", migration)
+        self.assertIn("module_coverage<>6", migration)
+        self.assertIn("published_count<>0", migration)
+        self.assertIn("duplicate_orders<>0", migration)
+        self.assertIn("ON CONFLICT (module_id,slug) DO UPDATE", migration)
+        self.assertIn("is_published = FALSE", migration)
+        self.assertEqual(migration.count("$lesson$# "), 12)
+        self.assertIn("Structurer un projet dbt", migration)
+        self.assertIn("Concevoir un DAG Airflow", migration)
+        self.assertIn("Docker Compose pour une stack data", migration)
+        self.assertIn("CI, tests et sécurité des pipelines", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
