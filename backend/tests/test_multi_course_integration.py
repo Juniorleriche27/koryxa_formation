@@ -440,6 +440,21 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_final_test=TRUE", migration)
         self.assertIn("question_type NOT IN ('qcm','true_false','comprehension','mini_challenge')", migration)
 
+    def test_data_engineering_capstone_project_is_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260824_seed_data_engineering_capstone_project.sql").read_text()
+
+        self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 6", migration)
+        self.assertIn("plateforme-analytique-ventes-python-sql-dbt-airflow", migration)
+        self.assertIn("project_count<>1", migration)
+        self.assertIn("milestone_count<>11", migration)
+        self.assertIn("rubric_total<>60", migration)
+        self.assertIn("published_projects<>0", migration)
+        self.assertIn("published_milestones<>0", migration)
+        self.assertIn("is_published=FALSE", migration)
+        self.assertIn("dbt build", migration)
+        self.assertIn("DAG Airflow", migration)
+        self.assertIn("Docker Compose", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
