@@ -426,6 +426,20 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertTrue((resources / "products.csv").exists())
         self.assertTrue((resources / "api_sales_pages.json").exists())
 
+    def test_data_engineering_quizzes_are_complete_and_inactive(self):
+        migration = (ROOT / "supabase/migrations/20260823_seed_data_engineering_quizzes.sql").read_text()
+
+        self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 5", migration)
+        self.assertIn("quiz_count<>48", migration)
+        self.assertIn("final_count<>12", migration)
+        self.assertIn("module_coverage<>12", migration)
+        self.assertIn("active_count<>0", migration)
+        self.assertIn("duplicate_orders<>0", migration)
+        self.assertIn("invalid_types<>0", migration)
+        self.assertIn("is_active=FALSE", migration)
+        self.assertIn("is_final_test=TRUE", migration)
+        self.assertIn("question_type NOT IN ('qcm','true_false','comprehension','mini_challenge')", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
