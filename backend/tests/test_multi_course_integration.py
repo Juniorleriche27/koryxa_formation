@@ -315,6 +315,18 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertEqual(len(list((resources / "notebooks").glob("*.ipynb"))), 12)
         self.assertEqual(len(list((resources / "solutions").glob("*.ipynb"))), 12)
 
+    def test_machine_learning_quizzes_are_complete_and_inactive(self):
+        migration = (ROOT / "supabase/migrations/20260816_seed_machine_learning_quizzes.sql").read_text()
+
+        self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 5", migration)
+        self.assertIn("quiz_count<>48", migration)
+        self.assertIn("final_count<>12", migration)
+        self.assertIn("module_coverage<>12", migration)
+        self.assertIn("active_count<>0", migration)
+        self.assertIn("duplicate_orders<>0", migration)
+        self.assertIn("is_active=FALSE", migration)
+        self.assertIn("is_final_test=TRUE", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
