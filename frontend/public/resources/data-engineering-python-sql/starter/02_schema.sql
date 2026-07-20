@@ -1,0 +1,1 @@
+-- TODO: créer customers, products, sales avec clés et contraintes

@@ -1,0 +1,4 @@
+name: koryxa_sales
+version: 1.0.0
+profile: koryxa_sales
+model-paths: ["models"]

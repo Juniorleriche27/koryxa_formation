@@ -1,0 +1,9 @@
+name: data-ci
+on: [push]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pytest
+      - run: dbt parse

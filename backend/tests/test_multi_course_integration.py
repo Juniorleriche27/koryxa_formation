@@ -407,6 +407,25 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Docker Compose pour une stack data", migration)
         self.assertIn("CI, tests et sécurité des pipelines", migration)
 
+    def test_data_engineering_exercises_resources_are_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260822_seed_data_engineering_exercises_resources.sql").read_text()
+        resources = ROOT / "frontend/public/resources/data-engineering-python-sql"
+
+        self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 4", migration)
+        self.assertIn("exercise_count<>12", migration)
+        self.assertIn("module_exercises<>12", migration)
+        self.assertIn("resource_count<>12", migration)
+        self.assertIn("published_exercises<>0", migration)
+        self.assertIn("published_resources<>0", migration)
+        self.assertIn("invalid_types<>0", migration)
+        self.assertNotIn("'project'", migration)
+        self.assertEqual(len(list((resources / "starter").glob("*"))), 12)
+        self.assertEqual(len(list((resources / "solutions").glob("*"))), 12)
+        self.assertTrue((resources / "sales.csv").exists())
+        self.assertTrue((resources / "customers.csv").exists())
+        self.assertTrue((resources / "products.csv").exists())
+        self.assertTrue((resources / "api_sales_pages.json").exists())
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
