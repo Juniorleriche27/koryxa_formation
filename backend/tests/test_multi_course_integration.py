@@ -327,6 +327,20 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_active=FALSE", migration)
         self.assertIn("is_final_test=TRUE", migration)
 
+    def test_machine_learning_capstone_project_is_complete_and_unpublished(self):
+        migration = (ROOT / "supabase/migrations/20260817_seed_machine_learning_capstone_project.sql").read_text()
+
+        self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 6", migration)
+        self.assertIn("prediction-churn-client-python", migration)
+        self.assertIn("project_count<>1", migration)
+        self.assertIn("milestone_count<>10", migration)
+        self.assertIn("rubric_total<>60", migration)
+        self.assertIn("published_projects<>0", migration)
+        self.assertIn("published_milestones<>0", migration)
+        self.assertIn("is_published=FALSE", migration)
+        self.assertIn("Model card", migration)
+        self.assertIn("Permutation importance", migration)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
