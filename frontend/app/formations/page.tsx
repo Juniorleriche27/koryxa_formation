@@ -119,6 +119,22 @@ const tracks = [
     tags: ["Python", "scikit-learn", "SHAP", "Validation"],
   },
   {
+    title: "Data Engineering avec Python et SQL",
+    eyebrow: "Parcours disponible",
+    description: "Construisez des pipelines fiables avec Python, PostgreSQL, dbt, Airflow, Docker et des contrôles de qualité.",
+    objective: "Livrer une plateforme analytique de ventes complète et observable.",
+    level: "Intermédiaire",
+    format: "12 modules + fichiers pratiques + projet final",
+    icon: Database,
+    href: "/formations/data-engineering-python-sql",
+    active: true,
+    featured: false,
+    price: "69 000 FCFA",
+    oldPrice: "79 000 FCFA",
+    outcome: "Plateforme Data Engineering portfolio",
+    tags: ["Python", "PostgreSQL", "dbt", "Airflow"],
+  },
+  {
     title: "Assistant IA pour métier",
     eyebrow: "En préparation",
     description: "Appliquez l’IA à un contexte concret pour écrire, synthétiser, organiser et produire plus efficacement.",
@@ -231,7 +247,7 @@ export default function FormationsPage() {
 
       <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-6xl gap-8 rounded-[2.25rem] bg-[#06251c] p-7 text-white sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
-          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><CheckCircle2 size={15} /> Sept parcours structurés</span><h2 className="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Choisissez entre Excel, SQL, Python, Power BI, Data Science, Machine Learning et IA documentaire.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">Excel structure l’analyse opérationnelle. SQL donne un accès direct aux bases de données. Python approfondit le travail par le code. Power BI transforme les sources en rapports partagés. LLM RAG permet de construire des assistants IA fondés sur des documents vérifiables. Machine Learning vous apprend à construire des modèles prédictifs robustes et explicables.</p></div>
+          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><CheckCircle2 size={15} /> Huit parcours structurés</span><h2 className="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Choisissez entre Excel, SQL, Python, Power BI, Data Science, Machine Learning, Data Engineering et IA documentaire.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">Excel structure l’analyse opérationnelle. SQL donne un accès direct aux bases de données. Python approfondit le travail par le code. Power BI transforme les sources en rapports partagés. LLM RAG permet de construire des assistants IA fondés sur des documents vérifiables. Machine Learning vous apprend à construire des modèles prédictifs robustes et explicables.</p></div>
           <Link href="/formations/excel-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:bg-[#bcf5d7]">Découvrir Excel Data Analyst <ArrowRight size={17} /></Link>
         </div>
       </section>

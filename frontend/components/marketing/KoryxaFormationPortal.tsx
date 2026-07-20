@@ -115,6 +115,16 @@ const formations = [
     tags: ["Machine Learning", "scikit-learn", "SHAP"],
   },
   {
+    title: "Data Engineering avec Python et SQL",
+    status: "Disponible",
+    href: "/formations/data-engineering-python-sql",
+    cta: "Voir le programme",
+    description: "Construisez des pipelines fiables avec Python, PostgreSQL, dbt, Airflow, Docker et une vraie stratégie d’observabilité.",
+    icon: Database,
+    active: true,
+    tags: ["Data Engineering", "dbt", "Airflow"],
+  },
+  {
     title: "Assistant IA pour métier",
     status: "Bientôt",
     href: "/formations",
@@ -189,7 +199,7 @@ const faqs = [
   {
     question: "Quelle formation est disponible aujourd’hui ?",
     answer:
-      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL, Statistiques & Data Science avec Python et Machine Learning avec Python sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
+      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL, Statistiques & Data Science avec Python, Machine Learning avec Python et Data Engineering avec Python et SQL sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
   },
   {
     question: "Où voir le détail d’une formation ?",

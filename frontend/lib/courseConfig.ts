@@ -64,7 +64,7 @@ export const courseCatalog = {
     title: "Data Engineering avec Python et SQL",
     shortDescription: "Ingestion, PostgreSQL, ETL/ELT, dbt, Airflow, Docker et observabilité.",
     landingPath: "/formations/data-engineering-python-sql",
-    published: false,
+    published: true,
   },
 } as const;
 
