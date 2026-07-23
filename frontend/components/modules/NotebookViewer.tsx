@@ -291,10 +291,14 @@ function getExpectedText(outputs: CellOutput[]) {
 
 function getPracticeFeedback(runOutput: string, runError: string, outputs: CellOutput[]) {
   if (runError) {
+    const runtimeUnavailable = /pyodide|cdn|chargement du moteur|moteur python/i.test(runError);
+    const lastLine = runError.split("\n").map((line) => line.trim()).filter(Boolean).at(-1) || runError;
     return {
       status: "error" as const,
-      title: "Pas encore",
-      message: "Le code s'est arrêté avec une erreur. Lis le message, vérifie les noms, les guillemets, les parenthèses et relance.",
+      title: runtimeUnavailable ? "Moteur Python indisponible" : "Erreur Python détectée",
+      message: runtimeUnavailable
+        ? "Ce problème vient du chargement du moteur d’exécution, pas forcément de ton code. Vérifie la connexion puis relance."
+        : `Python indique : ${lastLine}`,
     };
   }
 
@@ -378,37 +382,60 @@ function detectPackages(source: string) {
   return packages;
 }
 
-function loadPyodideScript() {
+const PYODIDE_SOURCES = [
+  {
+    script: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
+  },
+  {
+    script: "https://unpkg.com/pyodide@0.26.4/pyodide.js",
+    indexURL: "https://unpkg.com/pyodide@0.26.4/",
+  },
+];
+
+function loadScript(url: string) {
   return new Promise<void>((resolve, reject) => {
-    if (typeof window === "undefined") return reject(new Error("Navigateur indisponible."));
-    if (window.loadPyodide) return resolve();
-
-    const existingScript = document.querySelector<HTMLScriptElement>("script[data-koryxa-pyodide]");
-    if (existingScript) {
-      existingScript.addEventListener("load", () => resolve(), { once: true });
-      existingScript.addEventListener("error", () => reject(new Error("Chargement Pyodide impossible.")), { once: true });
-      return;
-    }
-
     const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
+    script.src = url;
     script.async = true;
     script.dataset.koryxaPyodide = "true";
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Chargement Pyodide impossible."));
+    script.onerror = () => {
+      script.remove();
+      reject(new Error(`Échec du chargement depuis ${url}`));
+    };
     document.head.appendChild(script);
   });
 }
 
 async function getPyodideRuntime() {
   if (typeof window === "undefined") throw new Error("Exécution disponible uniquement dans le navigateur.");
-  if (!window.__koryxaPyodidePromise) {
-    window.__koryxaPyodidePromise = loadPyodideScript().then(() => {
-      if (!window.loadPyodide) throw new Error("Pyodide n'est pas prêt.");
-      return window.loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/" });
-    });
+  if (window.__koryxaPyodidePromise) return window.__koryxaPyodidePromise;
+
+  window.__koryxaPyodidePromise = (async () => {
+    const failures: string[] = [];
+
+    for (const source of PYODIDE_SOURCES) {
+      try {
+        if (!window.loadPyodide) await loadScript(source.script);
+        if (!window.loadPyodide) throw new Error("Le script est chargé mais loadPyodide reste indisponible.");
+        return await window.loadPyodide({ indexURL: source.indexURL });
+      } catch (error) {
+        failures.push(error instanceof Error ? error.message : String(error));
+        document.querySelectorAll("script[data-koryxa-pyodide]").forEach((script) => script.remove());
+        window.loadPyodide = undefined;
+      }
+    }
+
+    throw new Error(`Chargement du moteur Python impossible. Tentatives : ${failures.join(" | ")}`);
+  })();
+
+  try {
+    return await window.__koryxaPyodidePromise;
+  } catch (error) {
+    window.__koryxaPyodidePromise = undefined;
+    throw error;
   }
-  return window.__koryxaPyodidePromise;
 }
 
 function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: CellOutput[]; moduleTitle?: string }) {

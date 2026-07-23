@@ -505,6 +505,22 @@ class MultiCourseIntegrationTests(unittest.TestCase):
             self.assertIn(notebook, notebook_router)
             self.assertTrue((content_dir / notebook).exists())
 
+    def test_python_data_analyst_errors_and_external_resources_are_restored(self):
+        migration = (ROOT / "supabase/migrations/20260827_restore_python_data_analyst_external_resources.sql").read_text()
+        notebook_viewer = (ROOT / "frontend/components/modules/NotebookViewer.tsx").read_text()
+
+        self.assertIn("m.order_index BETWEEN 0 AND 7", migration)
+        self.assertIn("video_count < 8", migration)
+        self.assertIn("article_count < 8", migration)
+        self.assertIn("youtube.com/results?search_query=", migration)
+        self.assertIn("docs.python.org/fr/3/tutorial/", migration)
+        self.assertIn("pandas.pydata.org/docs/user_guide/", migration)
+        self.assertIn("matplotlib.org/stable/tutorials/", migration)
+        self.assertIn("Moteur Python indisponible", notebook_viewer)
+        self.assertIn("Erreur Python détectée", notebook_viewer)
+        self.assertIn("Chargement du moteur Python impossible. Tentatives", notebook_viewer)
+        self.assertIn("https://unpkg.com/pyodide@0.26.4/pyodide.js", notebook_viewer)
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
