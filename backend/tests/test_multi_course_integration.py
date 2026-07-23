@@ -474,6 +474,32 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("SET is_published = TRUE", migration)
         self.assertIn("SET is_active = TRUE", migration)
 
+    def test_python_data_analyst_notebook_engine_is_restored_for_modules_1_to_7(self):
+        migration = (ROOT / "supabase/migrations/20260826_restore_python_data_analyst_notebooks.sql").read_text()
+        notebook_router = (ROOT / "backend/app/routers/notebook.py").read_text()
+        content_dir = ROOT / "content"
+
+        self.assertIn("RESTaURATION DU MOTEUR NOTEBOOK".upper(), migration.upper())
+        self.assertIn("c.slug = 'python-data-analyst'", migration)
+        self.assertIn("m.order_index BETWEEN 1 AND 7", migration)
+        self.assertIn("restored_count <> 7", migration)
+        self.assertIn("PYTHON_DATA_ANALYST_NOTEBOOKS", notebook_router)
+        self.assertIn('course.data.get("slug") == "python-data-analyst"', notebook_router)
+
+        expected_notebooks = [
+            "MODULE_1_Bases_Python_Data.ipynb",
+            "MODULE_2_NumPy_Calcul_Numerique.ipynb",
+            "MODULE_3_Pandas_Manipulation_Donnees.ipynb",
+            "MODULE_4_Nettoyage_Donnees.ipynb",
+            "MODULE_5_Visualisation_Donnees.ipynb",
+            "MODULE_6_Analyse_Exploratoire_EDA.ipynb",
+            "MODULE_7_Projet_Final_Professionnel.ipynb",
+        ]
+        for notebook in expected_notebooks:
+            self.assertIn(notebook, migration)
+            self.assertIn(notebook, notebook_router)
+            self.assertTrue((content_dir / notebook).exists())
+
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
         certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
