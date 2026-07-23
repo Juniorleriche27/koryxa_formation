@@ -477,6 +477,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
     def test_python_data_analyst_notebook_engine_is_restored_for_modules_1_to_7(self):
         migration = (ROOT / "supabase/migrations/20260826_restore_python_data_analyst_notebooks.sql").read_text()
         notebook_router = (ROOT / "backend/app/routers/notebook.py").read_text()
+        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text()
         content_dir = ROOT / "content"
 
         self.assertIn("RESTaURATION DU MOTEUR NOTEBOOK".upper(), migration.upper())
@@ -485,6 +486,10 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("restored_count <> 7", migration)
         self.assertIn("PYTHON_DATA_ANALYST_NOTEBOOKS", notebook_router)
         self.assertIn('course.data.get("slug") == "python-data-analyst"', notebook_router)
+        self.assertIn("isPythonNotebookModule(courseSlug, module)", module_page)
+        self.assertIn("parseNotebookCells(await response.json())", module_page)
+        self.assertIn("Le laboratoire Python n’a pas pu être chargé", module_page)
+        self.assertNotIn("DocumentViewer resource={docResource}", module_page.split("isPythonNotebookModule(courseSlug, module) ?", 1)[0])
 
         expected_notebooks = [
             "MODULE_1_Bases_Python_Data.ipynb",

@@ -48,6 +48,56 @@ function isModuleZero(module: Module | null) {
   return module?.order_index === 0;
 }
 
+function isPythonNotebookModule(courseSlug: string, module: Module | null) {
+  return courseSlug === DEFAULT_COURSE_SLUG && !!module && module.order_index >= 1 && module.order_index <= 7;
+}
+
+function normalizeNotebookSource(source: unknown): string {
+  if (Array.isArray(source)) return source.join("");
+  return typeof source === "string" ? source : "";
+}
+
+function normalizeNotebookOutputs(outputs: unknown): NotebookCell["outputs"] {
+  if (!Array.isArray(outputs)) return [];
+
+  return outputs.reduce<NotebookCell["outputs"]>((normalized, output) => {
+    if (!output || typeof output !== "object") return normalized;
+    const value = output as Record<string, unknown>;
+    const data = value.data && typeof value.data === "object" ? value.data as Record<string, unknown> : {};
+
+    if (data["image/png"]) {
+      normalized.push({ type: "image", data: normalizeNotebookSource(data["image/png"]) });
+      return normalized;
+    }
+    if (data["text/html"]) {
+      normalized.push({ type: "html", data: normalizeNotebookSource(data["text/html"]) });
+      return normalized;
+    }
+
+    const text = value.text ?? data["text/plain"];
+    if (text) normalized.push({ type: "text", data: normalizeNotebookSource(text) });
+    return normalized;
+  }, []);
+}
+
+function parseNotebookCells(payload: unknown): NotebookCell[] {
+  if (!payload || typeof payload !== "object") return [];
+  const rawCells = (payload as { cells?: unknown }).cells;
+  if (!Array.isArray(rawCells)) return [];
+
+  return rawCells.flatMap((cell) => {
+    if (!cell || typeof cell !== "object") return [];
+    const value = cell as Record<string, unknown>;
+    const cellType = value.cell_type;
+    if (cellType !== "markdown" && cellType !== "code" && cellType !== "raw") return [];
+    return [{
+      cell_type: cellType,
+      source: normalizeNotebookSource(value.source),
+      outputs: normalizeNotebookOutputs(value.outputs),
+    } satisfies NotebookCell];
+  });
+}
+
 function getYouTubeId(url: string) {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/))([^&?/\s]{11})/);
   return match?.[1] ?? null;
@@ -92,16 +142,59 @@ export default function ModuleDetailPage() {
 
   useEffect(() => {
     if (!module) return;
-    setLoadingNb(true);
-    notebookAPI
-      .getContent(id)
-      .then((response) => {
-        const loadedCells = response.data.cells || [];
-        setCells(loadedCells.length > 0 ? loadedCells : isModuleZero(module) ? moduleZeroCells : []);
-      })
-      .catch(() => setCells(isModuleZero(module) ? moduleZeroCells : []))
-      .finally(() => setLoadingNb(false));
-  }, [module, id]);
+
+    let cancelled = false;
+    const loadNotebook = async () => {
+      setLoadingNb(true);
+      setCells([]);
+
+      try {
+        const response = await notebookAPI.getContent(id);
+        const loadedCells = parseNotebookCells(response.data);
+        if (!cancelled && loadedCells.length > 0) {
+          setCells(loadedCells);
+          return;
+        }
+      } catch {
+        // Le fallback ci-dessous restaure le moteur depuis la ressource .ipynb.
+      }
+
+      if (isModuleZero(module)) {
+        if (!cancelled) setCells(moduleZeroCells);
+        return;
+      }
+
+      if (isPythonNotebookModule(courseSlug, module)) {
+        const notebookResource = module.resources?.find(
+          (resource) => resource.type === "notebook" || resource.url.toLowerCase().includes(".ipynb")
+        );
+
+        if (notebookResource) {
+          try {
+            const response = await fetch(notebookResource.url, { cache: "no-store" });
+            if (!response.ok) throw new Error(`Notebook indisponible (${response.status})`);
+            const loadedCells = parseNotebookCells(await response.json());
+            if (!cancelled && loadedCells.length > 0) {
+              setCells(loadedCells);
+              return;
+            }
+          } catch {
+            // L'interface affiche ensuite un message dédié plutôt qu'un faux lecteur de document.
+          }
+        }
+      }
+
+      if (!cancelled) setCells([]);
+    };
+
+    loadNotebook().finally(() => {
+      if (!cancelled) setLoadingNb(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [module, id, courseSlug]);
 
   if (!module) {
     return (
@@ -451,6 +544,17 @@ export default function ModuleDetailPage() {
                     </section>
                   )}
                 </>
+              ) : isPythonNotebookModule(courseSlug, module) ? (
+                <div role="alert" className="rounded-3xl border border-amber-300/25 bg-amber-400/10 px-6 py-12 text-center text-amber-50 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
+                  <AlertTriangle size={38} className="mx-auto text-amber-300" />
+                  <p className="mt-4 text-xl font-black text-white">Le laboratoire Python n’a pas pu être chargé</p>
+                  <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-amber-50/80">
+                    Réessaie dans quelques instants. Le notebook reste disponible dans l’onglet Ressources, mais il ne remplace plus le moteur intégré du cours.
+                  </p>
+                  <button type="button" onClick={() => window.location.reload()} className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-black text-slate-950 transition hover:bg-amber-50">
+                    <RefreshCw size={16} /> Recharger le laboratoire
+                  </button>
+                </div>
               ) : (() => {
                 const docResource = module.resources?.find(
                   (resource) => resource.type === "notebook" || resource.type === "article" || resource.type === "dataset"
