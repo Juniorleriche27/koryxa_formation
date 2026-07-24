@@ -519,9 +519,10 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Moteur Python indisponible", notebook_viewer)
         self.assertIn("Erreur Python détectée", notebook_viewer)
         self.assertIn('const PYODIDE_LOADER_URL = "/pyodide/pyodide.js"', notebook_viewer)
-        self.assertIn("Chargement du runtime Python impossible. Sources testées", notebook_viewer)
-        self.assertIn("https://unpkg.com/pyodide@0.26.4/", notebook_viewer)
-        self.assertNotIn("https://unpkg.com/pyodide@0.26.4/pyodide.js", notebook_viewer)
+        self.assertIn('const PYODIDE_INDEX_URL = "/pyodide/"', notebook_viewer)
+        self.assertIn("Chargement du runtime Python local impossible", notebook_viewer)
+        self.assertNotIn("https://unpkg.com/pyodide@0.26.4/", notebook_viewer)
+        self.assertNotIn("https://cdn.jsdelivr.net/pyodide/v0.26.4/full/", notebook_viewer)
 
     def test_dashboard_and_certificate_keep_course_context(self):
         dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()

@@ -383,10 +383,7 @@ function detectPackages(source: string) {
 }
 
 const PYODIDE_LOADER_URL = "/pyodide/pyodide.js";
-const PYODIDE_INDEX_URLS = [
-  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
-  "https://unpkg.com/pyodide@0.26.4/",
-];
+const PYODIDE_INDEX_URL = "/pyodide/";
 
 function loadScript(url: string) {
   return new Promise<void>((resolve, reject) => {
@@ -408,8 +405,6 @@ async function getPyodideRuntime() {
   if (window.__koryxaPyodidePromise) return window.__koryxaPyodidePromise;
 
   window.__koryxaPyodidePromise = (async () => {
-    const failures: string[] = [];
-
     if (!window.loadPyodide) {
       try {
         await loadScript(PYODIDE_LOADER_URL);
@@ -424,15 +419,13 @@ async function getPyodideRuntime() {
       throw new Error("Le chargeur Python local est présent mais loadPyodide reste indisponible.");
     }
 
-    for (const indexURL of PYODIDE_INDEX_URLS) {
-      try {
-        return await window.loadPyodide({ indexURL });
-      } catch (error) {
-        failures.push(`${indexURL} → ${error instanceof Error ? error.message : String(error)}`);
-      }
+    try {
+      return await window.loadPyodide({ indexURL: PYODIDE_INDEX_URL });
+    } catch (error) {
+      throw new Error(
+        `Chargement du runtime Python local impossible depuis ${PYODIDE_INDEX_URL}. ${error instanceof Error ? error.message : String(error)}`
+      );
     }
-
-    throw new Error(`Chargement du runtime Python impossible. Sources testées : ${failures.join(" | ")}`);
   })();
 
   try {
