@@ -382,15 +382,10 @@ function detectPackages(source: string) {
   return packages;
 }
 
-const PYODIDE_SOURCES = [
-  {
-    script: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
-    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
-  },
-  {
-    script: "https://unpkg.com/pyodide@0.26.4/pyodide.js",
-    indexURL: "https://unpkg.com/pyodide@0.26.4/",
-  },
+const PYODIDE_LOADER_URL = "/pyodide/pyodide.js";
+const PYODIDE_INDEX_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
+  "https://unpkg.com/pyodide@0.26.4/",
 ];
 
 function loadScript(url: string) {
@@ -415,19 +410,29 @@ async function getPyodideRuntime() {
   window.__koryxaPyodidePromise = (async () => {
     const failures: string[] = [];
 
-    for (const source of PYODIDE_SOURCES) {
+    if (!window.loadPyodide) {
       try {
-        if (!window.loadPyodide) await loadScript(source.script);
-        if (!window.loadPyodide) throw new Error("Le script est chargé mais loadPyodide reste indisponible.");
-        return await window.loadPyodide({ indexURL: source.indexURL });
+        await loadScript(PYODIDE_LOADER_URL);
       } catch (error) {
-        failures.push(error instanceof Error ? error.message : String(error));
-        document.querySelectorAll("script[data-koryxa-pyodide]").forEach((script) => script.remove());
-        window.loadPyodide = undefined;
+        throw new Error(
+          `Le moteur Python local n’a pas pu être chargé depuis ${PYODIDE_LOADER_URL}. ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
 
-    throw new Error(`Chargement du moteur Python impossible. Tentatives : ${failures.join(" | ")}`);
+    if (!window.loadPyodide) {
+      throw new Error("Le chargeur Python local est présent mais loadPyodide reste indisponible.");
+    }
+
+    for (const indexURL of PYODIDE_INDEX_URLS) {
+      try {
+        return await window.loadPyodide({ indexURL });
+      } catch (error) {
+        failures.push(`${indexURL} → ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+
+    throw new Error(`Chargement du runtime Python impossible. Sources testées : ${failures.join(" | ")}`);
   })();
 
   try {
