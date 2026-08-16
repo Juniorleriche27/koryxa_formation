@@ -15,6 +15,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { courseRoutes } from "@/lib/courseConfig";
+import PurchaseCourseLink from "@/components/commerce/PurchaseCourseLink";
 
 export const metadata: Metadata = {
   title: "Data Engineering avec Python et SQL — KORYXA Formation",
@@ -96,9 +97,9 @@ export default function DataEngineeringPage() {
                 Maîtrisez le cycle complet du Data Engineering : ingestion Python, PostgreSQL, ETL/ELT, dbt, Airflow, Docker, qualité et observabilité.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href={courseRoutes.access("data-engineering-python-sql")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-6 py-4 text-sm font-black text-[#08182a] transition hover:-translate-y-0.5 hover:bg-white">
-                  Accéder à la formation <ArrowRight size={17} />
-                </Link>
+                <PurchaseCourseLink courseSlug="data-engineering-python-sql" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-6 py-4 text-sm font-black text-[#08182a] transition hover:-translate-y-0.5 hover:bg-white">
+                  Commencer la formation <ArrowRight size={17} />
+                </PurchaseCourseLink>
                 <a href="#programme" className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/15 bg-white/[.06] px-6 py-4 text-sm font-black">
                   Voir le programme
                 </a>
@@ -208,9 +209,9 @@ export default function DataEngineeringPage() {
               <p className="text-xs font-black uppercase tracking-[.16em] text-cyan-950">Formation disponible</p>
               <h2 className="mt-3 text-3xl font-black tracking-[-.04em] sm:text-4xl">Commencez votre parcours Data Engineering.</h2>
             </div>
-            <Link href={courseRoutes.access("data-engineering-python-sql")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0d2238] px-7 py-4 text-sm font-black text-white transition hover:bg-cyan-800">
-              Accéder à la formation <ArrowRight size={17} />
-            </Link>
+            <PurchaseCourseLink courseSlug="data-engineering-python-sql" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0d2238] px-7 py-4 text-sm font-black text-white transition hover:bg-cyan-800">
+              Commencer la formation <ArrowRight size={17} />
+            </PurchaseCourseLink>
           </div>
         </section>
       </main>

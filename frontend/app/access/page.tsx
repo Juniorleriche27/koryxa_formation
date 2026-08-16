@@ -3,6 +3,7 @@
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { commerceAPI, getStoredAuthToken } from "@/lib/api";
 import { courseCatalog, courseRoutes, normalizeCourseSlug } from "@/lib/courseConfig";
 import {
   ArrowRight,
@@ -26,6 +27,38 @@ function AccessForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [checkingPartnerAccess, setCheckingPartnerAccess] = useState(Boolean(partnerCtx && partnerSig));
+  const [checkingLearnerAccess, setCheckingLearnerAccess] = useState(Boolean(getStoredAuthToken()));
+
+  useEffect(() => {
+    if (!getStoredAuthToken()) {
+      setCheckingLearnerAccess(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    commerceAPI
+      .listEnrollments()
+      .then((response) => {
+        if (cancelled) return;
+        const active = (response.data || []).some(
+          (enrollment: { course_slug?: string; status?: string }) =>
+            enrollment.course_slug === courseSlug && enrollment.status === "active"
+        );
+        if (active) {
+          window.location.href = redirect.startsWith("/") ? redirect : "/dashboard";
+          return;
+        }
+        setCheckingLearnerAccess(false);
+      })
+      .catch(() => {
+        if (!cancelled) setCheckingLearnerAccess(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [courseSlug, redirect]);
 
   useEffect(() => {
     if (!partnerCtx || !partnerSig) {
@@ -97,7 +130,7 @@ function AccessForm() {
             Entre dans ton espace {course.title}.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-            Si ton accès partenaire est déjà attribué, la plateforme te connecte automatiquement. Le code manuel reste disponible pour les tests et les cas de dépannage.
+            Connecte-toi avec ton compte apprenant pour garder une identité unique. Les accès partenaires existants et le code manuel restent disponibles pendant la transition.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -125,12 +158,23 @@ function AccessForm() {
               <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-blue-700">{course.title}</span>
               {checkingPartnerAccess
                 ? "Vérification de ton accès partenaire en cours. Tu seras redirigé automatiquement si l’accès est actif."
-                : "Entre ton code seulement si l’accès direct partenaire n’est pas encore disponible pour ton compte."}
+                : "Commence par ton compte apprenant. Le code manuel reste disponible pour les accès historiques et les cas de dépannage."}
             </p>
 
-            {checkingPartnerAccess && (
+            {!checkingPartnerAccess && !checkingLearnerAccess && (
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <Link href={`/login?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-black text-white transition hover:bg-blue-600">
+                  Me connecter
+                </Link>
+                <Link href={`/register?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 transition hover:border-blue-300 hover:bg-blue-50">
+                  Créer mon compte
+                </Link>
+              </div>
+            )}
+
+            {(checkingPartnerAccess || checkingLearnerAccess) && (
               <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold leading-6 text-blue-800">
-                Vérification automatique en cours… garde cette page ouverte quelques secondes.
+                Vérification automatique de ton accès en cours…
               </div>
             )}
 

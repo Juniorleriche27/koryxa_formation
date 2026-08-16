@@ -262,6 +262,15 @@ export function Header() {
           })}
         </nav>
 
+        <div className="hidden items-center gap-3 lg:flex">
+          <Link
+            href="/access"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-emerald-200 bg-white px-5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-50"
+          >
+            Espace apprenant
+          </Link>
+        </div>
+
         <button
           type="button"
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
@@ -296,6 +305,13 @@ export function Header() {
                   </Link>
                 );
               })}
+              <Link
+                href="/access"
+                onClick={() => setOpen(false)}
+                className="mt-2 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#06251c] px-4 text-sm font-black text-white transition hover:bg-emerald-700"
+              >
+                Espace apprenant
+              </Link>
             </nav>
           </motion.div>
         )}

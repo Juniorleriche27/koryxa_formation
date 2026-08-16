@@ -18,6 +18,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { courseRoutes } from "@/lib/courseConfig";
+import PurchaseCourseLink from "@/components/commerce/PurchaseCourseLink";
 
 export const metadata = {
   title: "Power BI Data Analyst — KORYXA Formation",
@@ -72,7 +73,7 @@ export default function ExcelDataAnalystLanding() {
             <h1 className="mt-6 max-w-4xl text-4xl font-black leading-[.96] tracking-[-.055em] sm:text-6xl lg:text-7xl">Transformez vos données en décisions avec Power BI.</h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">Apprenez à préparer les données, construire un modèle fiable, écrire des mesures DAX et publier un rapport interactif exploitable en entreprise.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href={courseRoutes.access("power-bi-data-analyst")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:-translate-y-0.5 hover:bg-white">Accéder à la formation <ArrowRight size={17}/></Link>
+              <PurchaseCourseLink courseSlug="power-bi-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:-translate-y-0.5 hover:bg-white">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
               <a href="#programme" className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/15 bg-white/[.06] px-6 py-4 text-sm font-black text-white">Voir le programme</a>
             </div>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -118,7 +119,7 @@ export default function ExcelDataAnalystLanding() {
       <section id="prix" className="bg-[#10251d] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-6xl gap-8 rounded-[2rem] border border-white/10 bg-white/[.06] p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
           <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[.16em] text-emerald-200"><ShieldCheck size={15}/> Accès sécurisé</span><h2 className="mt-4 text-4xl font-black tracking-[-.04em]">49 000 FCFA</h2><div className="mt-2 flex flex-wrap items-center gap-3"><span className="text-sm font-bold text-slate-400 line-through">59 000 FCFA</span><span className="rounded-full bg-emerald-300 px-3 py-1 text-xs font-black uppercase tracking-[.12em] text-[#10251d]">Tarif de lancement</span></div><p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">Paiement unique. Leçons, fichiers Excel et CSV, ressources Microsoft Learn, exercices, projet final et certificat inclus.</p></div>
-          <Link href={courseRoutes.access("power-bi-data-analyst")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:bg-white">Accéder au parcours <ArrowRight size={17}/></Link>
+          <PurchaseCourseLink courseSlug="power-bi-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:bg-white">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
         </div>
       </section>
     </main>

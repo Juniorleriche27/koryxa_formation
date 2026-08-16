@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { MaintenanceAccessPage } from "@/components/marketing/MaintenanceAccessPage";
+import { Suspense } from "react";
+import LearnerAuthForm from "@/components/auth/LearnerAuthForm";
 
 export const metadata: Metadata = {
-  title: "Connexion en maintenance — KORYXA Formation",
-  description: "La connexion apprenant KORYXA Formation est temporairement fermée pendant la migration vers KORYXA Admin.",
+  title: "Connexion apprenant — KORYXA Formation",
+  description: "Connecte-toi à ton compte apprenant KORYXA Formation.",
   robots: {
     index: false,
     follow: false,
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  return <MaintenanceAccessPage source="login" />;
+  return (
+    <Suspense fallback={null}>
+      <LearnerAuthForm mode="login" />
+    </Suspense>
+  );
 }

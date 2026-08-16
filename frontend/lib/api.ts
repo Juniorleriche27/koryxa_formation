@@ -43,9 +43,36 @@ function buildRequestUrl(url?: string) {
   }
 }
 
+const AUTH_TOKEN_KEY = "koryxa_formation_access_token";
+
+export function storeAuthSession(token: string) {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(AUTH_TOKEN_KEY, token);
+  }
+}
+
+export function clearAuthSession() {
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(AUTH_TOKEN_KEY);
+  }
+}
+
+export function getStoredAuthToken() {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  const token = getStoredAuthToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 const internalApi = axios.create({
@@ -56,6 +83,18 @@ api.interceptors.response.use(
   (res) => res,
   (err) => Promise.reject(err)
 );
+
+export const authAPI = {
+  register: (payload: { full_name: string; email: string; password: string }) => api.post("/auth/register", payload),
+  login: (payload: { email: string; password: string }) => api.post<{ access_token: string; token_type: string }>("/auth/login", payload),
+};
+
+export const commerceAPI = {
+  createOrder: (payload: { course_slug: string; partner_code?: string | null }) => api.post("/commerce/orders", payload),
+  listOrders: () => api.get("/commerce/orders"),
+  submitPayment: (orderId: string, payload: { payment_method: string; payment_reference: string }) => api.post(`/commerce/orders/${orderId}/payment`, payload),
+  listEnrollments: () => api.get("/commerce/enrollments"),
+};
 
 export const modulesAPI = {
   getAll: (course?: string) => api.get("/modules/", { params: course ? { course } : undefined }),

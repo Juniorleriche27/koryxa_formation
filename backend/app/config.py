@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     MAX_UPLOAD_BYTES: int = 10_000_000
     SUPABASE_SERVICE_ROLE_KEY: str | None = None
     KORYXA_IDENTITY_BRIDGE_KEY: str = ""
+    KORYXA_PARTNER_PORTAL_URL: str = ""
     FORMATION_COOKIE_DOMAIN: str | None = None
 
     @field_validator("RAG_RUNTIME_MODE")

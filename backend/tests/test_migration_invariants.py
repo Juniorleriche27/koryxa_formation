@@ -37,6 +37,24 @@ class MigrationInvariantTests(unittest.TestCase):
                 self.assertIn("llm-rag", sql)
                 self.assertTrue("is_published=FALSE" in sql or "is_published = FALSE" in sql or "FALSE" in sql)
 
+    def test_commerce_migration_separates_orders_and_enrollments(self):
+        sql = self.read("20260816_add_orders_and_enrollments.sql")
+        self.assertIn("CREATE TABLE IF NOT EXISTS public.formation_orders", sql)
+        self.assertIn("CREATE TABLE IF NOT EXISTS public.formation_enrollments", sql)
+        self.assertIn("partner_code TEXT", sql)
+        self.assertIn("access_source", sql)
+        self.assertIn("uq_formation_orders_open_per_course", sql)
+        self.assertIn("UNIQUE (learner_user_id, course_id)", sql)
+
+    def test_legacy_access_backfill_is_additive(self):
+        sql = self.read("20260816_migrate_legacy_access_to_enrollments.sql")
+        self.assertIn("insert into public.formation_enrollments", sql)
+        self.assertIn("from public.formation_access_codes fac", sql)
+        self.assertIn("join public.profiles", sql)
+        self.assertIn("'migration'", sql)
+        self.assertIn("on conflict (learner_user_id, course_id) do nothing", sql)
+        self.assertNotIn("delete from public.formation_access_codes", sql.lower())
+
     def test_expected_content_counts_are_guarded(self):
         lesson_sql = self.read("20260716_seed_llm_rag_lesson_content.sql")
         quiz_sql = self.read("20260716_seed_llm_rag_quizzes.sql")

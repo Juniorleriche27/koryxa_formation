@@ -27,6 +27,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { courseRoutes, LLM_RAG_COURSE_SLUG } from "@/lib/courseConfig";
+import PurchaseCourseLink from "@/components/commerce/PurchaseCourseLink";
 import {
   LlmRagExercisePreview,
   LlmRagProjectPreview,
@@ -159,9 +160,9 @@ export default function LlmRagLandingPage() {
               Apprenez Python, embeddings, Qdrant, retrieval, prompting et Streamlit en construisant un assistant documentaire qui répond avec ses sources.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link href={accessUrl} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-7 py-4 text-sm font-black text-[#05261c] shadow-2xl shadow-emerald-500/20 transition hover:-translate-y-1 hover:bg-emerald-300">
-                Accéder à la formation <ArrowRight size={18} />
-              </Link>
+              <PurchaseCourseLink courseSlug={LLM_RAG_COURSE_SLUG} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-7 py-4 text-sm font-black text-[#05261c] shadow-2xl shadow-emerald-500/20 transition hover:-translate-y-1 hover:bg-emerald-300">
+                Commencer la formation <ArrowRight size={18} />
+              </PurchaseCourseLink>
               <a href="#programme" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/10">
                 <PlayCircle size={18} /> Voir le programme
               </a>
@@ -268,7 +269,7 @@ export default function LlmRagLandingPage() {
               <p className="mt-4 text-4xl font-black tracking-tight">49 000 FCFA</p>
               <div className="mt-2 flex items-center gap-3"><span className="text-sm font-bold text-slate-400 line-through">69 000 FCFA</span><span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black uppercase tracking-[.12em] text-emerald-800">Tarif de lancement</span></div>
               <p className="mt-4 text-sm font-semibold leading-6 text-slate-500">Paiement unique. Leçons, notebooks, ressources officielles, exercices, projet final et certificat inclus.</p>
-              <Link href={accessUrl} className="mt-6 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-5 py-4 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-emerald-700">Accéder à la formation <ArrowRight size={17}/></Link>
+              <PurchaseCourseLink courseSlug={LLM_RAG_COURSE_SLUG} className="mt-6 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-5 py-4 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-emerald-700">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
             </div>
           </div>
         </div>

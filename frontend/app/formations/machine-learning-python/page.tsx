@@ -17,6 +17,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { courseRoutes } from "@/lib/courseConfig";
+import PurchaseCourseLink from "@/components/commerce/PurchaseCourseLink";
 
 export const metadata: Metadata = {
   title: "Machine Learning avec Python — KORYXA Formation",
@@ -85,7 +86,7 @@ export default function MachineLearningPythonPage() {
               <h1 className="mt-6 max-w-4xl text-4xl font-black leading-[.95] tracking-[-.055em] sm:text-6xl lg:text-7xl">Construisez des modèles utiles, fiables et explicables.</h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">Maîtrisez le workflow complet du Machine Learning avec Python : préparation sans fuite, modèles supervisés, validation, optimisation, interprétabilité et restitution métier.</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href={courseRoutes.access("machine-learning-python")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#071d16] transition hover:-translate-y-0.5 hover:bg-white">Accéder à la formation <ArrowRight size={17}/></Link>
+                <PurchaseCourseLink courseSlug="machine-learning-python" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#071d16] transition hover:-translate-y-0.5 hover:bg-white">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
                 <a href="#programme" className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/15 bg-white/[.06] px-6 py-4 text-sm font-black">Voir le programme</a>
               </div>
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -129,7 +130,7 @@ export default function MachineLearningPythonPage() {
         </section>
 
         <section className="bg-emerald-200 px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-6xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"><div><p className="text-xs font-black uppercase tracking-[.16em] text-emerald-900">Formation disponible</p><h2 className="mt-3 text-3xl font-black tracking-[-.04em] sm:text-4xl">Commencez votre parcours Machine Learning.</h2></div><Link href={courseRoutes.access("machine-learning-python")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0b241b] px-7 py-4 text-sm font-black text-white transition hover:bg-emerald-800">Accéder à la formation <ArrowRight size={17}/></Link></div>
+          <div className="mx-auto flex max-w-6xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"><div><p className="text-xs font-black uppercase tracking-[.16em] text-emerald-900">Formation disponible</p><h2 className="mt-3 text-3xl font-black tracking-[-.04em] sm:text-4xl">Commencez votre parcours Machine Learning.</h2></div><PurchaseCourseLink courseSlug="machine-learning-python" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0b241b] px-7 py-4 text-sm font-black text-white transition hover:bg-emerald-800">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink></div>
         </section>
       </main>
     </>
