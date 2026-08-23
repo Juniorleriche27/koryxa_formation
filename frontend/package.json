@@ -12,6 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.7.6",
     "@types/react-syntax-highlighter": "^15.5.13",
     "axios": "^1.6.8",
     "clsx": "^2.1.1",

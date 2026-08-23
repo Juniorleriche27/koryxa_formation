@@ -1,3 +1,4 @@
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
@@ -28,7 +29,11 @@ function redirectToAccess(request: NextRequest) {
   return response;
 }
 
-export async function middleware(request: NextRequest) {
+export default clerkMiddleware(async (_auth, request: NextRequest) => {
+  if (request.nextUrl.pathname === "/identity/formation/launch") {
+    return NextResponse.next();
+  }
+
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   const sessionPayload = await getAccessSessionPayload(accessToken);
 
@@ -60,8 +65,8 @@ export async function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
+  matcher: ["/identity/formation/launch", "/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
 };

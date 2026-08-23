@@ -1,5 +1,5 @@
 const KORYXA_ACCOUNTS_ORIGIN = "https://accounts.koryxa.fr";
-const DEFAULT_IDENTITY_LAUNCH_URL = "https://admin.koryxa.fr/formation/identity/launch";
+const DEFAULT_IDENTITY_LAUNCH_URL = "https://formation.koryxa.fr/identity/formation/launch";
 
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] || "" : value || "";
