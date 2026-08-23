@@ -3,7 +3,7 @@
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { commerceAPI, getStoredAuthToken } from "@/lib/api";
+import { accessAPI, commerceAPI } from "@/lib/api";
 import { courseCatalog, courseRoutes, normalizeCourseSlug } from "@/lib/courseConfig";
 import {
   ArrowRight,
@@ -27,26 +27,32 @@ function AccessForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [checkingPartnerAccess, setCheckingPartnerAccess] = useState(Boolean(partnerCtx && partnerSig));
-  const [checkingLearnerAccess, setCheckingLearnerAccess] = useState(Boolean(getStoredAuthToken()));
+  const [checkingLearnerAccess, setCheckingLearnerAccess] = useState(true);
+  const [learnerAuthenticated, setLearnerAuthenticated] = useState(false);
 
   useEffect(() => {
-    if (!getStoredAuthToken()) {
-      setCheckingLearnerAccess(false);
-      return;
-    }
-
     let cancelled = false;
 
     commerceAPI
       .listEnrollments()
       .then((response) => {
         if (cancelled) return;
+        setLearnerAuthenticated(true);
         const active = (response.data || []).some(
           (enrollment: { course_slug?: string; status?: string }) =>
             enrollment.course_slug === courseSlug && enrollment.status === "active"
         );
         if (active) {
-          window.location.href = redirect.startsWith("/") ? redirect : "/dashboard";
+          accessAPI
+            .activateEnrollment(courseSlug)
+            .then(() => {
+              if (!cancelled) {
+                window.location.href = redirect.startsWith("/") ? redirect : "/dashboard";
+              }
+            })
+            .catch(() => {
+              if (!cancelled) setCheckingLearnerAccess(false);
+            });
           return;
         }
         setCheckingLearnerAccess(false);
@@ -135,7 +141,7 @@ function AccessForm() {
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              { icon: ShieldCheck, title: "Compte vérifié", text: "Accès lié à ton profil partenaire." },
+              { icon: ShieldCheck, title: "Compte vérifié", text: "Accès lié à ton identité KORYXA." },
               { icon: Clock3, title: "Rapide", text: "Entrée directe après attribution." },
               { icon: Sparkles, title: "Guidé", text: "Dashboard, modules, IA et certificat." },
             ].map((item) => (
@@ -158,16 +164,28 @@ function AccessForm() {
               <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-blue-700">{course.title}</span>
               {checkingPartnerAccess
                 ? "Vérification de ton accès partenaire en cours. Tu seras redirigé automatiquement si l’accès est actif."
-                : "Commence par ton compte apprenant. Le code manuel reste disponible pour les accès historiques et les cas de dépannage."}
+                : learnerAuthenticated
+                  ? "Ton identité KORYXA est reconnue. Si cette formation est déjà attribuée à ton compte, l’accès s’ouvre automatiquement."
+                  : "Commence par ton identité KORYXA. Le code manuel reste disponible pour les accès historiques et les cas de dépannage."}
             </p>
 
-            {!checkingPartnerAccess && !checkingLearnerAccess && (
+            {!checkingPartnerAccess && !checkingLearnerAccess && !learnerAuthenticated && (
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <Link href={`/login?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-black text-white transition hover:bg-blue-600">
                   Me connecter
                 </Link>
                 <Link href={`/register?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 transition hover:border-blue-300 hover:bg-blue-50">
                   Créer mon compte
+                </Link>
+              </div>
+            )}
+
+            {!checkingPartnerAccess && !checkingLearnerAccess && learnerAuthenticated && (
+              <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+                <p className="text-sm font-black text-emerald-900">Compte KORYXA connecté</p>
+                <p className="mt-1 text-sm leading-6 text-emerald-800">Cette formation n’est pas encore attribuée à ton compte.</p>
+                <Link href={`/checkout?course=${encodeURIComponent(courseSlug)}`} className="mt-3 inline-flex min-h-10 items-center justify-center rounded-xl bg-emerald-700 px-4 text-sm font-black text-white transition hover:bg-emerald-600">
+                  Commencer cette formation
                 </Link>
               </div>
             )}

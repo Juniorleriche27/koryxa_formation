@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import LearnerAuthForm from "@/components/auth/LearnerAuthForm";
+import { redirect } from "next/navigation";
+import { buildKoryxaIdentityUrl } from "@/lib/koryxaIdentity";
 
 export const metadata: Metadata = {
-  title: "Connexion apprenant — KORYXA Formation",
-  description: "Connecte-toi à ton compte apprenant KORYXA Formation.",
-  robots: {
-    index: false,
-    follow: false,
-  },
+  title: "Connexion KORYXA Identity — KORYXA Formation",
+  description: "Connecte-toi avec ton identité KORYXA pour accéder à KORYXA Formation.",
+  robots: { index: false, follow: false },
 };
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={null}>
-      <LearnerAuthForm mode="login" />
-    </Suspense>
-  );
+type LoginPageProps = {
+  searchParams?: Record<string, string | string[] | undefined>;
+};
+
+export default function LoginPage({ searchParams }: LoginPageProps) {
+  redirect(buildKoryxaIdentityUrl({ mode: "sign-in", searchParams }));
 }

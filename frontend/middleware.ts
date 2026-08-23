@@ -36,11 +36,20 @@ export async function middleware(request: NextRequest) {
     return redirectToAccess(request);
   }
 
+  const requestedCourse = normalizeCourseSlug(request.nextUrl.searchParams.get("course"));
+
   try {
+    if (sessionPayload.kind === "identity") {
+      const accessUrl = request.nextUrl.clone();
+      accessUrl.pathname = "/access";
+      accessUrl.search = "";
+      accessUrl.searchParams.set("course", requestedCourse);
+      accessUrl.searchParams.set("redirect", request.nextUrl.pathname + request.nextUrl.search);
+      return NextResponse.redirect(accessUrl);
+    }
+
     const grant = await findGrantById(sessionPayload.sub);
     const summary = summarizeGrant(grant);
-
-    const requestedCourse = normalizeCourseSlug(request.nextUrl.searchParams.get("course"));
     const sessionCourse = normalizeCourseSlug(sessionPayload.course);
 
     if (summary.status !== "active" || requestedCourse !== sessionCourse || !(await grantMatchesCourse(grant!, requestedCourse))) {

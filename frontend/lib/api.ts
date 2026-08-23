@@ -96,6 +96,10 @@ export const commerceAPI = {
   listEnrollments: () => api.get("/commerce/enrollments"),
 };
 
+export const accessAPI = {
+  activateEnrollment: (course: string) => api.post("/access/activate-enrollment", undefined, { params: { course } }),
+};
+
 export const modulesAPI = {
   getAll: (course?: string) => api.get("/modules/", { params: course ? { course } : undefined }),
   getOne: (id: string, course?: string) => api.get(`/modules/${id}`, { params: course ? { course } : undefined }),

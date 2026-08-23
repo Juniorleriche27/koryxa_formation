@@ -2,6 +2,9 @@ export const ACCESS_COOKIE_NAME = "koryxa_formation_access";
 
 type AccessSessionPayload = {
   sub: string;
+  kind?: "grant" | "identity" | string | null;
+  identity_user_id?: string | null;
+  profile_id?: string | null;
   name?: string | null;
   email?: string | null;
   course?: string | null;

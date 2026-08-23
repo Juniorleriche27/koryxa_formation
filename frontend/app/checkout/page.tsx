@@ -4,7 +4,7 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Loader2, ReceiptText } from "lucide-react";
-import { commerceAPI, getApiErrorMessage, getStoredAuthToken } from "@/lib/api";
+import { commerceAPI, getApiErrorMessage } from "@/lib/api";
 
 type Order = {
   id: string;
@@ -40,16 +40,18 @@ function CheckoutContent() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!getStoredAuthToken()) {
-      const next = `/checkout?course=${encodeURIComponent(course)}${partnerCode ? `&ref=${encodeURIComponent(partnerCode)}` : ""}`;
-      router.replace(`/login?course=${encodeURIComponent(course)}&next=${encodeURIComponent(next)}`);
-      return;
-    }
+    const next = `/checkout?course=${encodeURIComponent(course)}${partnerCode ? `&ref=${encodeURIComponent(partnerCode)}` : ""}`;
 
     commerceAPI
       .createOrder({ course_slug: course, partner_code: partnerCode })
       .then((response) => setOrder(response.data))
-      .catch((checkoutError) => setError(getApiErrorMessage(checkoutError)))
+      .catch((checkoutError: any) => {
+        if (checkoutError?.response?.status === 401) {
+          router.replace(`/login?course=${encodeURIComponent(course)}&next=${encodeURIComponent(next)}`);
+          return;
+        }
+        setError(getApiErrorMessage(checkoutError));
+      })
       .finally(() => setLoading(false));
   }, [course, partnerCode, router]);
 

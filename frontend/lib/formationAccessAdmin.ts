@@ -92,6 +92,37 @@ export async function grantMatchesCourse(grant: FormationAccessGrant, slug: stri
   return Boolean(course && grant.course_id === course.id);
 }
 
+export async function findActiveEnrollmentByProfile(profileId: string, slug: string) {
+  const config = getSupabaseConfig();
+  if (!config) throw new Error("Supabase formation non configuré.");
+  const course = await findCourseBySlug(slug);
+  if (!course) return null;
+
+  const response = await fetchSupabase(
+    `${config.url}/rest/v1/formation_enrollments?select=id,learner_user_id,course_id,status,access_source,access_until&learner_user_id=eq.${encodeURIComponent(profileId)}&course_id=eq.${encodeURIComponent(course.id)}&status=eq.active&limit=1`,
+    {
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+      },
+      cache: "no-store",
+    },
+    "Lecture enrollment apprenant"
+  );
+
+  const rows = (await response.json()) as Array<{
+    id: string;
+    learner_user_id: string;
+    course_id: string;
+    status: string;
+    access_source: string;
+    access_until: string | null;
+  }>;
+  const enrollment = rows[0] || null;
+  if (enrollment?.access_until && new Date(enrollment.access_until).getTime() < Date.now()) return null;
+  return enrollment;
+}
+
 export function getInternalSecret() {
   return (process.env.KORYXA_IDENTITY_BRIDGE_KEY || "").trim();
 }

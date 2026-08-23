@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 from app.config import settings
 from app.database import get_service_supabase
 from app.services.courses import DEFAULT_COURSE_SLUG, get_course_id
+from app.services.koryxa_identity_service import get_or_create_identity_profile
 
 router = APIRouter(prefix="/access", tags=["Formation Access"])
 
@@ -101,15 +102,28 @@ def verify_admin_bridge(ctx: str | None, sig: str | None) -> dict[str, Any]:
     return payload
 
 
-def create_access_session(access_id: str, name: str | None, email: str | None) -> str:
+def create_access_session(
+    access_id: str,
+    name: str | None,
+    email: str | None,
+    *,
+    kind: str = "grant",
+    identity_user_id: str | None = None,
+    profile_id: str | None = None,
+    course: str | None = None,
+) -> str:
     secret = settings.KORYXA_IDENTITY_BRIDGE_KEY.strip()
     if not secret:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="KORYXA Identity bridge key missing")
     now = int(utc_now().timestamp())
     payload = {
         "sub": access_id,
+        "kind": kind,
+        "identity_user_id": identity_user_id,
+        "profile_id": profile_id,
         "name": name,
         "email": email,
+        "course": course,
         "iat": now,
         "exp": now + SESSION_MAX_AGE_SECONDS,
     }
@@ -253,6 +267,100 @@ def create_or_update_admin_grant(payload: dict[str, Any]) -> dict[str, Any]:
     return response.data[0]
 
 
+def find_or_create_identity_grant(
+    profile_id: str,
+    identity_user_id: str,
+    course_slug: str,
+) -> dict[str, Any]:
+    client = service_client()
+    course_id = get_course_id(course_slug)
+    profile_response = client.table("profiles").select("id,email,full_name").eq("id", profile_id).limit(1).execute()
+    profile = (profile_response.data or [None])[0]
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profil apprenant introuvable")
+
+    enrollment_response = (
+        client.table("formation_enrollments")
+        .select("*")
+        .eq("learner_user_id", profile_id)
+        .eq("course_id", course_id)
+        .eq("status", "active")
+        .limit(1)
+        .execute()
+    )
+    enrollment = (enrollment_response.data or [None])[0]
+    if not enrollment:
+        raise HTTPException(status_code=403, detail="Cette formation n'est pas attribuée à ton compte")
+    access_until = enrollment.get("access_until")
+    if access_until:
+        try:
+            if datetime.fromisoformat(str(access_until).replace("Z", "+00:00")) < utc_now():
+                raise HTTPException(status_code=403, detail="Cet accès formation a expiré")
+        except ValueError as exc:
+            raise HTTPException(status_code=403, detail="Date d'accès formation invalide") from exc
+
+    email = str(profile.get("email") or "").strip().lower()
+    name = str(profile.get("full_name") or "").strip() or email or identity_user_id
+    deterministic_hash = access_token_for(f"KORYXA-IDENTITY:{identity_user_id}:{course_id}")
+
+    deterministic = (
+        client.table("formation_access_codes")
+        .select("*")
+        .eq("code_hash", deterministic_hash)
+        .limit(1)
+        .execute()
+    )
+    existing = (deterministic.data or [None])[0]
+
+    if not existing and email:
+        legacy = (
+            client.table("formation_access_codes")
+            .select("*")
+            .eq("student_email", email)
+            .eq("course_id", course_id)
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+        candidate = (legacy.data or [None])[0]
+        if grant_is_active(candidate):
+            existing = candidate
+
+    now = utc_now()
+    effective_until = access_until
+    eligible_from = (now + timedelta(days=CERTIFICATE_MIN_DAYS)).isoformat()
+    common = {
+        "course_id": course_id,
+        "student_name": name,
+        "student_email": email or None,
+        "status": "used",
+        "used_count": max(int((existing or {}).get("used_count") or 0), 1),
+        "first_used_at": (existing or {}).get("first_used_at") or now.isoformat(),
+        "last_used_at": now.isoformat(),
+        "activated_at": (existing or {}).get("activated_at") or enrollment.get("activated_at") or now.isoformat(),
+        "access_until": effective_until,
+        "expires_at": effective_until,
+        "auth_provider": "koryxa_identity",
+        "notes": "Session liée à KORYXA Identity et à un enrollment actif.",
+    }
+
+    if existing:
+        response = client.table("formation_access_codes").update(common).eq("id", existing["id"]).execute()
+        return (response.data or [existing])[0]
+
+    payload = {
+        **common,
+        "code_hash": deterministic_hash,
+        "label": f"KORYXA Identity · {course_slug}",
+        "max_uses": 1,
+        "certificate_eligible_from": eligible_from,
+    }
+    response = client.table("formation_access_codes").insert(payload).execute()
+    if not response.data:
+        raise HTTPException(status_code=502, detail="Impossible d'initialiser la session formation")
+    return response.data[0]
+
+
 def get_internal_access_id(request: Request) -> str | None:
     secret = settings.KORYXA_IDENTITY_BRIDGE_KEY.strip()
     provided = (request.headers.get("x-koryxa-internal-secret") or "").strip()
@@ -290,6 +398,63 @@ def koryxa_admin_callback(ctx: str | None = Query(default=None), sig: str | None
         return response
     except HTTPException as exc:
         return RedirectResponse(f"{settings.FRONTEND_URL.rstrip()}/access?reason={quote(str(exc.detail))}", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+@router.get("/koryxa-identity/callback")
+def koryxa_identity_callback(ctx: str | None = Query(default=None), sig: str | None = Query(default=None)):
+    try:
+        payload = verify_admin_bridge(ctx, sig)
+        if payload.get("purpose") != "learner_identity":
+            raise HTTPException(status_code=403, detail="Invalid identity bridge purpose")
+        email = str(payload.get("email") or "").strip().lower()
+        name = str(payload.get("name") or "").strip() or email
+        identity_user_id = str(payload.get("clerk_user_id") or "").strip()
+        profile = get_or_create_identity_profile(identity_user_id, email, name)
+        session = create_access_session(
+            str(profile["id"]),
+            profile.get("full_name") or name,
+            profile.get("email") or email,
+            kind="identity",
+            identity_user_id=identity_user_id,
+            profile_id=str(profile["id"]),
+        )
+        response = RedirectResponse(frontend_url(payload.get("redirect")), status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+        set_access_cookie(response, session)
+        return response
+    except HTTPException as exc:
+        return RedirectResponse(
+            f"{settings.FRONTEND_URL.rstrip()}/access?identity_error={quote(str(exc.detail))}",
+            status_code=status.HTTP_307_TEMPORARY_REDIRECT,
+        )
+
+
+@router.post("/activate-enrollment")
+def activate_enrollment(request: Request, course: str = Query(default=DEFAULT_COURSE_SLUG)):
+    session = verify_access_session(request.cookies.get(ACCESS_COOKIE_NAME))
+    if not session:
+        raise HTTPException(status_code=401, detail="Session KORYXA Identity requise")
+
+    identity_user_id = str(session.get("identity_user_id") or "").strip()
+    profile_id = str(session.get("profile_id") or "").strip()
+    if session.get("kind") == "identity" and not profile_id:
+        profile_id = str(session.get("sub") or "").strip()
+    if not identity_user_id or not profile_id:
+        raise HTTPException(status_code=401, detail="Session KORYXA Identity invalide")
+
+    course_slug = str(course or DEFAULT_COURSE_SLUG).strip()
+    grant = find_or_create_identity_grant(profile_id, identity_user_id, course_slug)
+    token = create_access_session(
+        str(grant["id"]),
+        grant.get("student_name"),
+        grant.get("student_email"),
+        kind="grant",
+        identity_user_id=identity_user_id,
+        profile_id=profile_id,
+        course=course_slug,
+    )
+    response = JSONResponse({"ok": True, "course": course_slug, "access_id": grant["id"]})
+    set_access_cookie(response, token)
+    return response
 
 
 @router.get("/session")
