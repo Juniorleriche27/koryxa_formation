@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Bot } from "lucide-react";
 import ApiWakeStatus from "@/components/layout/ApiWakeStatus";
@@ -64,12 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
       <body className="font-sans antialiased">
-        <ClerkProvider
-          signInUrl="https://accounts.koryxa.fr/sign-in"
-          signUpUrl="https://accounts.koryxa.fr/sign-up"
-        >
-          {children}
-        </ClerkProvider>
+        {children}
         <a
           href="https://assistant-formation.koryxa.fr"
           target="_blank"
