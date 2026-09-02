@@ -94,6 +94,8 @@ export const commerceAPI = {
   listOrders: () => api.get("/commerce/orders"),
   submitPayment: (orderId: string, payload: { payment_method: string; payment_reference: string }) => api.post(`/commerce/orders/${orderId}/payment`, payload),
   listEnrollments: () => api.get("/commerce/enrollments"),
+  initiateKoryxaPay: (payload: { product_code: string; item_type?: "course" | "pack"; partner_code?: string | null }) =>
+    api.post<{ checkout_url?: string; checkout_id?: string; success?: boolean }>("/commerce/koryxa-pay/initiate", payload),
 };
 
 export const accessAPI = {

@@ -2,8 +2,16 @@ import hmac
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from app.config import settings
 from app.middleware.auth import get_current_user
-from app.schemas.commerce import CreateOrderSchema, SubmitPaymentSchema, ConfirmPaymentSchema, KoryxaPayWebhookSchema
+from app.database import get_service_supabase
+from app.schemas.commerce import (
+    CreateOrderSchema,
+    SubmitPaymentSchema,
+    ConfirmPaymentSchema,
+    InitiateKoryxaPaySchema,
+    KoryxaPayWebhookSchema,
+)
 from app.services.commerce_service import (
+    CAREER_PACKS,
     confirm_payment_and_enroll,
     get_or_create_order,
     list_enrollments,
@@ -11,6 +19,7 @@ from app.services.commerce_service import (
     process_koryxa_pay_webhook,
     submit_payment,
 )
+from app.services.koryxa_pay_service import create_koryxa_pay_checkout
 
 router = APIRouter()
 
@@ -57,3 +66,34 @@ def koryxa_pay_webhook(
 ):
     _require_internal_bridge(x_koryxa_bridge_key)
     return process_koryxa_pay_webhook(payload)
+
+
+@router.post("/koryxa-pay/initiate")
+def initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, user=Depends(get_current_user)):
+    db = get_service_supabase()
+    customer_id = str(user.id) or (user.email or "client")
+
+    pack_prices = {
+        "full-stack-data-analyst": 89000,
+        "data-scientist-ai-engineer": 129000,
+        "data-ultimate-all-access": 199000,
+    }
+
+    if payload.item_type == "pack":
+        amount = pack_prices.get(payload.product_code, 89000)
+    else:
+        course_res = db.table("courses").select("price_amount").eq("slug", payload.product_code).limit(1).execute()
+        if not course_res.data or course_res.data[0].get("price_amount") is None:
+            amount = 29000
+        else:
+            amount = int(course_res.data[0]["price_amount"])
+
+    idempotency_key = f"{payload.product_code}-{customer_id[:8]}-{int(amount)}"
+    checkout_res = create_koryxa_pay_checkout(
+        product_code=payload.product_code,
+        customer_id=customer_id,
+        amount=amount,
+        currency="XOF",
+        idempotency_key=idempotency_key,
+    )
+    return checkout_res

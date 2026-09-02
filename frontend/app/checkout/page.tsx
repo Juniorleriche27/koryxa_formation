@@ -142,6 +142,35 @@ function CheckoutContent() {
     }
   };
 
+  const [initiatingPay, setInitiatingPay] = useState(false);
+
+  async function handleKoryxaPayCheckout() {
+    setInitiatingPay(true);
+    setError("");
+    try {
+      const response = await commerceAPI.initiateKoryxaPay({
+        product_code: activeSlug,
+        item_type: packSlug ? "pack" : "course",
+        partner_code: partnerCode,
+      });
+
+      const checkoutUrl =
+        response.data?.checkout_url ||
+        (response.data as any)?.url ||
+        (response.data as any)?.data?.checkout_url;
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        setError("Lien de paiement KORYXA Pay non disponible actuellement.");
+      }
+    } catch (err: any) {
+      setError(getApiErrorMessage(err));
+    } finally {
+      setInitiatingPay(false);
+    }
+  }
+
   async function submitPayment(event: FormEvent) {
     event.preventDefault();
     if (!order) return;
@@ -281,16 +310,51 @@ function CheckoutContent() {
                   </a>
                 </div>
               ) : (
-                <form onSubmit={submitPayment} className="space-y-6">
-                  <div>
-                    <span className="text-xs font-black uppercase tracking-[0.14em] text-emerald-400">
-                      Étape de paiement
-                    </span>
-                    <h2 className="mt-1 text-2xl font-black text-white">Choisir mon moyen de règlement</h2>
-                    <p className="mt-1.5 text-xs leading-5 text-slate-400">
-                      Réglez avec les coordonnées KORYXA ci-dessous, puis renseignez votre référence de transaction.
+                <div className="space-y-6">
+                  {/* Option 1 : KORYXA Pay en ligne (Recommandé) */}
+                  <div className="rounded-3xl border border-emerald-400/30 bg-emerald-950/40 p-6 shadow-xl backdrop-blur-md">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-emerald-300">
+                        <Sparkles size={16} /> Recommandé · Instantané
+                      </div>
+                      <span className="rounded-full bg-emerald-400/20 px-3 py-1 text-[11px] font-black text-emerald-300">
+                        KORYXA Pay API
+                      </span>
+                    </div>
+
+                    <h3 className="mt-3 text-xl font-black text-white">Paiement en ligne sécurisé KORYXA Pay</h3>
+                    <p className="mt-2 text-xs leading-5 text-slate-300">
+                      Réglez directement par Mobile Money ou Carte Bancaire sur le portail officiel KORYXA Pay. Votre formation sera activée automatiquement dès validation.
                     </p>
+
+                    <button
+                      type="button"
+                      onClick={handleKoryxaPayCheckout}
+                      disabled={initiatingPay || loading}
+                      className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-6 py-3.5 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300 disabled:opacity-60"
+                    >
+                      {initiatingPay ? <Loader2 size={18} className="animate-spin" /> : <ExternalLink size={18} />}
+                      {initiatingPay ? "Connexion à KORYXA Pay..." : `Payer ${Number(order?.amount || 0).toLocaleString("fr-FR")} FCFA avec KORYXA Pay →`}
+                    </button>
                   </div>
+
+                  <div className="relative my-6 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10" /></div>
+                    <span className="relative bg-[#0b1222] px-4 text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
+                      ou règlement direct / manuel
+                    </span>
+                  </div>
+
+                  <form onSubmit={submitPayment} className="space-y-6">
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-[0.14em] text-emerald-400">
+                        Option de secours
+                      </span>
+                      <h2 className="mt-1 text-2xl font-black text-white">Déclarer un transfert direct</h2>
+                      <p className="mt-1.5 text-xs leading-5 text-slate-400">
+                        Si vous avez déjà envoyé votre règlement manuellement, renseignez votre référence de transaction ci-dessous.
+                      </p>
+                    </div>
 
                   {/* Sélection du moyen */}
                   <label className="block">
@@ -386,6 +450,7 @@ function CheckoutContent() {
                     </a>
                   </div>
                 </form>
+                </div>
               )}
             </div>
           </div>

@@ -21,6 +21,12 @@ class ConfirmPaymentSchema(BaseModel):
     status: Literal["paid", "failed"]
 
 
+class InitiateKoryxaPaySchema(BaseModel):
+    product_code: str = Field(min_length=2, max_length=120)
+    item_type: Literal["course", "pack"] = "course"
+    partner_code: str | None = Field(default=None, max_length=120)
+
+
 class KoryxaPayWebhookSchema(BaseModel):
     event: Literal["payment.success", "payment.failed", "order.created"]
     transaction_id: str = Field(min_length=3, max_length=180)

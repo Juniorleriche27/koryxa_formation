@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     KORYXA_IDENTITY_BRIDGE_KEY: str = ""
     KORYXA_PARTNER_PORTAL_URL: str = ""
     FORMATION_COOKIE_DOMAIN: str | None = None
+    KORYXA_PAY_BASE_URL: str = "https://api-pay.koryxa.fr"
+    KORYXA_PAY_PROJECT_CODE: str = "koryxa-formation"
+    KORYXA_PAY_PROJECT_KEY: str = ""
+    KORYXA_PAY_PROVIDER: str = "leekpay"
 
     @field_validator("RAG_RUNTIME_MODE")
     @classmethod
