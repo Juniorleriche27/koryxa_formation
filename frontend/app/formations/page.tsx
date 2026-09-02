@@ -32,6 +32,7 @@ export const metadata = {
 
 const careerPacks = [
   {
+    slug: "full-stack-data-analyst",
     title: "Pack Full-Stack Data Analyst",
     eyebrow: "Essentiel Métier",
     badge: "Indispensable Entreprise",
@@ -49,6 +50,7 @@ const careerPacks = [
     whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Full-Stack Data Analyst (89 000 FCFA).",
   },
   {
+    slug: "data-scientist-ai-engineer",
     title: "Pack Data Scientist & AI Engineer",
     eyebrow: "Le Plus Populaire",
     badge: "Carrière d'Avenir",
@@ -67,6 +69,7 @@ const careerPacks = [
     whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Data Scientist & AI Engineer (129 000 FCFA).",
   },
   {
+    slug: "data-ultimate-all-access",
     title: "Pack Data Ultimate All-Access",
     eyebrow: "Accès Total à Vie",
     badge: "Tout le Catalogue",
@@ -351,18 +354,26 @@ export default function FormationsPage() {
                     </span>
                   </div>
 
-                  <a
-                    href={`https://wa.me/22892092572?text=${encodeURIComponent(pack.whatsappText)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black transition ${
-                      pack.featured
-                        ? "bg-emerald-400 text-[#06251c] shadow-lg shadow-emerald-900/40 hover:bg-emerald-300"
-                        : "border border-white/15 bg-white/10 text-white hover:bg-white/20"
-                    }`}
-                  >
-                    <MessageCircleMore size={17} /> Commander ce Pack
-                  </a>
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href={`/checkout?pack=${pack.slug}`}
+                      className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black transition ${
+                        pack.featured
+                          ? "bg-emerald-400 text-[#06251c] shadow-lg shadow-emerald-900/40 hover:bg-emerald-300"
+                          : "border border-white/15 bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      Commander ce Pack <ArrowRight size={16} />
+                    </Link>
+                    <a
+                      href={`https://wa.me/22892092572?text=${encodeURIComponent(pack.whatsappText)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-center text-xs font-bold text-slate-400 transition hover:text-emerald-300"
+                    >
+                      Ou commander directement via WhatsApp →
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}

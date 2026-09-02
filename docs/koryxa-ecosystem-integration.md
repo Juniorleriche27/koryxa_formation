@@ -52,3 +52,34 @@ Exemples :
 4. rendre `llm-rag` sélectionnable dans KORYXA Admin ;
 5. créer des grants dédiés ;
 6. vérifier dashboard, progression, projet final et certificat avec un compte de test.
+
+## Passerelle KORYXA Pay & Webhooks Centralisés
+
+Le système de paiement centralisé KORYXA Store peut notifier KORYXA Formation via un webhook HTTP POST sécurisé :
+
+- Route Backend : `POST /commerce/internal/webhook/koryxa-pay`
+- Route Relais Next.js : `POST /api/webhooks/koryxa-pay`
+- En-tête de sécurité obligatoire : `X-Koryxa-Bridge-Key` ou `X-Koryxa-Internal-Secret`
+
+### Payload type :
+
+```json
+{
+  "event": "payment.success",
+  "transaction_id": "KP-987654321",
+  "learner_email": "apprenant@example.com",
+  "clerk_user_id": "user_2xxxx",
+  "item_type": "pack",
+  "item_slug": "full-stack-data-analyst",
+  "amount": 89000,
+  "currency": "XOF",
+  "payment_method": "tmoney",
+  "payment_reference": "TM12345678"
+}
+```
+
+### Résolution des Packs Métiers :
+
+- `full-stack-data-analyst` : débloque `excel-data-analyst`, `sql-data-analyst`, `power-bi-data-analyst`.
+- `data-scientist-ai-engineer` : débloque `python-data-analyst`, `statistics-data-science-python`, `machine-learning-python`, `llm-rag`.
+- `data-ultimate-all-access` : débloque les 8 formations du catalogue.

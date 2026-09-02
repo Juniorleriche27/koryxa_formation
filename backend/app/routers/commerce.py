@@ -2,12 +2,13 @@ import hmac
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from app.config import settings
 from app.middleware.auth import get_current_user
-from app.schemas.commerce import CreateOrderSchema, SubmitPaymentSchema, ConfirmPaymentSchema
+from app.schemas.commerce import CreateOrderSchema, SubmitPaymentSchema, ConfirmPaymentSchema, KoryxaPayWebhookSchema
 from app.services.commerce_service import (
     confirm_payment_and_enroll,
     get_or_create_order,
     list_enrollments,
     list_orders,
+    process_koryxa_pay_webhook,
     submit_payment,
 )
 
@@ -47,3 +48,12 @@ def confirm_payment(
 ):
     _require_internal_bridge(x_koryxa_bridge_key)
     return confirm_payment_and_enroll(payload.order_id, payload.status)
+
+
+@router.post("/internal/webhook/koryxa-pay")
+def koryxa_pay_webhook(
+    payload: KoryxaPayWebhookSchema,
+    x_koryxa_bridge_key: str | None = Header(default=None),
+):
+    _require_internal_bridge(x_koryxa_bridge_key)
+    return process_koryxa_pay_webhook(payload)

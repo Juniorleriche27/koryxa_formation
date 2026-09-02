@@ -534,6 +534,20 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn('certificatesAPI.getMy(selectedCourse)', certificate)
         self.assertIn('getMy: (course?: string)', api)
 
+    def test_koryxa_pay_webhook_and_pack_resolution(self):
+        commerce_router = (ROOT / "backend/app/routers/commerce.py").read_text(encoding="utf-8")
+        commerce_service = (ROOT / "backend/app/services/commerce_service.py").read_text(encoding="utf-8")
+        schemas = (ROOT / "backend/app/schemas/commerce.py").read_text(encoding="utf-8")
+        webhook_route = (ROOT / "frontend/app/api/webhooks/koryxa-pay/route.ts").read_text(encoding="utf-8")
+
+        self.assertIn('@router.post("/internal/webhook/koryxa-pay")', commerce_router)
+        self.assertIn('process_koryxa_pay_webhook', commerce_service)
+        self.assertIn('full-stack-data-analyst', commerce_service)
+        self.assertIn('data-scientist-ai-engineer', commerce_service)
+        self.assertIn('data-ultimate-all-access', commerce_service)
+        self.assertIn('class KoryxaPayWebhookSchema', schemas)
+        self.assertIn('x-koryxa-bridge-key', webhook_route)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -201,3 +201,119 @@ def list_enrollments(user) -> list[dict]:
         row["course_slug"] = course.get("slug", "")
         enrollments.append(row)
     return enrollments
+
+
+CAREER_PACKS = {
+    "full-stack-data-analyst": {
+        "title": "Pack Full-Stack Data Analyst",
+        "courses": ["excel-data-analyst", "sql-data-analyst", "power-bi-data-analyst"],
+    },
+    "data-scientist-ai-engineer": {
+        "title": "Pack Data Scientist & AI Engineer",
+        "courses": ["python-data-analyst", "statistics-data-science-python", "machine-learning-python", "llm-rag"],
+    },
+    "data-ultimate-all-access": {
+        "title": "Pack Data Ultimate All-Access",
+        "courses": [
+            "python-data-analyst",
+            "excel-data-analyst",
+            "sql-data-analyst",
+            "power-bi-data-analyst",
+            "statistics-data-science-python",
+            "machine-learning-python",
+            "data-engineering-python-sql",
+            "llm-rag",
+        ],
+    },
+}
+
+
+def process_koryxa_pay_webhook(payload) -> dict:
+    db = get_service_supabase()
+    now = datetime.now(timezone.utc).isoformat()
+
+    event = payload.event
+    if event == "payment.failed":
+        return {
+            "success": True,
+            "status": "acknowledged",
+            "event": "payment.failed",
+            "transaction_id": payload.transaction_id,
+        }
+
+    # Résolution des cours concernés
+    if payload.item_type == "pack":
+        pack_info = CAREER_PACKS.get(payload.item_slug)
+        if not pack_info:
+            raise HTTPException(status_code=404, detail=f"Pack inconnu : {payload.item_slug}")
+        course_slugs = pack_info["courses"]
+    else:
+        course_slugs = [payload.item_slug]
+
+    learner_user_id = payload.clerk_user_id or payload.learner_email.strip().lower()
+    learner_email = payload.learner_email.strip().lower()
+
+    enrolled_courses = []
+    created_orders = []
+
+    for slug in course_slugs:
+        course_result = db.table("courses").select("id,slug,title,price_amount").eq("slug", slug).limit(1).execute()
+        if not course_result.data:
+            continue
+        course = course_result.data[0]
+        course_id = course["id"]
+
+        # Création ou mise à jour de la commande
+        order_payload = {
+            "learner_user_id": learner_user_id,
+            "learner_email": learner_email,
+            "course_id": course_id,
+            "amount": float(payload.amount) if payload.item_type != "pack" else 0.0,
+            "currency": payload.currency,
+            "status": "paid",
+            "payment_method": payload.payment_method,
+            "payment_reference": payload.payment_reference or payload.transaction_id,
+            "partner_code": payload.partner_code,
+            "paid_at": now,
+        }
+
+        order_res = db.table("formation_orders").insert(order_payload).execute()
+        if order_res.data:
+            created_orders.append(order_res.data[0])
+
+        # Création ou activation de l'enrollment
+        existing_enrollment = (
+            db.table("formation_enrollments")
+            .select("*")
+            .eq("learner_user_id", learner_user_id)
+            .eq("course_id", course_id)
+            .limit(1)
+            .execute()
+        )
+
+        if existing_enrollment.data:
+            enroll_id = existing_enrollment.data[0]["id"]
+            db.table("formation_enrollments").update({
+                "status": "active",
+                "access_source": "koryxa_pay",
+                "revoked_at": None,
+            }).eq("id", enroll_id).execute()
+        else:
+            db.table("formation_enrollments").insert({
+                "learner_user_id": learner_user_id,
+                "course_id": course_id,
+                "status": "active",
+                "access_source": "koryxa_pay",
+            }).execute()
+
+        enrolled_courses.append(slug)
+
+    return {
+        "success": True,
+        "transaction_id": payload.transaction_id,
+        "item_type": payload.item_type,
+        "item_slug": payload.item_slug,
+        "enrolled_courses": enrolled_courses,
+        "learner_email": learner_email,
+        "orders_count": len(created_orders),
+    }
