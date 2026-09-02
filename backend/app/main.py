@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.config import settings
 from app.middleware.security import SecurityHeadersMiddleware, SensitiveRouteRateLimitMiddleware
 from app.routers import auth, courses, exercises, integrations, lessons, modules, progress, projects, certificates, notebook, ai, validation, access, theory, commerce
@@ -32,6 +33,31 @@ app.include_router(ai.router,           prefix="/ai",           tags=["AI"])
 app.include_router(validation.router,   prefix="/validation",   tags=["Validation"])
 app.include_router(access.router)
 app.include_router(commerce.router,      prefix="/commerce",     tags=["Commerce"])
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "detail": exc.detail,
+            "status_code": exc.status_code,
+            "path": request.url.path,
+        },
+        headers=getattr(exc, "headers", None),
+    )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "Une erreur interne temporaire est survenue.",
+            "status_code": 500,
+            "path": request.url.path,
+        },
+    )
+
 
 @app.get("/")
 def health_check():

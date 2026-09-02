@@ -8,18 +8,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+import os
+
 def run(command: list[str], cwd: Path = ROOT) -> None:
     print(f"[quality] {' '.join(command)}")
-    completed = subprocess.run(command, cwd=cwd, check=False)
+    env = {**os.environ, "PYTHONUTF8": "1"}
+    completed = subprocess.run(command, cwd=cwd, env=env, check=False, shell=sys.platform == "win32")
     if completed.returncode != 0:
         raise SystemExit(completed.returncode)
 
 
 def check_frontend_invariants() -> None:
-    course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
-    modules_page = (ROOT / "frontend/app/modules/page.tsx").read_text()
-    module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text()
-    llm_page = (ROOT / "frontend/app/formations/llm-rag/page.tsx").read_text()
+    course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
+    modules_page = (ROOT / "frontend/app/modules/page.tsx").read_text(encoding="utf-8")
+    module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text(encoding="utf-8")
+    llm_page = (ROOT / "frontend/app/formations/llm-rag/page.tsx").read_text(encoding="utf-8")
 
     checks = {
         "python fallback": 'DEFAULT_COURSE_SLUG = "python-data-analyst"' in course_config,

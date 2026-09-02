@@ -449,11 +449,37 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
   const [showExp, setShowExp] = useState(false);
   const practiceFeedback = useMemo(() => getPracticeFeedback(runOutput, runError, outputs), [runOutput, runError, outputs]);
 
+  const storageKey = useMemo(() => {
+    if (!moduleTitle) return "";
+    let hash = 0;
+    for (let i = 0; i < cleanedSource.length; i++) {
+      hash = ((hash << 5) - hash) + cleanedSource.charCodeAt(i);
+      hash |= 0;
+    }
+    return `koryxa_draft_${encodeURIComponent(moduleTitle)}_${hash}`;
+  }, [moduleTitle, cleanedSource]);
+
   useEffect(() => {
-    setEditableCode(cleanedSource);
+    if (typeof window === "undefined" || !storageKey) {
+      setEditableCode(cleanedSource);
+      return;
+    }
+    const saved = localStorage.getItem(storageKey);
+    setEditableCode(saved && saved.trim() ? saved : cleanedSource);
     setRunOutput("");
     setRunError("");
-  }, [cleanedSource]);
+  }, [cleanedSource, storageKey]);
+
+  const handleCodeChange = (newCode: string) => {
+    setEditableCode(newCode);
+    if (typeof window !== "undefined" && storageKey) {
+      if (newCode === cleanedSource) {
+        localStorage.removeItem(storageKey);
+      } else {
+        localStorage.setItem(storageKey, newCode);
+      }
+    }
+  };
 
   useEffect(() => {
     if (!fullText) return;
@@ -529,6 +555,9 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
 
   const resetCode = () => {
     setEditableCode(cleanedSource);
+    if (typeof window !== "undefined" && storageKey) {
+      localStorage.removeItem(storageKey);
+    }
     setRunOutput("");
     setRunError("");
   };
@@ -540,6 +569,8 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
       setRunError("Copie impossible depuis ce navigateur. Sélectionne le code manuellement.");
     }
   };
+
+  const isDraft = editableCode !== cleanedSource;
 
   return (
     <section className="overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-950 shadow-2xl shadow-slate-950/30 ring-1 ring-white/10">
@@ -585,17 +616,24 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
           <textarea
             aria-label="Code Python modifiable"
             value={editableCode}
-            onChange={(event) => setEditableCode(event.target.value)}
+            onChange={(event) => handleCodeChange(event.target.value)}
             spellCheck={false}
             className="min-h-[260px] w-full resize-y bg-[#020617] px-5 pb-5 pt-12 font-mono text-sm leading-7 text-slate-100 outline-none ring-0 placeholder:text-slate-500 sm:text-[0.92rem]"
           />
-          <div className="flex flex-wrap items-center gap-2 border-t border-white/10 bg-slate-950 px-4 py-3">
-            <button onClick={resetCode} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white">
-              <RotateCcw size={13} /> Réinitialiser
-            </button>
-            <button onClick={copyCode} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white">
-              <Copy size={13} /> Copier
-            </button>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/10 bg-slate-950 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <button onClick={resetCode} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white">
+                <RotateCcw size={13} /> Réinitialiser
+              </button>
+              <button onClick={copyCode} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white">
+                <Copy size={13} /> Copier
+              </button>
+            </div>
+            {isDraft && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-[11px] font-bold text-amber-300">
+                <CheckCircle2 size={12} /> Brouillon sauvegardé
+              </span>
+            )}
           </div>
         </div>
 

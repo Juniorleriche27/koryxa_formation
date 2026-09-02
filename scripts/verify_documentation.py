@@ -28,7 +28,7 @@ if missing:
 link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 broken: list[str] = []
 for markdown in [ROOT / "README.md", *DOCS.glob("*.md")]:
-    text = markdown.read_text()
+    text = markdown.read_text(encoding="utf-8")
     for target in link_pattern.findall(text):
         if target.startswith(("http://", "https://", "mailto:", "#")):
             continue
@@ -42,7 +42,7 @@ for markdown in [ROOT / "README.md", *DOCS.glob("*.md")]:
 if broken:
     raise SystemExit("Liens documentaires cassés: " + ", ".join(broken))
 
-index = (DOCS / "README.md").read_text()
+index = (DOCS / "README.md").read_text(encoding="utf-8")
 for path in required[2:]:
     if path.name not in index:
         raise SystemExit(f"Document absent de l'index: {path.name}")
@@ -52,7 +52,7 @@ sensitive_patterns = [
     re.compile(r"sk-[A-Za-z0-9]{16,}"),
 ]
 for markdown in [ROOT / "README.md", *DOCS.glob("*.md")]:
-    text = markdown.read_text()
+    text = markdown.read_text(encoding="utf-8")
     for pattern in sensitive_patterns:
         if pattern.search(text):
             raise SystemExit(f"Valeur sensible potentielle dans {markdown.relative_to(ROOT)}")

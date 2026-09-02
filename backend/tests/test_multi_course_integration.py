@@ -6,27 +6,27 @@ ROOT = Path(__file__).resolve().parents[2]
 
 class MultiCourseIntegrationTests(unittest.TestCase):
     def test_admin_bridge_assigns_course_and_defaults_to_python(self):
-        source = (ROOT / "backend/app/routers/access.py").read_text()
+        source = (ROOT / "backend/app/routers/access.py").read_text(encoding="utf-8")
         self.assertIn('payload.get("course_slug") or DEFAULT_COURSE_SLUG', source)
         self.assertIn('"course_id": course_id', source)
         self.assertIn('get_course_id(course_slug)', source)
 
     def test_unpublished_course_is_rejected_by_course_service(self):
-        source = (ROOT / "backend/app/services/courses.py").read_text()
+        source = (ROOT / "backend/app/services/courses.py").read_text(encoding="utf-8")
         self.assertIn('.eq("is_published", True)', source)
 
     def test_session_exposes_only_published_courses_and_access_flag(self):
-        source = (ROOT / "backend/app/routers/access.py").read_text()
+        source = (ROOT / "backend/app/routers/access.py").read_text(encoding="utf-8")
         self.assertIn('@router.get("/courses")', source)
         self.assertIn('"has_access": course.get("id") == grant.get("course_id")', source)
         self.assertIn('.eq("is_published", True)', source)
 
     def test_llm_rag_entry_flow_keeps_course_context(self):
-        landing = (ROOT / "frontend/app/formations/llm-rag/page.tsx").read_text()
-        access = (ROOT / "frontend/app/access/page.tsx").read_text()
-        access_api = (ROOT / "frontend/app/api/access/route.ts").read_text()
-        middleware = (ROOT / "frontend/middleware.ts").read_text()
-        config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
+        landing = (ROOT / "frontend/app/formations/llm-rag/page.tsx").read_text(encoding="utf-8")
+        access = (ROOT / "frontend/app/access/page.tsx").read_text(encoding="utf-8")
+        access_api = (ROOT / "frontend/app/api/access/route.ts").read_text(encoding="utf-8")
+        middleware = (ROOT / "frontend/middleware.ts").read_text(encoding="utf-8")
+        config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
 
         self.assertIn("courseRoutes.access(LLM_RAG_COURSE_SLUG)", landing)
         self.assertIn('searchParams.get("course")', access)
@@ -38,12 +38,12 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("dashboard: (slug: string", config)
 
     def test_llm_rag_learning_space_keeps_navigation_scoped(self):
-        dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
-        modules_page = (ROOT / "frontend/app/modules/page.tsx").read_text()
-        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text()
-        module_card = (ROOT / "frontend/components/modules/ModuleCard.tsx").read_text()
-        modules_router = (ROOT / "backend/app/routers/modules.py").read_text()
-        migration = (ROOT / "supabase/migrations/20260717_enable_llm_rag_learning_navigation.sql").read_text()
+        dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text(encoding="utf-8")
+        modules_page = (ROOT / "frontend/app/modules/page.tsx").read_text(encoding="utf-8")
+        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text(encoding="utf-8")
+        module_card = (ROOT / "frontend/components/modules/ModuleCard.tsx").read_text(encoding="utf-8")
+        modules_router = (ROOT / "backend/app/routers/modules.py").read_text(encoding="utf-8")
+        migration = (ROOT / "supabase/migrations/20260717_enable_llm_rag_learning_navigation.sql").read_text(encoding="utf-8")
 
         self.assertIn("LearnerCourseContext", dashboard)
         self.assertIn("courseSlug={courseSlug}", dashboard)
@@ -58,12 +58,12 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertNotIn("UPDATE public.courses", migration)
 
     def test_llm_rag_final_release_is_course_scoped(self):
-        validation = (ROOT / "backend/app/routers/validation.py").read_text()
-        certificates = (ROOT / "backend/app/routers/certificates.py").read_text()
-        progress = (ROOT / "backend/app/routers/progress.py").read_text()
-        certificate_page = (ROOT / "frontend/app/certificate/page.tsx").read_text()
-        learning_content = (ROOT / "frontend/components/modules/LlmRagLearningContent.tsx").read_text()
-        release = (ROOT / "supabase/migrations/20260717_finalize_llm_rag_release.sql").read_text()
+        validation = (ROOT / "backend/app/routers/validation.py").read_text(encoding="utf-8")
+        certificates = (ROOT / "backend/app/routers/certificates.py").read_text(encoding="utf-8")
+        progress = (ROOT / "backend/app/routers/progress.py").read_text(encoding="utf-8")
+        certificate_page = (ROOT / "frontend/app/certificate/page.tsx").read_text(encoding="utf-8")
+        learning_content = (ROOT / "frontend/components/modules/LlmRagLearningContent.tsx").read_text(encoding="utf-8")
+        release = (ROOT / "supabase/migrations/20260717_finalize_llm_rag_release.sql").read_text(encoding="utf-8")
 
         self.assertIn("required_modules = [item for item in modules if bool(item.get(\"requires_quiz\", True))]", validation)
         self.assertIn("get_access_record_for_user(user, course_id)", validation)
@@ -75,9 +75,9 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("WHERE slug = 'llm-rag'", release)
 
     def test_excel_data_analyst_foundation_is_unpublished_and_complete(self):
-        migration = (ROOT / "supabase/migrations/20260719_seed_excel_data_analyst_foundation.sql").read_text()
-        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
-        constants = (ROOT / "backend/app/constants.py").read_text()
+        migration = (ROOT / "supabase/migrations/20260719_seed_excel_data_analyst_foundation.sql").read_text(encoding="utf-8")
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
+        constants = (ROOT / "backend/app/constants.py").read_text(encoding="utf-8")
 
         self.assertIn("EXCEL_DATA_ANALYST_COURSE_SLUG", course_config)
         self.assertIn('EXCEL_DATA_ANALYST_COURSE_SLUG = "excel-data-analyst"', constants)
@@ -90,7 +90,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("'Dashboard professionnel'", migration)
 
     def test_excel_data_analyst_lesson_content_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260719_seed_excel_data_analyst_lesson_content.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260719_seed_excel_data_analyst_lesson_content.sql").read_text(encoding="utf-8")
 
         self.assertIn("excel-data-analyst", migration)
         self.assertIn("24 leçons", migration)
@@ -102,7 +102,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_published = FALSE", migration)
 
     def test_excel_data_analyst_exercises_resources_and_files_are_complete(self):
-        migration = (ROOT / "supabase/migrations/20260720_seed_excel_data_analyst_exercises_resources.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260720_seed_excel_data_analyst_exercises_resources.sql").read_text(encoding="utf-8")
         resources = ROOT / "frontend/public/resources/excel-data-analyst"
 
         self.assertIn("EXCEL DATA ANALYST — CHANTIER 3", migration)
@@ -118,7 +118,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertTrue((resources / "04_power_query_modele_dashboard.xlsx").stat().st_size > 3000)
 
     def test_excel_data_analyst_quizzes_final_test_and_project_are_complete(self):
-        migration = (ROOT / "supabase/migrations/20260721_seed_excel_data_analyst_quizzes_project.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260721_seed_excel_data_analyst_quizzes_project.sql").read_text(encoding="utf-8")
 
         self.assertIn("EXCEL DATA ANALYST — CHANTIER 4", migration)
         self.assertIn("quiz_count<>48", migration)
@@ -131,10 +131,10 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_published=FALSE", migration)
 
     def test_excel_data_analyst_landing_and_learning_navigation_exist(self):
-        landing = (ROOT / "frontend/app/formations/excel-data-analyst/page.tsx").read_text()
-        catalog = (ROOT / "frontend/app/formations/page.tsx").read_text()
-        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text()
-        navigation = (ROOT / "supabase/migrations/20260722_enable_excel_data_analyst_learning_navigation.sql").read_text()
+        landing = (ROOT / "frontend/app/formations/excel-data-analyst/page.tsx").read_text(encoding="utf-8")
+        catalog = (ROOT / "frontend/app/formations/page.tsx").read_text(encoding="utf-8")
+        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text(encoding="utf-8")
+        navigation = (ROOT / "supabase/migrations/20260722_enable_excel_data_analyst_learning_navigation.sql").read_text(encoding="utf-8")
 
         self.assertIn("Excel Data Analyst", landing)
         self.assertIn("39 000 FCFA", landing)
@@ -146,10 +146,10 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("SET is_published = FALSE", navigation)
 
     def test_excel_data_analyst_final_release_is_complete(self):
-        migration = (ROOT / "supabase/migrations/20260723_finalize_excel_data_analyst_release.sql").read_text()
-        certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
-        config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
-        catalog = (ROOT / "frontend/app/formations/page.tsx").read_text()
+        migration = (ROOT / "supabase/migrations/20260723_finalize_excel_data_analyst_release.sql").read_text(encoding="utf-8")
+        certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text(encoding="utf-8")
+        config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
+        catalog = (ROOT / "frontend/app/formations/page.tsx").read_text(encoding="utf-8")
 
         self.assertIn("Publication Excel incomplète", migration)
         self.assertIn("module_count<>12", migration)
@@ -163,9 +163,9 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Parcours disponible", catalog)
 
     def test_power_bi_data_analyst_foundation_is_unpublished_and_complete(self):
-        migration = (ROOT / "supabase/migrations/20260724_seed_power_bi_data_analyst_foundation.sql").read_text()
-        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
-        constants = (ROOT / "backend/app/constants.py").read_text()
+        migration = (ROOT / "supabase/migrations/20260724_seed_power_bi_data_analyst_foundation.sql").read_text(encoding="utf-8")
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
+        constants = (ROOT / "backend/app/constants.py").read_text(encoding="utf-8")
 
         self.assertIn("POWER_BI_DATA_ANALYST_COURSE_SLUG", course_config)
         self.assertIn('POWER_BI_DATA_ANALYST_COURSE_SLUG = "power-bi-data-analyst"', constants)
@@ -179,7 +179,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("'Sécurité, performance et qualité'", migration)
 
     def test_power_bi_data_analyst_lesson_content_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text(encoding="utf-8")
 
         self.assertIn("power-bi-data-analyst", migration)
         self.assertIn("24 leçons", migration)
@@ -191,7 +191,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_published = FALSE", migration)
 
     def test_power_bi_data_analyst_lesson_content_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text(encoding="utf-8")
 
         self.assertIn("power-bi-data-analyst", migration)
         self.assertIn("24 leçons", migration)
@@ -204,7 +204,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_published = FALSE", migration)
 
     def test_power_bi_data_analyst_lesson_content_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260725_seed_power_bi_data_analyst_lesson_content.sql").read_text(encoding="utf-8")
 
         self.assertIn("power-bi-data-analyst", migration)
         self.assertIn("24 leçons", migration)
@@ -216,7 +216,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_published = FALSE", migration)
 
     def test_statistics_data_science_quizzes_and_project_are_complete(self):
-        migration = (ROOT / "supabase/migrations/20260808_seed_statistics_data_science_quizzes_project.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260808_seed_statistics_data_science_quizzes_project.sql").read_text(encoding="utf-8")
 
         self.assertIn("STATISTIQUES & DATA SCIENCE AVEC PYTHON — CHANTIER 4", migration)
         self.assertIn("quiz_count<>48", migration)
@@ -230,7 +230,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_active=FALSE", migration)
 
     def test_statistics_data_science_learning_navigation_is_enabled(self):
-        migration = (ROOT / "supabase/migrations/20260809_enable_statistics_data_science_learning_navigation.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260809_enable_statistics_data_science_learning_navigation.sql").read_text(encoding="utf-8")
 
         self.assertIn("STATISTIQUES & DATA SCIENCE AVEC PYTHON — CHANTIER 5", migration)
         self.assertIn("UPDATE public.modules", migration)
@@ -245,7 +245,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("SET is_published = FALSE", migration)
 
     def test_statistics_data_science_release_is_finalized(self):
-        migration = (ROOT / "supabase/migrations/20260810_finalize_statistics_data_science_release.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260810_finalize_statistics_data_science_release.sql").read_text(encoding="utf-8")
 
         self.assertIn("STATISTIQUES & DATA SCIENCE AVEC PYTHON — CHANTIER 6", migration)
         self.assertIn("SET is_published = TRUE", migration)
@@ -261,9 +261,9 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("published_course IS NOT TRUE", migration)
 
     def test_machine_learning_python_foundation_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260812_seed_machine_learning_python_foundation.sql").read_text()
-        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
-        constants = (ROOT / "backend/app/constants.py").read_text()
+        migration = (ROOT / "supabase/migrations/20260812_seed_machine_learning_python_foundation.sql").read_text(encoding="utf-8")
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
+        constants = (ROOT / "backend/app/constants.py").read_text(encoding="utf-8")
 
         self.assertIn('MACHINE_LEARNING_PYTHON_COURSE_SLUG = "machine-learning-python"', constants)
         self.assertIn('export const MACHINE_LEARNING_PYTHON_COURSE_SLUG = "machine-learning-python"', course_config)
@@ -277,7 +277,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("'Interprétabilité des modèles'", migration)
 
     def test_machine_learning_foundation_lessons_are_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260813_seed_machine_learning_foundations_lessons.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260813_seed_machine_learning_foundations_lessons.sql").read_text(encoding="utf-8")
 
         self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 2", migration)
         self.assertIn("lesson_count<>12", migration)
@@ -289,7 +289,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertEqual(migration.count("$lesson$# "), 12)
 
     def test_machine_learning_advanced_lessons_are_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260814_seed_machine_learning_advanced_lessons.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260814_seed_machine_learning_advanced_lessons.sql").read_text(encoding="utf-8")
 
         self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 3", migration)
         self.assertIn("lesson_count<>12", migration)
@@ -301,7 +301,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertEqual(migration.count("$lesson$# "), 12)
 
     def test_machine_learning_exercises_resources_are_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260815_seed_machine_learning_exercises_resources.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260815_seed_machine_learning_exercises_resources.sql").read_text(encoding="utf-8")
         resources = ROOT / "frontend/public/resources/machine-learning-python"
 
         self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 4", migration)
@@ -318,7 +318,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertEqual(len(list((resources / "solutions").glob("*.ipynb"))), 12)
 
     def test_machine_learning_quizzes_are_complete_and_inactive(self):
-        migration = (ROOT / "supabase/migrations/20260816_seed_machine_learning_quizzes.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260816_seed_machine_learning_quizzes.sql").read_text(encoding="utf-8")
 
         self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 5", migration)
         self.assertIn("quiz_count<>48", migration)
@@ -330,7 +330,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("is_final_test=TRUE", migration)
 
     def test_machine_learning_capstone_project_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260817_seed_machine_learning_capstone_project.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260817_seed_machine_learning_capstone_project.sql").read_text(encoding="utf-8")
 
         self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 6", migration)
         self.assertIn("prediction-churn-client-python", migration)
@@ -344,7 +344,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Permutation importance", migration)
 
     def test_machine_learning_release_is_complete_and_published(self):
-        migration = (ROOT / "supabase/migrations/20260818_finalize_machine_learning_release.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260818_finalize_machine_learning_release.sql").read_text(encoding="utf-8")
 
         self.assertIn("MACHINE LEARNING AVEC PYTHON — CHANTIER 7", migration)
         self.assertIn("module_count<>12", migration)
@@ -362,9 +362,9 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("SET is_active = TRUE", migration)
 
     def test_data_engineering_python_sql_foundation_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260819_seed_data_engineering_python_sql_foundation.sql").read_text()
-        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
-        constants = (ROOT / "backend/app/constants.py").read_text()
+        migration = (ROOT / "supabase/migrations/20260819_seed_data_engineering_python_sql_foundation.sql").read_text(encoding="utf-8")
+        course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
+        constants = (ROOT / "backend/app/constants.py").read_text(encoding="utf-8")
 
         self.assertIn('DATA_ENGINEERING_PYTHON_SQL_COURSE_SLUG = "data-engineering-python-sql"', constants)
         self.assertIn('export const DATA_ENGINEERING_PYTHON_SQL_COURSE_SLUG = "data-engineering-python-sql"', course_config)
@@ -378,7 +378,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("'Orchestration avec Apache Airflow'", migration)
 
     def test_data_engineering_foundation_lessons_are_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260820_seed_data_engineering_foundations_lessons.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260820_seed_data_engineering_foundations_lessons.sql").read_text(encoding="utf-8")
 
         self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 2", migration)
         self.assertIn("lesson_count<>12", migration)
@@ -392,7 +392,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Tests de qualité des données", migration)
 
     def test_data_engineering_advanced_lessons_are_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260821_seed_data_engineering_advanced_lessons.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260821_seed_data_engineering_advanced_lessons.sql").read_text(encoding="utf-8")
 
         self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 3", migration)
         self.assertIn("lesson_count<>12", migration)
@@ -408,7 +408,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("CI, tests et sécurité des pipelines", migration)
 
     def test_data_engineering_exercises_resources_are_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260822_seed_data_engineering_exercises_resources.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260822_seed_data_engineering_exercises_resources.sql").read_text(encoding="utf-8")
         resources = ROOT / "frontend/public/resources/data-engineering-python-sql"
 
         self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 4", migration)
@@ -427,7 +427,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertTrue((resources / "api_sales_pages.json").exists())
 
     def test_data_engineering_quizzes_are_complete_and_inactive(self):
-        migration = (ROOT / "supabase/migrations/20260823_seed_data_engineering_quizzes.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260823_seed_data_engineering_quizzes.sql").read_text(encoding="utf-8")
 
         self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 5", migration)
         self.assertIn("quiz_count<>48", migration)
@@ -441,7 +441,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("question_type NOT IN ('qcm','true_false','comprehension','mini_challenge')", migration)
 
     def test_data_engineering_capstone_project_is_complete_and_unpublished(self):
-        migration = (ROOT / "supabase/migrations/20260824_seed_data_engineering_capstone_project.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260824_seed_data_engineering_capstone_project.sql").read_text(encoding="utf-8")
 
         self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 6", migration)
         self.assertIn("plateforme-analytique-ventes-python-sql-dbt-airflow", migration)
@@ -456,7 +456,7 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("Docker Compose", migration)
 
     def test_data_engineering_release_is_complete_and_published(self):
-        migration = (ROOT / "supabase/migrations/20260825_finalize_data_engineering_release.sql").read_text()
+        migration = (ROOT / "supabase/migrations/20260825_finalize_data_engineering_release.sql").read_text(encoding="utf-8")
 
         self.assertIn("DATA ENGINEERING AVEC PYTHON ET SQL — CHANTIER 7", migration)
         self.assertIn("module_count<>12", migration)
@@ -475,9 +475,9 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertIn("SET is_active = TRUE", migration)
 
     def test_python_data_analyst_notebook_engine_is_restored_for_modules_1_to_7(self):
-        migration = (ROOT / "supabase/migrations/20260826_restore_python_data_analyst_notebooks.sql").read_text()
-        notebook_router = (ROOT / "backend/app/routers/notebook.py").read_text()
-        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text()
+        migration = (ROOT / "supabase/migrations/20260826_restore_python_data_analyst_notebooks.sql").read_text(encoding="utf-8")
+        notebook_router = (ROOT / "backend/app/routers/notebook.py").read_text(encoding="utf-8")
+        module_page = (ROOT / "frontend/app/modules/[id]/page.tsx").read_text(encoding="utf-8")
         content_dir = ROOT / "content"
 
         self.assertIn("RESTaURATION DU MOTEUR NOTEBOOK".upper(), migration.upper())
@@ -506,8 +506,8 @@ class MultiCourseIntegrationTests(unittest.TestCase):
             self.assertTrue((content_dir / notebook).exists())
 
     def test_python_data_analyst_errors_and_external_resources_are_restored(self):
-        migration = (ROOT / "supabase/migrations/20260827_restore_python_data_analyst_external_resources.sql").read_text()
-        notebook_viewer = (ROOT / "frontend/components/modules/NotebookViewer.tsx").read_text()
+        migration = (ROOT / "supabase/migrations/20260827_restore_python_data_analyst_external_resources.sql").read_text(encoding="utf-8")
+        notebook_viewer = (ROOT / "frontend/components/modules/NotebookViewer.tsx").read_text(encoding="utf-8")
 
         self.assertIn("m.order_index BETWEEN 0 AND 7", migration)
         self.assertIn("video_count < 8", migration)
@@ -525,9 +525,9 @@ class MultiCourseIntegrationTests(unittest.TestCase):
         self.assertNotIn("https://cdn.jsdelivr.net/pyodide/v0.26.4/full/", notebook_viewer)
 
     def test_dashboard_and_certificate_keep_course_context(self):
-        dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text()
-        certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text()
-        api = (ROOT / "frontend/lib/api.ts").read_text()
+        dashboard = (ROOT / "frontend/app/dashboard/page.tsx").read_text(encoding="utf-8")
+        certificate = (ROOT / "frontend/app/certificate/page.tsx").read_text(encoding="utf-8")
+        api = (ROOT / "frontend/lib/api.ts").read_text(encoding="utf-8")
         self.assertIn('readCourseSlug(window.location.search)', dashboard)
         self.assertIn('courseRoutes.module(nextModule.id, courseSlug)', dashboard)
         self.assertIn('validationAPI.getCertificationStatus(selectedCourse)', certificate)

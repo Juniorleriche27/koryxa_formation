@@ -116,7 +116,7 @@ function CourseHeader() {
         </nav>
 
         <Link href={accessUrl} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-xs font-black text-[#06251c] shadow-xl transition hover:-translate-y-0.5 hover:bg-emerald-100 sm:px-5 sm:text-sm">
-          Accéder <ArrowRight size={16} />
+          Accéder à la formation <ArrowRight size={16} />
         </Link>
       </div>
     </header>

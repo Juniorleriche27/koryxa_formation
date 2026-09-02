@@ -2,24 +2,88 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
+  BadgePercent,
   BarChart3,
   Bot,
   BrainCircuit,
+  Briefcase,
+  Check,
   CheckCircle2,
   Clock3,
   Database,
   GraduationCap,
   Layers3,
+  LineChart,
+  Mail,
+  MessageCircleMore,
+  ShieldCheck,
   Sparkles,
   Target,
+  Users,
   Workflow,
+  Zap,
 } from "lucide-react";
 import { FooterSEO, Header } from "@/components/marketing/KoryxaFormationPortal";
 
 export const metadata = {
-  title: "Formations — KORYXA Formation",
-  description: "Découvrez les parcours KORYXA en data, IA et automatisation.",
+  title: "Formations & Packs Carrière — KORYXA Formation",
+  description: "Découvrez les parcours et packs carrière KORYXA en data, IA, Power BI, Python et automatisation.",
 };
+
+const careerPacks = [
+  {
+    title: "Pack Full-Stack Data Analyst",
+    eyebrow: "Essentiel Métier",
+    badge: "Indispensable Entreprise",
+    description: "La chaîne complète de l'analyste de données : du traitement tableur à la base de données SQL jusqu'au tableau de bord de direction Power BI.",
+    courses: [
+      "Excel Data Analyst (Formules, Power Query, TCD)",
+      "SQL Data Analyst (PostgreSQL, CTE, Vues analytiques)",
+      "Power BI Data Analyst (DAX, Modélisation, RLS)",
+    ],
+    price: "89 000 FCFA",
+    oldPrice: "127 000 FCFA",
+    saving: "Économie de 38 000 FCFA (-30%)",
+    featured: false,
+    outcome: "Autonomie totale sur l'analyse et le reporting décisionnel",
+    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Full-Stack Data Analyst (89 000 FCFA).",
+  },
+  {
+    title: "Pack Data Scientist & AI Engineer",
+    eyebrow: "Le Plus Populaire",
+    badge: "Carrière d'Avenir",
+    description: "Le cursus complet pour concevoir des modèles prédictifs, maîtriser les statistiques avancées et déployer des agents IA conversationnels basés sur vos documents.",
+    courses: [
+      "Python Data Analyst (NumPy, Pandas, Visualisation)",
+      "Statistiques & Data Science (Inférence, Prévision de ventes)",
+      "Machine Learning avec Python (Scikit-Learn, SHAP, Churn)",
+      "LLM RAG Developer (Embeddings, Vector DB, Qdrant)",
+    ],
+    price: "129 000 FCFA",
+    oldPrice: "186 000 FCFA",
+    saving: "Économie de 57 000 FCFA (-31%)",
+    featured: true,
+    outcome: "Double compétence hautement recherchée : Data Science & IA Appliquée",
+    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Data Scientist & AI Engineer (129 000 FCFA).",
+  },
+  {
+    title: "Pack Data Ultimate All-Access",
+    eyebrow: "Accès Total à Vie",
+    badge: "Tout le Catalogue",
+    description: "L'accès illimité et permanent aux 8 parcours de formation actuels et à toutes leurs futures mises à jour pour une maîtrise totale des technologies data.",
+    courses: [
+      "Les 8 parcours complets (Excel, SQL, Power BI, Python, Stats, ML, RAG, Data Eng)",
+      "Tous les projets portfolios, corrigés et certifications inclus",
+      "Accès prioritaire à toutes les nouvelles formations",
+    ],
+    price: "199 000 FCFA",
+    oldPrice: "372 000 FCFA",
+    saving: "Économie massive de 173 000 FCFA (-46%)",
+    featured: false,
+    outcome: "Le pass complet pour devenir le profil le plus complet du marché",
+    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Data Ultimate All-Access (199 000 FCFA).",
+  },
+];
 
 const tracks = [
   {
@@ -103,6 +167,22 @@ const tracks = [
     tags: ["Power BI", "Power Query", "DAX", "RLS"],
   },
   {
+    title: "Statistiques & Data Science avec Python",
+    eyebrow: "Parcours disponible",
+    description: "Comprenez les méthodes statistiques, réalisez des tests d’hypothèses, segmentez vos clients et prévoyez vos ventes avec Python.",
+    objective: "Livrer une étude complète de prévision des ventes et segmentation client.",
+    level: "Intermédiaire",
+    format: "12 modules + 24 leçons + notebooks + projet final",
+    icon: LineChart,
+    href: "/formations/statistics-data-science-python",
+    active: true,
+    featured: false,
+    price: "49 000 FCFA",
+    oldPrice: "59 000 FCFA",
+    outcome: "Projet Data Science portfolio",
+    tags: ["Statistiques", "Python", "K-Means", "Séries Temporelles"],
+  },
+  {
     title: "Machine Learning avec Python",
     eyebrow: "Parcours disponible",
     description: "Construisez, comparez, optimisez et interprétez des modèles de Machine Learning avec Python et scikit-learn.",
@@ -179,6 +259,7 @@ export default function FormationsPage() {
     <main className="kx-marketing min-h-screen bg-white pt-16 text-slate-950 lg:pt-20">
       <Header />
 
+      {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
         <Image src="/assets/landing/hero/koryxa-learning-hero.jpg" alt="" fill priority className="object-cover opacity-30" sizes="100vw" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,37,28,.94)_0%,rgba(6,37,28,.78)_48%,rgba(6,37,28,.42)_100%)]" />
@@ -186,10 +267,10 @@ export default function FormationsPage() {
           <div className="max-w-4xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#bcf5d7]/30 bg-[#bcf5d7]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><Sparkles size={14} /> Catalogue KORYXA</span>
             <h1 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] sm:text-6xl lg:text-7xl">Choisissez une compétence. Construisez une vraie preuve.</h1>
-            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-white/75 sm:text-lg">Des parcours pratiques en data, intelligence artificielle et automatisation, conçus pour vous faire progresser jusqu’à un résultat concret.</p>
+            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-white/75 sm:text-lg">Des parcours pratiques et des packs métiers en data, intelligence artificielle et automatisation, conçus pour vous faire progresser jusqu’à un résultat concret.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/formations/llm-rag" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">Découvrir LLM RAG Developer <ArrowRight size={17} /></Link>
-              <Link href="/methode" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/8 px-6 py-3.5 text-sm font-black text-white backdrop-blur-md transition hover:bg-white/14">Découvrir la méthode</Link>
+              <a href="#packs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">Voir les Packs Métiers (-30%) <ArrowRight size={17} /></a>
+              <a href="#formations" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/8 px-6 py-3.5 text-sm font-black text-white backdrop-blur-md transition hover:bg-white/14">Parcours individuels</a>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
@@ -198,11 +279,103 @@ export default function FormationsPage() {
         </div>
       </section>
 
-      <section className="bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      {/* Section Packs Carrière & Bundles */}
+      <section id="packs" className="bg-[#0b1e19] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-emerald-300">
+              <BadgePercent size={15} /> Packs Métiers & Cursus Complets
+            </span>
+            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-6xl">
+              Accélérez votre carrière avec un pack tout-en-un.
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+              Regroupez plusieurs formations complémentaires pour maîtriser un métier complet tout en bénéficiant de réductions exclusives.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-8 lg:grid-cols-3">
+            {careerPacks.map((pack) => (
+              <div
+                key={pack.title}
+                className={`relative flex flex-col justify-between rounded-[2.25rem] border p-7 shadow-2xl transition sm:p-8 ${
+                  pack.featured
+                    ? "border-emerald-300/40 bg-gradient-to-b from-[#10382b] to-[#081e17] ring-2 ring-emerald-400/30"
+                    : "border-white/10 bg-white/[0.04]"
+                }`}
+              >
+                {pack.featured && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 px-4 py-1 text-xs font-black uppercase tracking-[0.14em] text-[#06251c] shadow-lg shadow-emerald-950/40">
+                    ⭐ Choix Recommandé
+                  </div>
+                )}
+
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs font-black uppercase tracking-[0.14em] text-emerald-300">
+                      {pack.eyebrow}
+                    </span>
+                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-slate-200">
+                      {pack.badge}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-4 text-2xl font-black text-white">{pack.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">{pack.description}</p>
+
+                  <div className="my-6 border-t border-white/10 pt-6">
+                    <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Formations incluses :
+                    </p>
+                    <ul className="mt-3 space-y-2.5 text-sm text-slate-200">
+                      {pack.courses.map((course, i) => (
+                        <li key={i} className="flex items-start gap-2.5">
+                          <Check size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+                          <span>{course}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-6 border-t border-white/10 pt-6">
+                  <div className="mb-4">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-black text-white">{pack.price}</span>
+                      <span className="text-sm font-bold text-slate-400 line-through">
+                        {pack.oldPrice}
+                      </span>
+                    </div>
+                    <span className="mt-1 inline-block text-xs font-black text-emerald-300">
+                      {pack.saving}
+                    </span>
+                  </div>
+
+                  <a
+                    href={`https://wa.me/22892092572?text=${encodeURIComponent(pack.whatsappText)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black transition ${
+                      pack.featured
+                        ? "bg-emerald-400 text-[#06251c] shadow-lg shadow-emerald-900/40 hover:bg-emerald-300"
+                        : "border border-white/15 bg-white/10 text-white hover:bg-white/20"
+                    }`}
+                  >
+                    <MessageCircleMore size={17} /> Commander ce Pack
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section Parcours Individuels */}
+      <section id="formations" className="bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#bcf5d7] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#06251c]"><Target size={14} /> Les parcours</span>
-            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] text-[#06251c] sm:text-5xl lg:text-6xl">Une formation pour chaque objectif.</h2>
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#bcf5d7] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#06251c]"><Target size={14} /> Les parcours individuels</span>
+            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] text-[#06251c] sm:text-5xl lg:text-6xl">Une formation ciblée par compétence.</h2>
             <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">Comparez les objectifs, le niveau, le résultat attendu et le prix avant de choisir votre parcours.</p>
           </div>
 
@@ -245,10 +418,57 @@ export default function FormationsPage() {
         </div>
       </section>
 
+      {/* Section Entreprises & Équipes B2B */}
       <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto grid max-w-6xl gap-8 rounded-[2.25rem] bg-[#06251c] p-7 text-white sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
-          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><CheckCircle2 size={15} /> Huit parcours structurés</span><h2 className="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Choisissez entre Excel, SQL, Python, Power BI, Data Science, Machine Learning, Data Engineering et IA documentaire.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">Excel structure l’analyse opérationnelle. SQL donne un accès direct aux bases de données. Python approfondit le travail par le code. Power BI transforme les sources en rapports partagés. LLM RAG permet de construire des assistants IA fondés sur des documents vérifiables. Machine Learning vous apprend à construire des modèles prédictifs robustes et explicables.</p></div>
-          <Link href="/formations/excel-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:bg-[#bcf5d7]">Découvrir Excel Data Analyst <ArrowRight size={17} /></Link>
+        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-slate-200 bg-gradient-to-br from-slate-950 via-[#06251c] to-slate-950 p-8 text-white shadow-2xl sm:p-12 lg:p-16">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#bcf5d7]/30 bg-[#bcf5d7]/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]">
+                <Briefcase size={14} /> Offre Entreprises & Cabinets
+              </span>
+              <h2 className="mt-6 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+                Montez en compétences vos équipes sur la Data & l&apos;IA.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
+                Vous dirigez une entreprise, une PME ou un cabinet ? Offrez à vos collaborateurs des compétences immédiatement opérationnelles en Excel, SQL, Power BI et IA documentaire.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                  <CheckCircle2 size={18} className="text-emerald-400" /> Remise de -25% dès 3 accès
+                </div>
+                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                  <CheckCircle2 size={18} className="text-emerald-400" /> Facturation entreprise certifiée
+                </div>
+                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                  <CheckCircle2 size={18} className="text-emerald-400" /> Suivi de progression pour le RH
+                </div>
+                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                  <CheckCircle2 size={18} className="text-emerald-400" /> Support pédagogique dédié
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-md">
+              <p className="text-sm font-black text-white">Besoin d&apos;un devis ou d&apos;une convention ?</p>
+              <p className="text-xs leading-5 text-slate-300">
+                Contactez directement notre équipe pour une proposition adaptée au nombre de collaborateurs.
+              </p>
+              <a
+                href="https://wa.me/22892092572?text=Bonjour%20KORYXA,%20je%20souhaite%20un%20devis%20pour%20former%20mon%20%C3%A9quipe%20en%20entreprise."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-5 text-sm font-black text-[#06251c] transition hover:bg-emerald-300"
+              >
+                <MessageCircleMore size={17} /> Échanger sur WhatsApp
+              </a>
+              <a
+                href="mailto:contact@koryxa.fr?subject=Demande%20de%20devis%20formation%20entreprise"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-5 text-sm font-black text-white transition hover:bg-white/20"
+              >
+                <Mail size={17} /> Demander un devis par Email
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 

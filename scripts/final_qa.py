@@ -16,7 +16,7 @@ class QA:
 
     def require_text(self, category: str, name: str, path: str, fragments: list[str]) -> None:
         file_path = ROOT / path
-        text = file_path.read_text() if file_path.exists() else ""
+        text = file_path.read_text(encoding="utf-8") if file_path.exists() else ""
         missing = [fragment for fragment in fragments if fragment not in text]
         self.check(category, name, file_path.exists() and not missing, "ok" if not missing else f"missing: {missing}")
 
@@ -30,7 +30,7 @@ class QA:
         }
         report = {"summary": summary, "checks": self.results}
         output = ROOT / "qa-final-report.json"
-        output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+        output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(summary, ensure_ascii=False))
         print(f"qa report: {output.relative_to(ROOT)}")
         if failed:
@@ -118,13 +118,13 @@ def main() -> None:
 
     migrations = sorted((ROOT / "supabase/migrations").glob("20260716_*llm_rag*.sql"))
     qa.check("database", "All LLM RAG migrations are present", len(migrations) >= 6, f"found {len(migrations)}")
-    all_sql = "\n".join(path.read_text() for path in migrations)
+    all_sql = "\n".join(path.read_text(encoding="utf-8") for path in migrations)
     qa.check("database", "LLM RAG seeds remain unpublished", "llm-rag" in all_sql and "is_published" in all_sql and "FALSE" in all_sql, "seed publication guards")
 
     build_manifest = ROOT / "frontend/.next/routes-manifest.json"
     qa.check("build", "Next.js build manifest exists", build_manifest.exists(), str(build_manifest.relative_to(ROOT)))
     if build_manifest.exists():
-        manifest = json.loads(build_manifest.read_text())
+        manifest = json.loads(build_manifest.read_text(encoding="utf-8"))
         routes = {route.get("page") or route.get("regex") for route in manifest.get("staticRoutes", []) + manifest.get("dynamicRoutes", [])}
         qa.check("build", "Core route manifest generated", len(routes) > 0, f"routes {len(routes)}")
 

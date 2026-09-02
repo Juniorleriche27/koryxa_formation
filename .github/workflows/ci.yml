@@ -1,0 +1,74 @@
+name: KORYXA Formation CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-and-qa:
+    name: Backend Tests & Quality Gate
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUTF8: 1
+      SUPABASE_URL: https://example.supabase.co
+      SUPABASE_KEY: mock-anon-key
+      SUPABASE_JWT_SECRET: mock-jwt-secret-min-32-chars-long-test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Compile backend
+        run: python -m compileall -q backend/app
+
+      - name: Run backend unit tests
+        run: python -m unittest discover -s backend/tests -p "test_*.py" -v
+
+      - name: Run QA verification scripts
+        run: |
+          python scripts/verify_chantier_8.py
+          python scripts/verify_documentation.py
+
+  frontend-build:
+    name: Frontend Typecheck & Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript typecheck
+        run: npx tsc --noEmit
+
+      - name: Build Next.js production bundle
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.formation.koryxa.fr
+          NEXT_PUBLIC_APP_URL: https://formation.koryxa.fr
+          NEXT_PUBLIC_FORMATION_PUBLIC_URL: https://formation.koryxa.fr
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: mock-service-role-key

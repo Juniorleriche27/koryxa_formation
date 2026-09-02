@@ -53,17 +53,17 @@ class InputValidationTests(unittest.TestCase):
 
 class ExposureTests(unittest.TestCase):
     def test_ai_quiz_route_does_not_select_answers(self):
-        source = (ROOT / "backend/app/routers/ai.py").read_text()
+        source = (ROOT / "backend/app/routers/ai.py").read_text(encoding="utf-8")
         route_source = source[source.index('@router.post("/quiz")'):]
         self.assertNotIn('.select("question, options, answer', route_source)
         self.assertNotIn('"answer": question["answer"]', route_source)
 
     def test_solution_route_requires_authentication(self):
-        source = (ROOT / "backend/app/routers/exercises.py").read_text()
+        source = (ROOT / "backend/app/routers/exercises.py").read_text(encoding="utf-8")
         self.assertIn("Depends(get_current_user)", source)
 
     def test_notebook_path_is_confined_to_content_root(self):
-        source = (ROOT / "backend/app/routers/notebook.py").read_text()
+        source = (ROOT / "backend/app/routers/notebook.py").read_text(encoding="utf-8")
         self.assertIn("os.path.realpath", source)
         self.assertIn("path.startswith(content_root + os.sep)", source)
 

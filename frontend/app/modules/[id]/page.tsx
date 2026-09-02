@@ -34,6 +34,7 @@ import NotebookViewer, { NotebookCell } from "@/components/modules/NotebookViewe
 import AIAssistant from "@/components/modules/AIAssistant";
 import QuizBlock from "@/components/modules/QuizBlock";
 import DocumentViewer from "@/components/modules/DocumentViewer";
+import CourseLearningContent from "@/components/modules/CourseLearningContent";
 import LlmRagLearningContent from "@/components/modules/LlmRagLearningContent";
 import ExcelLearningContent from "@/components/modules/ExcelLearningContent";
 import PowerBiLearningContent from "@/components/modules/PowerBiLearningContent";
@@ -386,32 +387,9 @@ export default function ModuleDetailPage() {
                     Voir le parcours <ChevronRight size={16} />
                   </Link>
                 </div>
-              ) : courseSlug === LLM_RAG_COURSE_SLUG ? (
-                <LlmRagLearningContent
-                  moduleId={id}
-                  moduleOrder={module.order_index}
-                  completed={completed}
-                  passScore={moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}
-                  onValidated={() => refreshModuleStatus(courseSlug)}
-                />
-              ) : courseSlug === SQL_DATA_ANALYST_COURSE_SLUG ? (
-                <SqlLearningContent
-                  moduleId={id}
-                  moduleOrder={module.order_index}
-                  completed={completed}
-                  passScore={moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}
-                  onValidated={() => refreshModuleStatus(courseSlug)}
-                />
-              ) : courseSlug === POWER_BI_DATA_ANALYST_COURSE_SLUG ? (
-                <PowerBiLearningContent
-                  moduleId={id}
-                  moduleOrder={module.order_index}
-                  completed={completed}
-                  passScore={moduleStatus?.quiz_pass_score || module.quiz_pass_score || 12}
-                  onValidated={() => refreshModuleStatus(courseSlug)}
-                />
-              ) : courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG ? (
-                <ExcelLearningContent
+              ) : courseSlug !== DEFAULT_COURSE_SLUG ? (
+                <CourseLearningContent
+                  courseSlug={courseSlug}
                   moduleId={id}
                   moduleOrder={module.order_index}
                   completed={completed}

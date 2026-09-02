@@ -19,16 +19,16 @@ if missing:
 for path in (ROOT / "backend/app").rglob("*.py"):
     py_compile.compile(str(path), doraise=True)
 
-course_service = (ROOT / "backend/app/services/courses.py").read_text()
-course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text()
-architecture = (ROOT / "docs/multi-course-architecture.md").read_text()
+course_service = (ROOT / "backend/app/services/courses.py").read_text(encoding="utf-8")
+course_config = (ROOT / "frontend/lib/courseConfig.ts").read_text(encoding="utf-8")
+architecture = (ROOT / "docs/multi-course-architecture.md").read_text(encoding="utf-8")
 
 checks = {
-    "python_backend_fallback": 'DEFAULT_COURSE_SLUG = "python-data-analyst"' in (ROOT / "backend/app/constants.py").read_text(),
+    "python_backend_fallback": 'DEFAULT_COURSE_SLUG = "python-data-analyst"' in (ROOT / "backend/app/constants.py").read_text(encoding="utf-8"),
     "python_frontend_fallback": 'DEFAULT_COURSE_SLUG = "python-data-analyst"' in course_config,
     "llm_rag_constant": 'LLM_RAG_COURSE_SLUG = "llm-rag"' in course_config,
-    "published_filter": '.eq("is_published", True)' in (ROOT / "backend/app/services/content.py").read_text(),
-    "course_scope_guard": "ensure_published_module_in_course" in (ROOT / "backend/app/services/content.py").read_text(),
+    "published_filter": '.eq("is_published", True)' in (ROOT / "backend/app/services/content.py").read_text(encoding="utf-8"),
+    "course_scope_guard": "ensure_published_module_in_course" in (ROOT / "backend/app/services/content.py").read_text(encoding="utf-8"),
     "course_error_logging": "course_not_found" in course_service,
     "publication_documented": "is_published = false" in architecture,
 }

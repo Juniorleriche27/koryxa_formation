@@ -8,10 +8,16 @@ Plateforme multi-parcours composée de :
 - des contrôles qualité dans `scripts/` ;
 - la documentation produit et technique dans `docs/`.
 
-## Parcours
+## Parcours de Formation
 
-- `python-data-analyst` : parcours historique publié et fallback par défaut ;
-- `llm-rag` : parcours en préparation, non publié tant que la recette n’est pas terminée.
+- `python-data-analyst` : Python Data Analyst (parcours par défaut) ;
+- `llm-rag` : LLM RAG Developer ;
+- `excel-data-analyst` : Excel Data Analyst ;
+- `power-bi-data-analyst` : Power BI Data Analyst ;
+- `sql-data-analyst` : SQL Data Analyst avec PostgreSQL ;
+- `statistics-data-science-python` : Statistiques & Data Science avec Python ;
+- `machine-learning-python` : Machine Learning avec Python ;
+- `data-engineering-python-sql` : Data Engineering avec Python et SQL.
 
 ## Démarrage local
 

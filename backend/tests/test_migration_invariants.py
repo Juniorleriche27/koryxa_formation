@@ -7,7 +7,7 @@ MIGRATIONS = ROOT / "supabase" / "migrations"
 
 class MigrationInvariantTests(unittest.TestCase):
     def read(self, name: str) -> str:
-        return (MIGRATIONS / name).read_text()
+        return (MIGRATIONS / name).read_text(encoding="utf-8")
 
     def test_multi_course_foundation_preserves_python(self):
         sql = self.read("20260716_add_multi_course_foundation.sql")

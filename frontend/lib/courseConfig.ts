@@ -52,13 +52,13 @@ export const courseCatalog = {
     title: "Statistiques & Data Science avec Python",
     shortDescription: "Statistiques, segmentation, prévision, évaluation et recommandations métier.",
     landingPath: "/formations/statistics-data-science-python",
-    published: false,
+    published: true,
   },
   "machine-learning-python": {
     title: "Machine Learning avec Python",
     shortDescription: "Préparation, modèles supervisés, ensembles, optimisation et interprétabilité.",
     landingPath: "/formations/machine-learning-python",
-    published: false,
+    published: true,
   },
   "data-engineering-python-sql": {
     title: "Data Engineering avec Python et SQL",
