@@ -74,7 +74,7 @@ export default function ModulesPage() {
   const validatedCount = modulesWithStatus.filter((module) => module.validation?.is_validated).length;
   const totalPlatformPoints = modulesWithStatus.reduce((total, module) => total + Number(module.validation?.platform_points_awarded || 0), 0);
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog[DEFAULT_COURSE_SLUG];
-  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG || courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG || courseSlug === POWER_BI_DATA_ANALYST_COURSE_SLUG || courseSlug === SQL_DATA_ANALYST_COURSE_SLUG;
+  const dedicatedLearnerLayout = courseSlug !== DEFAULT_COURSE_SLUG;
 
   return (
     <div className="kx-dark-page flex flex-col">

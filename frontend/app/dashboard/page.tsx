@@ -33,7 +33,7 @@ export default function DashboardPage() {
   const nextModule = useMemo(() => modules.find((module) => !isCompleted(module.id)) || modules[0], [modules, isCompleted]);
   const recentModules = modules.slice(0, 6);
   const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
-  const dedicatedLearnerLayout = courseSlug === LLM_RAG_COURSE_SLUG || courseSlug === EXCEL_DATA_ANALYST_COURSE_SLUG || courseSlug === POWER_BI_DATA_ANALYST_COURSE_SLUG || courseSlug === SQL_DATA_ANALYST_COURSE_SLUG;
+  const dedicatedLearnerLayout = courseSlug !== "python-data-analyst";
 
   return (
     <div className="kx-dark-page flex flex-col">
