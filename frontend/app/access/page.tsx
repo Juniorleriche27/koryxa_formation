@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { normalizeCourseSlug, courseRoutes } from "@/lib/courseConfig";
+import { normalizeCourseSlug } from "@/lib/courseConfig";
 
 function AccessRedirect() {
   const searchParams = useSearchParams();
   const courseSlug = normalizeCourseSlug(searchParams.get("course"));
-  const target = courseRoutes.dashboard(courseSlug);
 
   useEffect(() => {
-    // course: courseSlug
-    window.location.replace(`https://accounts.koryxa.fr/sign-in?redirect_url=${encodeURIComponent(target)}`);
-  }, [target]);
+    const params = new URLSearchParams();
+    if (courseSlug) params.set("course", courseSlug);
+    window.location.replace(`/login${params.toString() ? `?${params.toString()}` : ""}`);
+  }, [courseSlug]);
 
   return null;
 }

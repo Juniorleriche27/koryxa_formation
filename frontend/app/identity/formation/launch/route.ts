@@ -56,6 +56,7 @@ export async function GET(request: NextRequest) {
       clerk_user_id: authContext.userId,
       email,
       name,
+      avatar_url: user?.imageUrl || null,
       iat: now,
       exp: now + 120,
       redirect: redirectTarget,

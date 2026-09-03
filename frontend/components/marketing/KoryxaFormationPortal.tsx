@@ -266,6 +266,9 @@ export function Header() {
 
         <KoryxaUserNav />
 
+        <div className="flex items-center gap-2 lg:hidden">
+          <KoryxaUserNav variant="mobileHeader" />
+
         <button
           type="button"
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
@@ -275,6 +278,7 @@ export function Header() {
         >
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -300,7 +304,7 @@ export function Header() {
                   </Link>
                 );
               })}
-              <KoryxaUserNav isMobile onCloseMobile={() => setOpen(false)} />
+              <KoryxaUserNav variant="mobileMenu" onCloseMobile={() => setOpen(false)} />
             </nav>
           </motion.div>
         )}

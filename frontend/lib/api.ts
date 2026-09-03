@@ -106,7 +106,17 @@ export const commerceAPI = {
     api.post<{ checkout_url?: string; checkout_id?: string; success?: boolean }>("/commerce/koryxa-pay/initiate", payload),
 };
 
+export type AccessUser = {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url?: string | null;
+  kind: string;
+};
+
 export const accessAPI = {
+  me: () => api.get<AccessUser>("/access/me"),
+  logout: () => api.post("/access/logout"),
   activateEnrollment: (course: string) => api.post("/access/activate-enrollment", undefined, { params: { course } }),
 };
 

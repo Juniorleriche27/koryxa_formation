@@ -16,12 +16,8 @@ const isProtectedRoute = createRouteMatcher([
 
 function redirectToLogin(request: NextRequest) {
   const targetRedirect = request.nextUrl.pathname + request.nextUrl.search;
-  const destination = targetRedirect && targetRedirect !== "/"
-    ? `https://formation.koryxa.fr${targetRedirect}`
-    : "https://formation.koryxa.fr";
-
-  const loginUrl = new URL("https://accounts.koryxa.fr/sign-in");
-  loginUrl.searchParams.set("redirect_url", destination);
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.set("next", targetRedirect || "/dashboard");
 
   const response = NextResponse.redirect(loginUrl);
   response.cookies.set({

@@ -111,6 +111,7 @@ def create_access_session(
     identity_user_id: str | None = None,
     profile_id: str | None = None,
     course: str | None = None,
+    avatar_url: str | None = None,
 ) -> str:
     secret = settings.KORYXA_IDENTITY_BRIDGE_KEY.strip()
     if not secret:
@@ -124,6 +125,7 @@ def create_access_session(
         "name": name,
         "email": email,
         "course": course,
+        "avatar_url": avatar_url,
         "iat": now,
         "exp": now + SESSION_MAX_AGE_SECONDS,
     }
@@ -417,6 +419,7 @@ def koryxa_identity_callback(ctx: str | None = Query(default=None), sig: str | N
             kind="identity",
             identity_user_id=identity_user_id,
             profile_id=str(profile["id"]),
+            avatar_url=str(payload.get("avatar_url") or "").strip() or None,
         )
         response = RedirectResponse(frontend_url(payload.get("redirect")), status_code=status.HTTP_307_TEMPORARY_REDIRECT)
         set_access_cookie(response, session)
@@ -455,6 +458,21 @@ def activate_enrollment(request: Request, course: str = Query(default=DEFAULT_CO
     response = JSONResponse({"ok": True, "course": course_slug, "access_id": grant["id"]})
     set_access_cookie(response, token)
     return response
+
+
+@router.get("/me")
+def current_access_user(request: Request):
+    session = verify_access_session(request.cookies.get(ACCESS_COOKIE_NAME))
+    if not session:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session KORYXA requise")
+
+    return {
+        "id": str(session.get("profile_id") or session.get("sub") or ""),
+        "name": str(session.get("name") or session.get("email") or "Compte KORYXA"),
+        "email": str(session.get("email") or ""),
+        "avatar_url": session.get("avatar_url"),
+        "kind": str(session.get("kind") or "identity"),
+    }
 
 
 @router.get("/session")
