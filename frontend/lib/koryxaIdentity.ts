@@ -9,6 +9,10 @@ export function safeFormationRedirect(value: string | null | undefined, fallback
   const raw = (value || "").trim();
   if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return fallback;
   if (raw.startsWith("/login") || raw.startsWith("/register")) return fallback;
+  if (raw.startsWith("/access")) {
+    const searchIdx = raw.indexOf("?");
+    return searchIdx >= 0 ? `/dashboard${raw.slice(searchIdx)}` : "/dashboard";
+  }
   return raw;
 }
 
@@ -17,8 +21,8 @@ export function buildKoryxaIdentityUrl(params: {
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const searchParams = params.searchParams || {};
-  const course = first(searchParams.course) || "python-data-analyst";
-  const fallback = `/access?course=${encodeURIComponent(course)}`;
+  const course = first(searchParams.course);
+  const fallback = course ? `/dashboard?course=${encodeURIComponent(course)}` : "/dashboard";
   const redirect = safeFormationRedirect(first(searchParams.next) || first(searchParams.redirect), fallback);
 
   const launchUrl = new URL(process.env.KORYXA_IDENTITY_LAUNCH_URL || DEFAULT_IDENTITY_LAUNCH_URL);
