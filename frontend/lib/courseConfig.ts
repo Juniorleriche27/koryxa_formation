@@ -80,7 +80,7 @@ export const courseRoutes = {
   dataEngineeringLanding: "/formations/data-engineering-python-sql",
   learn: (slug: string) => `/learn/${encodeURIComponent(slug)}`,
   access: (slug: string = DEFAULT_COURSE_SLUG) =>
-    `/access?course=${encodeURIComponent(slug)}&redirect=${encodeURIComponent(`/dashboard?course=${slug}`)}`,
+    `/dashboard?course=${encodeURIComponent(slug)}`,
   dashboard: (slug: string = DEFAULT_COURSE_SLUG) => `/dashboard?course=${encodeURIComponent(slug)}`,
   modules: (slug: string = DEFAULT_COURSE_SLUG) => `/modules?course=${encodeURIComponent(slug)}`,
   module: (moduleId: string, slug: string = DEFAULT_COURSE_SLUG) =>

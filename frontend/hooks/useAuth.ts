@@ -1,13 +1,13 @@
 "use client";
 
 export function useAuth() {
-  const login = (redirectPath = "/dashboard") => {
-    window.location.href = `/access?redirect=${encodeURIComponent(redirectPath)}`;
+  const login = () => {
+    window.location.href = "https://accounts.koryxa.fr/sign-in";
   };
 
   const logout = async () => {
     await fetch("/api/access/logout", { method: "POST" }).catch(() => null);
-    window.location.href = "/access";
+    window.location.href = "https://accounts.koryxa.fr/sign-in";
   };
 
   return { login, logout };
