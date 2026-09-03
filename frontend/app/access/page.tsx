@@ -17,10 +17,11 @@ import {
 } from "lucide-react";
 
 function AccessForm() {
-  const searchParams = useSearchParams();
-  const courseSlug = normalizeCourseSlug(searchParams.get("course"));
+  const rawCourseParam = searchParams.get("course");
+  const hasExplicitCourse = Boolean(rawCourseParam);
+  const courseSlug = normalizeCourseSlug(rawCourseParam);
   const course = courseCatalog[courseSlug];
-  const redirect = searchParams.get("redirect") || courseRoutes.dashboard(courseSlug);
+  const redirect = searchParams.get("redirect") || (hasExplicitCourse ? courseRoutes.dashboard(courseSlug) : "/dashboard");
   const partnerCtx = searchParams.get("partner_ctx");
   const partnerSig = searchParams.get("partner_sig");
   const [code, setCode] = useState("");
@@ -133,10 +134,14 @@ function AccessForm() {
             <ShieldCheck size={15} /> Accès sécurisé
           </div>
           <h1 className="mt-6 text-4xl font-black tracking-tight text-white sm:text-6xl">
-            Entre dans ton espace {course.title}.
+            {hasExplicitCourse
+              ? `Entre dans ton espace ${course.title}.`
+              : "Accédez à votre espace KORYXA Formation."}
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-            Connecte-toi avec ton compte apprenant pour garder une identité unique. Les accès partenaires existants et le code manuel restent disponibles pendant la transition.
+            {hasExplicitCourse
+              ? "Connecte-toi avec ton compte apprenant pour accéder à ce parcours et synchroniser ta progression."
+              : "Connectez-vous avec votre compte KORYXA unique pour accéder à tous vos parcours, modules interactifs et certificats."}
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -159,27 +164,31 @@ function AccessForm() {
             <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-blue-50 text-blue-700 ring-1 ring-blue-100">
               <LockKeyhole size={26} />
             </div>
-            <h2 className="mt-6 text-2xl font-black tracking-tight sm:text-3xl">Accès à votre formation</h2>
+            <h2 className="mt-6 text-2xl font-black tracking-tight sm:text-3xl">
+              {hasExplicitCourse ? "Accès à votre formation" : "Espace Apprenant KORYXA"}
+            </h2>
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-emerald-700">{course.title}</span>
+              {hasExplicitCourse && (
+                <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-emerald-700">{course.title}</span>
+              )}
               {checkingPartnerAccess
                 ? "Vérification de ton accès en cours. Tu seras redirigé automatiquement."
                 : learnerAuthenticated
                   ? "Votre compte KORYXA est connecté. Accédez directement à votre tableau de bord."
-                  : "Connectez-vous avec votre compte KORYXA pour accéder à tous vos parcours."}
+                  : "Connectez-vous avec votre compte KORYXA pour accéder à l'ensemble de vos parcours."}
             </p>
 
             {!checkingPartnerAccess && !checkingLearnerAccess && !learnerAuthenticated && (
               <div className="mt-6">
                 <Link
-                  href={`/login?course=${encodeURIComponent(courseSlug)}`}
+                  href={hasExplicitCourse ? `/login?course=${encodeURIComponent(courseSlug)}` : "/login"}
                   className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-6 text-sm font-black text-white shadow-lg shadow-emerald-950/20 transition hover:bg-emerald-800"
                 >
                   Se connecter avec mon compte KORYXA <ArrowRight size={17} />
                 </Link>
                 <div className="mt-3 text-center">
                   <Link
-                    href={`/register?course=${encodeURIComponent(courseSlug)}`}
+                    href={hasExplicitCourse ? `/register?course=${encodeURIComponent(courseSlug)}` : "/register"}
                     className="text-xs font-bold text-slate-500 hover:text-emerald-700"
                   >
                     Pas encore de compte ? Créer mon compte KORYXA →
