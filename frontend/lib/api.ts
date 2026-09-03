@@ -115,7 +115,9 @@ export type AccessUser = {
 };
 
 export const accessAPI = {
-  me: () => api.get<AccessUser>("/access/me"),
+  // Same-origin: Clerk/KORYXA Identity is authoritative, with the Formation
+  // cookie used as fallback by the server route. This also avoids CORS races.
+  me: () => internalApi.get<AccessUser>("/api/auth/profile"),
   logout: () => api.post("/access/logout"),
   activateEnrollment: (course: string) => api.post("/access/activate-enrollment", undefined, { params: { course } }),
 };

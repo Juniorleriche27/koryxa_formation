@@ -76,6 +76,10 @@ export default function KoryxaUserNav({
     setUser(null);
     setOpen(false);
     onCloseMobile?.();
+    const clerk = (window as Window & { Clerk?: { signOut?: () => Promise<void> } }).Clerk;
+    if (clerk?.signOut) {
+      await clerk.signOut().catch(() => undefined);
+    }
     window.location.href = "/";
   }
 
