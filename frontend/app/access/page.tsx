@@ -159,47 +159,67 @@ function AccessForm() {
             <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-blue-50 text-blue-700 ring-1 ring-blue-100">
               <LockKeyhole size={26} />
             </div>
-            <h2 className="mt-6 text-2xl font-black tracking-tight sm:text-3xl">Accès formation</h2>
+            <h2 className="mt-6 text-2xl font-black tracking-tight sm:text-3xl">Accès à votre formation</h2>
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-blue-700">{course.title}</span>
+              <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-emerald-700">{course.title}</span>
               {checkingPartnerAccess
-                ? "Vérification de ton accès partenaire en cours. Tu seras redirigé automatiquement si l’accès est actif."
+                ? "Vérification de ton accès en cours. Tu seras redirigé automatiquement."
                 : learnerAuthenticated
-                  ? "Ton identité KORYXA est reconnue. Si cette formation est déjà attribuée à ton compte, l’accès s’ouvre automatiquement."
-                  : "Commence par ton identité KORYXA. Le code manuel reste disponible pour les accès historiques et les cas de dépannage."}
+                  ? "Votre compte KORYXA est connecté. Accédez directement à votre tableau de bord."
+                  : "Connectez-vous avec votre compte KORYXA pour accéder à tous vos parcours."}
             </p>
 
             {!checkingPartnerAccess && !checkingLearnerAccess && !learnerAuthenticated && (
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <Link href={`/login?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-black text-white transition hover:bg-blue-600">
-                  Me connecter
+              <div className="mt-6">
+                <Link
+                  href={`/login?course=${encodeURIComponent(courseSlug)}`}
+                  className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-6 text-sm font-black text-white shadow-lg shadow-emerald-950/20 transition hover:bg-emerald-800"
+                >
+                  Se connecter avec mon compte KORYXA <ArrowRight size={17} />
                 </Link>
-                <Link href={`/register?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 transition hover:border-blue-300 hover:bg-blue-50">
-                  Créer mon compte
-                </Link>
+                <div className="mt-3 text-center">
+                  <Link
+                    href={`/register?course=${encodeURIComponent(courseSlug)}`}
+                    className="text-xs font-bold text-slate-500 hover:text-emerald-700"
+                  >
+                    Pas encore de compte ? Créer mon compte KORYXA →
+                  </Link>
+                </div>
               </div>
             )}
 
             {!checkingPartnerAccess && !checkingLearnerAccess && learnerAuthenticated && (
               <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
                 <p className="text-sm font-black text-emerald-900">Compte KORYXA connecté</p>
-                <p className="mt-1 text-sm leading-6 text-emerald-800">Cette formation n’est pas encore attribuée à ton compte.</p>
-                <Link href={`/checkout?course=${encodeURIComponent(courseSlug)}`} className="mt-3 inline-flex min-h-10 items-center justify-center rounded-xl bg-emerald-700 px-4 text-sm font-black text-white transition hover:bg-emerald-600">
-                  Commencer cette formation
-                </Link>
+                <p className="mt-1 text-sm leading-6 text-emerald-800">Accédez à votre espace apprenant ou commandez ce parcours.</p>
+                <div className="mt-3 flex gap-2">
+                  <Link href={`/dashboard?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-10 items-center justify-center rounded-xl bg-emerald-700 px-4 text-sm font-black text-white transition hover:bg-emerald-600">
+                    Ouvrir mon Dashboard
+                  </Link>
+                  <Link href={`/checkout?course=${encodeURIComponent(courseSlug)}`} className="inline-flex min-h-10 items-center justify-center rounded-xl border border-emerald-300 bg-white px-4 text-sm font-black text-emerald-800 transition hover:bg-emerald-50">
+                    Commander ce cours
+                  </Link>
+                </div>
               </div>
             )}
 
             {(checkingPartnerAccess || checkingLearnerAccess) && (
-              <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold leading-6 text-blue-800">
-                Vérification automatique de ton accès en cours…
+              <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold leading-6 text-emerald-800">
+                Vérification automatique de votre accès en cours…
               </div>
             )}
 
-            <form onSubmit={submit} className="mt-6 space-y-5">
+            <div className="relative my-6 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
+              <span className="relative bg-white px-3 text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
+                ou activer un code
+              </span>
+            </div>
+
+            <form onSubmit={submit} className="space-y-4">
               <div>
-                <label htmlFor="access-code" className="mb-2 flex items-center gap-2 text-sm font-black text-slate-800">
-                  <KeyRound size={16} className="text-blue-600" /> Code d’accès manuel
+                <label htmlFor="access-code" className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-slate-700">
+                  <KeyRound size={15} className="text-emerald-700" /> Code d’activation (Entreprise / Bon)
                 </label>
                 <input
                   id="access-code"
@@ -207,11 +227,8 @@ function AccessForm() {
                   onChange={(event) => setCode(event.target.value)}
                   autoComplete="one-time-code"
                   placeholder="Exemple : O-XXXX-XXXX"
-                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
                 />
-                <p className="mt-2 text-xs font-medium leading-5 text-slate-500">
-                  Le code est lié à ton compte pour protéger l’accès à la formation.
-                </p>
               </div>
 
               {error && (
@@ -223,29 +240,12 @@ function AccessForm() {
               <button
                 type="submit"
                 disabled={loading || !code.trim()}
-                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 text-sm font-black text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-5 text-sm font-black text-slate-800 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {loading ? "Validation…" : "Valider l’accès"}
-                {!loading && <ArrowRight size={18} />}
+                {loading ? "Validation…" : "Activer le code"}
+                {!loading && <ArrowRight size={16} />}
               </button>
             </form>
-
-            <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-4">
-              <div className="flex gap-3">
-                <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                <p className="text-sm leading-6 text-slate-600">
-                  Besoin d’aide ? Ouvre CoraBiz pour discuter avec l’assistant commercial KORYXA :{" "}
-                  <a href="https://corabiz.koryxa.fr" target="_blank" rel="noopener noreferrer" className="font-black text-blue-700 underline underline-offset-4 hover:text-blue-600">
-                    corabiz.koryxa.fr
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 grid gap-3 text-sm font-semibold text-slate-300 sm:grid-cols-2">
-            <p className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-300" /> Accès partenaire prioritaire</p>
-            <p className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-300" /> Code manuel en secours</p>
           </div>
         </div>
       </section>

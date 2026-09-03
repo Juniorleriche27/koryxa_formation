@@ -24,6 +24,7 @@ import {
   MessageCircleMore,
   Linkedin,
   Facebook,
+  LogIn,
   Menu,
   MousePointerClick,
   ShieldCheck,
@@ -262,12 +263,20 @@ export function Header() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-4 lg:flex">
           <Link
-            href="/access"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-emerald-200 bg-white px-5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-50"
+            href="/login"
+            className="inline-flex items-center gap-2 text-sm font-black text-slate-700 transition hover:text-emerald-700"
           >
-            Espace apprenant
+            <LogIn size={17} className="text-emerald-600" />
+            <span>Connexion</span>
+          </Link>
+          <Link
+            href="/dashboard"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#06251c] px-5 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-800"
+          >
+            <span>Espace apprenant</span>
+            <ArrowRight size={15} />
           </Link>
         </div>
 
@@ -305,13 +314,23 @@ export function Header() {
                   </Link>
                 );
               })}
-              <Link
-                href="/access"
-                onClick={() => setOpen(false)}
-                className="mt-2 inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#06251c] px-4 text-sm font-black text-white transition hover:bg-emerald-700"
-              >
-                Espace apprenant
-              </Link>
+              <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3">
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 transition hover:bg-slate-50"
+                >
+                  <LogIn size={17} className="text-emerald-600" />
+                  Connexion
+                </Link>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-4 text-sm font-black text-white transition hover:bg-emerald-700"
+                >
+                  Espace apprenant <ArrowRight size={15} />
+                </Link>
+              </div>
             </nav>
           </motion.div>
         )}
