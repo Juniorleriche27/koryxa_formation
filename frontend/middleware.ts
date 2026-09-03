@@ -11,7 +11,7 @@ function redirectToLogin(request: NextRequest) {
   const targetRedirect = request.nextUrl.pathname + request.nextUrl.search;
   const destination = targetRedirect && targetRedirect !== "/"
     ? `https://formation.koryxa.fr${targetRedirect}`
-    : "https://formation.koryxa.fr/dashboard";
+    : "https://formation.koryxa.fr";
 
   const loginUrl = new URL("https://accounts.koryxa.fr/sign-in");
   loginUrl.searchParams.set("redirect_url", destination);

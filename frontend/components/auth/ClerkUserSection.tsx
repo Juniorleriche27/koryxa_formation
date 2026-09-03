@@ -1,10 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useUser, UserButton } from "@clerk/nextjs";
 import { LogIn } from "lucide-react";
 
 export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { isMobile?: boolean; onCloseMobile?: () => void }) {
   const { isSignedIn, user, isLoaded } = useUser();
+  const [returnUrl, setReturnUrl] = useState("https://formation.koryxa.fr");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setReturnUrl(window.location.href);
+    }
+  }, []);
+
+  const signInUrl = `https://accounts.koryxa.fr/sign-in?redirect_url=${encodeURIComponent(returnUrl)}`;
 
   if (isLoaded && isSignedIn && user) {
     if (isMobile) {
@@ -48,12 +58,12 @@ export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { 
     );
   }
 
-  // Utilisateur non connecté (ou en cours de chargement) : afficher uniquement le bouton Connexion
+  // Utilisateur non connecté : bouton Connexion ramenant vers l'URL courante
   if (isMobile) {
     return (
       <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3">
         <a
-          href="https://accounts.koryxa.fr/sign-in?redirect_url=https%3A%2F%2Fformation.koryxa.fr%2Fdashboard"
+          href={signInUrl}
           onClick={onCloseMobile}
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 transition hover:bg-slate-50"
         >
@@ -67,7 +77,7 @@ export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { 
   return (
     <div className="hidden items-center gap-3 lg:flex">
       <a
-        href="https://accounts.koryxa.fr/sign-in?redirect_url=https%3A%2F%2Fformation.koryxa.fr%2Fdashboard"
+        href={signInUrl}
         className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-5 text-sm font-black text-slate-800 shadow-sm transition hover:border-emerald-500 hover:text-emerald-700"
       >
         <LogIn size={16} className="text-emerald-600" />
