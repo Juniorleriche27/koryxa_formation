@@ -33,9 +33,7 @@ export async function GET(request: NextRequest) {
   try {
     const authContext = auth();
     if (!authContext?.userId) {
-      const signIn = new URL("https://accounts.koryxa.fr/sign-in");
-      signIn.searchParams.set("redirect_url", request.url);
-      return NextResponse.redirect(signIn);
+      return NextResponse.redirect(new URL(redirectTarget, request.url));
     }
 
     const secret = bridgeKey();

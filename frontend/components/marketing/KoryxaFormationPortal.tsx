@@ -265,7 +265,7 @@ export function Header() {
 
         <div className="hidden items-center gap-4 lg:flex">
           <a
-            href="https://accounts.koryxa.fr/sign-in?redirect_url=https%3A%2F%2Fformation.koryxa.fr%2Fidentity%2Fformation%2Flaunch%3Fredirect%3D%2Fdashboard"
+            href="https://accounts.koryxa.fr/sign-in?redirect_url=https%3A%2F%2Fformation.koryxa.fr%2Fdashboard"
             className="inline-flex items-center gap-2 text-sm font-black text-slate-700 transition hover:text-emerald-700"
           >
             <LogIn size={17} className="text-emerald-600" />
@@ -316,7 +316,7 @@ export function Header() {
               })}
               <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3">
                 <a
-                  href="https://accounts.koryxa.fr/sign-in?redirect_url=https%3A%2F%2Fformation.koryxa.fr%2Fidentity%2Fformation%2Flaunch%3Fredirect%3D%2Fdashboard"
+                  href="https://accounts.koryxa.fr/sign-in?redirect_url=https%3A%2F%2Fformation.koryxa.fr%2Fdashboard"
                   onClick={() => setOpen(false)}
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 transition hover:bg-slate-50"
                 >

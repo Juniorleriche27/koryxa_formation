@@ -8,13 +8,13 @@ import { findGrantById, grantMatchesCourse, summarizeGrant } from "@/lib/formati
 import { normalizeCourseSlug } from "@/lib/courseConfig";
 
 function redirectToLogin(request: NextRequest) {
-  const loginUrl = request.nextUrl.clone();
-  loginUrl.pathname = "/login";
-  loginUrl.search = "";
   const targetRedirect = request.nextUrl.pathname + request.nextUrl.search;
-  if (targetRedirect && targetRedirect !== "/") {
-    loginUrl.searchParams.set("redirect", targetRedirect);
-  }
+  const destination = targetRedirect && targetRedirect !== "/"
+    ? `https://formation.koryxa.fr${targetRedirect}`
+    : "https://formation.koryxa.fr/dashboard";
+
+  const loginUrl = new URL("https://accounts.koryxa.fr/sign-in");
+  loginUrl.searchParams.set("redirect_url", destination);
 
   const response = NextResponse.redirect(loginUrl);
   response.cookies.set({
@@ -32,6 +32,16 @@ function redirectToLogin(request: NextRequest) {
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === "/identity/formation/launch") {
+    return NextResponse.next();
+  }
+
+  const hasClerkSession = Boolean(
+    request.cookies.get("__session")?.value ||
+    request.cookies.get("__client_uat")?.value ||
+    request.cookies.get("__clerk_db_jwt")?.value
+  );
+
+  if (hasClerkSession) {
     return NextResponse.next();
   }
 
