@@ -92,6 +92,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {clerkKey ? (
           <ClerkProvider
             publishableKey={clerkKey}
+            isSatellite
+            domain="formation.koryxa.fr"
             signInUrl="https://accounts.koryxa.fr/sign-in"
             signUpUrl="https://accounts.koryxa.fr/sign-up"
           >
