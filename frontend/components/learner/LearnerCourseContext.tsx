@@ -80,12 +80,15 @@ export default function LearnerCourseContext({
               <span className="hidden sm:inline">Certificat</span>
             </Link>
             {Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) && (
-              <div className="flex items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/30 transition hover:ring-emerald-500">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/30 transition hover:ring-emerald-500">
                 <UserButton
                   afterSignOutUrl="/"
                   appearance={{
                     elements: {
-                      avatarBox: "h-8 w-8",
+                      rootBox: { width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" },
+                      userButtonTrigger: { width: "32px", height: "32px", borderRadius: "9999px" },
+                      avatarBox: { width: "32px", height: "32px", borderRadius: "9999px" },
+                      avatarImage: { width: "32px", height: "32px", borderRadius: "9999px", objectFit: "cover" },
                     },
                   }}
                 />

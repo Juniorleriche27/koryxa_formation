@@ -15,25 +15,46 @@ export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { 
 
   const signInUrl = `https://accounts.koryxa.fr/sign-in?redirect_url=${encodeURIComponent(returnUrl)}`;
 
+  const userButtonAppearance = {
+    elements: {
+      rootBox: {
+        width: "36px",
+        height: "36px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      userButtonTrigger: {
+        width: "36px",
+        height: "36px",
+        borderRadius: "9999px",
+      },
+      avatarBox: {
+        width: "36px",
+        height: "36px",
+        borderRadius: "9999px",
+      },
+      avatarImage: {
+        width: "36px",
+        height: "36px",
+        borderRadius: "9999px",
+        objectFit: "cover",
+      },
+    },
+  };
+
   if (isMobile) {
     return (
       <>
         <SignedIn>
           <div className="mt-3 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/40">
-                <UserButton
-                  afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      avatarBox: "h-10 w-10",
-                    },
-                  }}
-                />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/40">
+                <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
               </div>
               <div className="min-w-0">
                 <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">Compte actif</span>
-                <p className="truncate text-sm font-black text-slate-900">Connecté</p>
+                <p className="truncate text-sm font-black text-slate-900">Connecté à KORYXA</p>
               </div>
             </div>
           </div>
@@ -57,15 +78,8 @@ export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { 
   return (
     <div className="hidden items-center gap-3 lg:flex">
       <SignedIn>
-        <div className="flex items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/40 transition hover:ring-emerald-500">
-          <UserButton
-            afterSignOutUrl="/"
-            appearance={{
-              elements: {
-                avatarBox: "h-9 w-9",
-              },
-            }}
-          />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/40 transition hover:ring-emerald-500">
+          <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
         </div>
       </SignedIn>
       <SignedOut>
