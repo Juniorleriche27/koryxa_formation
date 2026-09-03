@@ -1,3 +1,4 @@
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
@@ -6,6 +7,12 @@ import {
 } from "@/lib/accessControl";
 import { findGrantById, grantMatchesCourse, summarizeGrant } from "@/lib/formationAccessAdmin";
 import { normalizeCourseSlug } from "@/lib/courseConfig";
+
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/modules(.*)",
+  "/certificate(.*)",
+]);
 
 function redirectToLogin(request: NextRequest) {
   const targetRedirect = request.nextUrl.pathname + request.nextUrl.search;
@@ -30,21 +37,33 @@ function redirectToLogin(request: NextRequest) {
   return response;
 }
 
-export async function middleware(request: NextRequest) {
+export default clerkMiddleware(async (auth, request) => {
   if (request.nextUrl.pathname === "/identity/formation/launch") {
     return NextResponse.next();
   }
 
-  const hasClerkSession = Boolean(
+  // 1. Si Clerk a authentifié l'utilisateur
+  const authData = auth();
+  if (authData.userId) {
+    return NextResponse.next();
+  }
+
+  const hasClerkCookie = Boolean(
     request.cookies.get("__session")?.value ||
     request.cookies.get("__client_uat")?.value ||
     request.cookies.get("__clerk_db_jwt")?.value
   );
 
-  if (hasClerkSession) {
+  if (hasClerkCookie) {
     return NextResponse.next();
   }
 
+  // 2. Si la route n'est pas protégée (ex: accueil, landing, etc.), on laisse passer
+  if (!isProtectedRoute(request)) {
+    return NextResponse.next();
+  }
+
+  // 3. Pour les routes protégées, vérifier le token d'accès grant/partenaire
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   if (!accessToken) {
     return redirectToLogin(request);
@@ -74,8 +93,11 @@ export async function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
+  matcher: [
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
+  ],
 };
