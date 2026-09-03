@@ -2,42 +2,151 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, CheckCircle2, Flame, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Flame, GraduationCap, Layers, LogOut, Sparkles } from "lucide-react";
 import { modulesAPI } from "@/lib/api";
-import { EXCEL_DATA_ANALYST_COURSE_SLUG, POWER_BI_DATA_ANALYST_COURSE_SLUG, SQL_DATA_ANALYST_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
+import { courseCatalog, courseRoutes, readCourseSlug, DEFAULT_COURSE_SLUG, type CourseSlug } from "@/lib/courseConfig";
 import { useProgress } from "@/hooks/useProgress";
+import { useAuth } from "@/hooks/useAuth";
 import type { Module } from "@/types";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import ProgressBar from "@/components/dashboard/ProgressBar";
 import Stats from "@/components/dashboard/Stats";
 import ModuleCard from "@/components/modules/ModuleCard";
 import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
+import Footer from "@/components/layout/Footer";
 
 export default function DashboardPage() {
+  const { logout } = useAuth();
   const [modules, setModules] = useState<Module[]>([]);
-  const [courseSlug, setCourseSlug] = useState("python-data-analyst");
+  const [courseSlug, setCourseSlug] = useState<string>(DEFAULT_COURSE_SLUG);
+  const [hasExplicitCourse, setHasExplicitCourse] = useState(false);
   const { isCompleted } = useProgress();
 
   useEffect(() => {
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const explicit = params.has("course") && Boolean(params.get("course")?.trim());
+    setHasExplicitCourse(explicit);
+
     const selectedCourse = readCourseSlug(window.location.search);
     setCourseSlug(selectedCourse);
-    modulesAPI
-      .getAll(selectedCourse)
-      .then((response) => setModules(response.data))
-      .catch(() => undefined);
+
+    if (explicit) {
+      modulesAPI
+        .getAll(selectedCourse)
+        .then((response) => setModules(response.data))
+        .catch(() => undefined);
+    }
   }, []);
 
   const completedCount = modules.filter((module) => isCompleted(module.id)).length;
   const completion = modules.length > 0 ? Math.round((completedCount / modules.length) * 100) : 0;
   const nextModule = useMemo(() => modules.find((module) => !isCompleted(module.id)) || modules[0], [modules, isCompleted]);
   const recentModules = modules.slice(0, 6);
-  const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog["python-data-analyst"];
-  const dedicatedLearnerLayout = courseSlug !== "python-data-analyst";
+  const courseMeta = courseCatalog[courseSlug as keyof typeof courseCatalog] ?? courseCatalog[DEFAULT_COURSE_SLUG];
 
+  // Vue 1 : Hub général quand aucun cours n'est précisé dans l'URL
+  if (!hasExplicitCourse) {
+    const coursesList = Object.entries(courseCatalog);
+
+    return (
+      <div className="kx-dark-page flex min-h-screen flex-col">
+        {/* Header unique KORYXA Hub */}
+        <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07111f]/90 backdrop-blur-2xl">
+          <div className="kx-container flex h-16 items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20">
+                K
+              </span>
+              <div>
+                <span className="block text-sm font-black text-white sm:text-base">KORYXA Formation</span>
+                <span className="block text-[11px] font-bold text-emerald-400">Espace Apprenant Central</span>
+              </div>
+            </div>
+
+            <button
+              onClick={logout}
+              className="inline-flex h-9 items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 text-xs font-bold text-red-300 transition hover:bg-red-500/20"
+            >
+              <LogOut size={14} />
+              <span>Quitter</span>
+            </button>
+          </div>
+        </header>
+
+        <main className="flex-1">
+          {/* Hero Hub */}
+          <section className="relative overflow-hidden border-b border-white/10 py-10 sm:py-16">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(16,185,129,0.22),transparent_32rem),radial-gradient(circle_at_82%_20%,rgba(59,130,246,0.15),transparent_28rem)]" />
+            <div className="kx-container relative">
+              <span className="kx-dark-eyebrow">Espace Apprenant</span>
+              <h1 className="mt-4 max-w-3xl text-3xl font-black tracking-tight text-white sm:text-5xl">
+                Vos parcours de formation KORYXA
+              </h1>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
+                Sélectionnez la formation que vous souhaitez travailler pour accéder à vos modules d’apprentissage, vos notebooks interactifs et vos certifications.
+              </p>
+            </div>
+          </section>
+
+          {/* Grille des parcours */}
+          <section className="kx-container py-10 sm:py-14">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-400">Catalogue disponible</p>
+                <h2 className="mt-1 text-2xl font-black text-white">Choisissez votre parcours</h2>
+              </div>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-bold text-slate-400">
+                {coursesList.length} parcours
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {coursesList.map(([slug, course]) => (
+                <div
+                  key={slug}
+                  className="group flex flex-col justify-between rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-slate-950/20 backdrop-blur-xl transition hover:-translate-y-1 hover:border-emerald-500/40 hover:bg-white/[0.07]"
+                >
+                  <div>
+                    <div className="mb-4 flex items-center justify-between">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-400 ring-1 ring-emerald-400/20">
+                        <GraduationCap size={20} />
+                      </span>
+                      <span className="rounded-full bg-emerald-400/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-300">
+                        Certifiant
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-black text-white transition group-hover:text-emerald-300">
+                      {course.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                      {course.shortDescription}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 border-t border-white/5 pt-4">
+                    <Link
+                      href={courseRoutes.dashboard(slug)}
+                      className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 text-sm font-black text-slate-950 shadow-md shadow-emerald-500/20 transition hover:bg-emerald-400"
+                    >
+                      <span>Entrer dans la formation</span>
+                      <ArrowRight size={15} />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Vue 2 : Espace dédié au parcours choisi (ex: ?course=python-data-analyst)
   return (
     <div className="kx-dark-page flex flex-col">
-      {!dedicatedLearnerLayout && <Navbar />}
+      {/* Header unique du parcours — aucun doublon */}
       <LearnerCourseContext courseSlug={courseSlug} completed={completedCount} total={modules.length} current="overview" />
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-white/10">
@@ -54,7 +163,7 @@ export default function DashboardPage() {
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   {nextModule && (
-                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-blue-500">
+                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 text-sm font-black text-slate-950 shadow-glow transition hover:-translate-y-0.5 hover:bg-emerald-400">
                       Reprendre le prochain module <ArrowRight size={18} />
                     </Link>
                   )}
@@ -72,7 +181,7 @@ export default function DashboardPage() {
                     {nextModule ? nextModule.description : "Préparation de ton espace apprenant."}
                   </p>
                   {nextModule && (
-                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-blue-600">
+                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-emerald-600">
                       Ouvrir maintenant <ArrowRight size={16} />
                     </Link>
                   )}
@@ -138,7 +247,7 @@ export default function DashboardPage() {
           </div>
         </section>
       </main>
-      {!dedicatedLearnerLayout && <Footer />}
+      <Footer />
     </div>
   );
 }

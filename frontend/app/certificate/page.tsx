@@ -118,8 +118,7 @@ export default function CertificatePage() {
 
   return (
     <div className="kx-dark-page flex flex-col">
-      {!dedicatedLearnerLayout && <Navbar />}
-      {dedicatedLearnerLayout && <LearnerCourseContext courseSlug={courseSlug} current="overview" />}
+      <LearnerCourseContext courseSlug={courseSlug} current="overview" />
       <main className="flex-1">
         <section className="relative overflow-hidden px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(59,130,246,0.24),transparent_34rem),radial-gradient(circle_at_80%_75%,rgba(168,85,247,0.14),transparent_28rem)]" />

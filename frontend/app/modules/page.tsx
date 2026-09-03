@@ -78,7 +78,6 @@ export default function ModulesPage() {
 
   return (
     <div className="kx-dark-page flex flex-col">
-      {!dedicatedLearnerLayout && <Navbar />}
       <LearnerCourseContext courseSlug={courseSlug} completed={validatedCount} total={modules.length} />
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-white/10">
