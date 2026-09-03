@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, BookOpenCheck, FlaskConical, GraduationCap, LayoutDashboard, Layers3, LogOut, Medal } from "lucide-react";
 import { courseCatalog, courseRoutes, type CourseSlug } from "@/lib/courseConfig";
 import { useAuth } from "@/hooks/useAuth";
+import { UserButton } from "@clerk/nextjs";
 
 type Props = {
   courseSlug: string;
@@ -78,6 +79,18 @@ export default function LearnerCourseContext({
               <Medal size={14} />
               <span className="hidden sm:inline">Certificat</span>
             </Link>
+            {Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) && (
+              <div className="flex items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/30 transition hover:ring-emerald-500">
+                <UserButton
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-8 w-8",
+                    },
+                  }}
+                />
+              </div>
+            )}
             <button
               onClick={logout}
               className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/10 px-3 text-xs font-bold text-red-300 transition hover:bg-red-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"

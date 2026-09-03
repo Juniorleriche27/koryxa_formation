@@ -13,6 +13,7 @@ import Stats from "@/components/dashboard/Stats";
 import ModuleCard from "@/components/modules/ModuleCard";
 import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
 import Footer from "@/components/layout/Footer";
+import { UserButton } from "@clerk/nextjs";
 
 export default function DashboardPage() {
   const { logout } = useAuth();
@@ -63,13 +64,27 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <button
-              onClick={logout}
-              className="inline-flex h-9 items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 text-xs font-bold text-red-300 transition hover:bg-red-500/20"
-            >
-              <LogOut size={14} />
-              <span>Quitter</span>
-            </button>
+            <div className="flex items-center gap-3">
+              {Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) && (
+                <div className="flex items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/30 transition hover:ring-emerald-500">
+                  <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox: "h-9 w-9",
+                      },
+                    }}
+                  />
+                </div>
+              )}
+              <button
+                onClick={logout}
+                className="inline-flex h-9 items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 text-xs font-bold text-red-300 transition hover:bg-red-500/20"
+              >
+                <LogOut size={14} />
+                <span>Quitter</span>
+              </button>
+            </div>
           </div>
         </header>
 
