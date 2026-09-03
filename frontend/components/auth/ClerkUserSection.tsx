@@ -1,11 +1,58 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { useEffect, useMemo, useState } from "react";
+import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
 import { LogIn } from "lucide-react";
 
-export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { isMobile?: boolean; onCloseMobile?: () => void }) {
+function ProfileAvatar({ size = "desktop" }: { size?: "desktop" | "mobile" }) {
+  const { user } = useUser();
+  const { openUserProfile } = useClerk();
+
+  const initials = useMemo(() => {
+    const name = user?.fullName || user?.firstName || user?.primaryEmailAddress?.emailAddress || "KORYXA";
+    return name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join("");
+  }, [user]);
+
+  const label = user?.fullName || user?.primaryEmailAddress?.emailAddress || "Profil KORYXA";
+  const dimensions = size === "mobile" ? "h-10 w-10" : "h-11 w-11";
+
+  return (
+    <button
+      type="button"
+      onClick={() => openUserProfile()}
+      aria-label={`Ouvrir le profil de ${label}`}
+      title={label}
+      className={`${dimensions} relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-emerald-400 bg-emerald-50 text-sm font-black text-emerald-800 shadow-sm transition hover:border-emerald-500 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2`}
+    >
+      {user?.imageUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={user.imageUrl}
+          alt={`Photo de profil de ${label}`}
+          className="h-full w-full object-cover"
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <span aria-hidden="true">{initials || "K"}</span>
+      )}
+    </button>
+  );
+}
+
+export default function ClerkUserSection({
+  isMobile = false,
+  onCloseMobile,
+}: {
+  isMobile?: boolean;
+  onCloseMobile?: () => void;
+}) {
   const [returnUrl, setReturnUrl] = useState("https://formation.koryxa.fr");
+  const { user } = useUser();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -14,48 +61,17 @@ export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { 
   }, []);
 
   const signInUrl = `https://accounts.koryxa.fr/sign-in?redirect_url=${encodeURIComponent(returnUrl)}`;
-
-  const userButtonAppearance = {
-    elements: {
-      rootBox: {
-        width: "36px",
-        height: "36px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      },
-      userButtonTrigger: {
-        width: "36px",
-        height: "36px",
-        borderRadius: "9999px",
-      },
-      avatarBox: {
-        width: "36px",
-        height: "36px",
-        borderRadius: "9999px",
-      },
-      avatarImage: {
-        width: "36px",
-        height: "36px",
-        borderRadius: "9999px",
-        objectFit: "cover",
-      },
-    },
-  };
+  const displayName = user?.fullName || user?.firstName || user?.primaryEmailAddress?.emailAddress || "Compte KORYXA";
 
   if (isMobile) {
     return (
       <>
         <SignedIn>
-          <div className="mt-3 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/40">
-                <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
-              </div>
-              <div className="min-w-0">
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">Compte actif</span>
-                <p className="truncate text-sm font-black text-slate-900">Connecté à KORYXA</p>
-              </div>
+          <div className="mt-3 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3">
+            <ProfileAvatar size="mobile" />
+            <div className="min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">Compte actif</span>
+              <p className="truncate text-sm font-black text-slate-900">{displayName}</p>
             </div>
           </div>
         </SignedIn>
@@ -78,9 +94,7 @@ export default function ClerkUserSection({ isMobile = false, onCloseMobile }: { 
   return (
     <div className="hidden items-center gap-3 lg:flex">
       <SignedIn>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/40 transition hover:ring-emerald-500">
-          <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
-        </div>
+        <ProfileAvatar />
       </SignedIn>
       <SignedOut>
         <a
