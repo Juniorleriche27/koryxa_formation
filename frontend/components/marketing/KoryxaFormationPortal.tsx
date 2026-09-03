@@ -264,13 +264,13 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <Link
-            href="/login"
+          <a
+            href="https://accounts.koryxa.fr/sign-in"
             className="inline-flex items-center gap-2 text-sm font-black text-slate-700 transition hover:text-emerald-700"
           >
             <LogIn size={17} className="text-emerald-600" />
             <span>Connexion</span>
-          </Link>
+          </a>
           <Link
             href="/dashboard"
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#06251c] px-5 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-800"
@@ -315,14 +315,14 @@ export function Header() {
                 );
               })}
               <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3">
-                <Link
-                  href="/login"
+                <a
+                  href="https://accounts.koryxa.fr/sign-in"
                   onClick={() => setOpen(false)}
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 transition hover:bg-slate-50"
                 >
                   <LogIn size={17} className="text-emerald-600" />
                   Connexion
-                </Link>
+                </a>
                 <Link
                   href="/dashboard"
                   onClick={() => setOpen(false)}

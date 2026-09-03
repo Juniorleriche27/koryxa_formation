@@ -180,19 +180,19 @@ function AccessForm() {
 
             {!checkingPartnerAccess && !checkingLearnerAccess && !learnerAuthenticated && (
               <div className="mt-6">
-                <Link
-                  href={hasExplicitCourse ? `/login?course=${encodeURIComponent(courseSlug)}` : "/login"}
+                <a
+                  href="https://accounts.koryxa.fr/sign-in"
                   className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#06251c] px-6 text-sm font-black text-white shadow-lg shadow-emerald-950/20 transition hover:bg-emerald-800"
                 >
                   Se connecter avec mon compte KORYXA <ArrowRight size={17} />
-                </Link>
+                </a>
                 <div className="mt-3 text-center">
-                  <Link
-                    href={hasExplicitCourse ? `/register?course=${encodeURIComponent(courseSlug)}` : "/register"}
+                  <a
+                    href="https://accounts.koryxa.fr/sign-up"
                     className="text-xs font-bold text-slate-500 hover:text-emerald-700"
                   >
                     Pas encore de compte ? Créer mon compte KORYXA →
-                  </Link>
+                  </a>
                 </div>
               </div>
             )}
