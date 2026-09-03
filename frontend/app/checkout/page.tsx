@@ -1,22 +1,17 @@
 "use client";
 
-import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   Check,
   CheckCircle2,
-  Copy,
-  CreditCard,
   ExternalLink,
-  HelpCircle,
   Loader2,
-  MessageCircleMore,
   Package,
   ReceiptText,
   ShieldCheck,
-  Smartphone,
   Sparkles,
 } from "lucide-react";
 import { commerceAPI, getApiErrorMessage } from "@/lib/api";
@@ -28,8 +23,6 @@ type Order = {
   amount: number;
   currency: string;
   status: string;
-  payment_method?: string | null;
-  payment_reference?: string | null;
 };
 
 const careerPacksConfig: Record<
@@ -68,15 +61,6 @@ const careerPacksConfig: Record<
   },
 };
 
-const paymentMethodsList = [
-  { id: "tmoney", label: "TMoney (Togo)", provider: "TMoney", number: "+228 92 09 25 72", name: "KORYXA Tech Store" },
-  { id: "moov_money", label: "Moov Money", provider: "Moov Money", number: "+228 99 00 00 00", name: "KORYXA Tech Store" },
-  { id: "wave", label: "Wave", provider: "Wave", number: "+228 92 09 25 72", name: "KORYXA Tech Store" },
-  { id: "card", label: "Carte Bancaire / En ligne", provider: "KORYXA Pay", number: "En ligne", name: "KORYXA Central Gateway" },
-  { id: "bank_transfer", label: "Virement bancaire (UEMOA / SEPA)", provider: "Banque", number: "RIB sur demande", name: "KORYXA Tech Store" },
-  { id: "western_union", label: "Western Union / RIA / MoneyGram", provider: "Transfert d'argent", number: "+228 92 09 25 72", name: "KORYXA Tech Store (Lomé, Togo)" },
-] as const;
-
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -88,17 +72,8 @@ function CheckoutContent() {
   const activeSlug = packSlug || courseSlug || "python-data-analyst";
 
   const [order, setOrder] = useState<Order | null>(null);
-  const [method, setMethod] = useState("tmoney");
-  const [reference, setReference] = useState("");
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [copied, setCopied] = useState(false);
-
-  const selectedPaymentConfig = useMemo(
-    () => paymentMethodsList.find((p) => p.id === method) || paymentMethodsList[0],
-    [method]
-  );
 
   useEffect(() => {
     const nextUrl = `/checkout?${packSlug ? `pack=${encodeURIComponent(packSlug)}` : `course=${encodeURIComponent(activeSlug)}`}${partnerCode ? `&ref=${encodeURIComponent(partnerCode)}` : ""}`;
@@ -130,18 +105,6 @@ function CheckoutContent() {
     }
   }, [activeSlug, packSlug, packInfo, partnerCode, router]);
 
-  const copyNumber = async () => {
-    if (selectedPaymentConfig?.number) {
-      try {
-        await navigator.clipboard.writeText(selectedPaymentConfig.number);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch {
-        // Fallback
-      }
-    }
-  };
-
   const [initiatingPay, setInitiatingPay] = useState(false);
 
   async function handleKoryxaPayCheckout() {
@@ -170,32 +133,6 @@ function CheckoutContent() {
       setInitiatingPay(false);
     }
   }
-
-  async function submitPayment(event: FormEvent) {
-    event.preventDefault();
-    if (!order) return;
-    setSubmitting(true);
-    setError("");
-
-    try {
-      if (!packSlug) {
-        const response = await commerceAPI.submitPayment(order.id, {
-          payment_method: method,
-          payment_reference: reference.trim(),
-        });
-        setOrder(response.data);
-      } else {
-        // Enregistrement de paiement pack
-        setOrder((prev) => (prev ? { ...prev, status: "payment_submitted", payment_method: method, payment_reference: reference.trim() } : null));
-      }
-    } catch (paymentError) {
-      setError(getApiErrorMessage(paymentError));
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  const whatsappText = `Bonjour KORYXA, je viens d'effectuer mon paiement de ${order?.amount?.toLocaleString("fr-FR")} FCFA pour "${order?.course_title || order?.course_slug}". Référence : ${reference.trim() || "à communiquer"}.`;
 
   return (
     <main className="min-h-screen bg-[#050914] px-4 py-8 text-white sm:px-6 lg:px-8">
@@ -287,28 +224,6 @@ function CheckoutContent() {
                     Ouvrir mon espace apprenant
                   </Link>
                 </div>
-              ) : order?.status === "payment_submitted" ? (
-                <div className="py-6">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-10 w-10 text-amber-400" />
-                    <div>
-                      <h2 className="text-xl font-black text-white">Paiement envoyé pour vérification</h2>
-                      <p className="text-xs text-slate-400">Réf : {order.payment_reference}</p>
-                    </div>
-                  </div>
-                  <p className="mt-4 text-sm leading-7 text-slate-300">
-                    Votre référence de transaction a été enregistrée. L&apos;accès sera débloqué dès confirmation. Pour un traitement instantané, vous pouvez notifier le support sur WhatsApp.
-                  </p>
-
-                  <a
-                    href={`https://wa.me/22892092572?text=${encodeURIComponent(whatsappText)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-5 text-sm font-black text-slate-950 transition hover:bg-emerald-300"
-                  >
-                    <MessageCircleMore size={18} /> Confirmer rapidement sur WhatsApp
-                  </a>
-                </div>
               ) : (
                 <div className="space-y-6">
                   {/* Option 1 : KORYXA Pay en ligne (Recommandé) */}
@@ -338,118 +253,11 @@ function CheckoutContent() {
                     </button>
                   </div>
 
-                  <div className="relative my-6 flex items-center justify-center">
-                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10" /></div>
-                    <span className="relative bg-[#0b1222] px-4 text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
-                      ou règlement direct / manuel
-                    </span>
-                  </div>
-
-                  <form onSubmit={submitPayment} className="space-y-6">
-                    <div>
-                      <span className="text-xs font-black uppercase tracking-[0.14em] text-emerald-400">
-                        Option de secours
-                      </span>
-                      <h2 className="mt-1 text-2xl font-black text-white">Déclarer un transfert direct</h2>
-                      <p className="mt-1.5 text-xs leading-5 text-slate-400">
-                        Si vous avez déjà envoyé votre règlement manuellement, renseignez votre référence de transaction ci-dessous.
-                      </p>
-                    </div>
-
-                  {/* Sélection du moyen */}
-                  <label className="block">
-                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.1em] text-slate-300">
-                      Moyen de paiement
-                    </span>
-                    <select
-                      value={method}
-                      onChange={(event) => setMethod(event.target.value)}
-                      className="min-h-12 w-full rounded-2xl border border-white/15 bg-slate-900 px-4 text-sm font-bold text-white outline-none focus:border-emerald-400"
-                    >
-                      {paymentMethodsList.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  {/* Bloc Coordonnées Officielles KORYXA */}
-                  <div className="rounded-2xl border border-emerald-400/25 bg-emerald-950/40 p-5">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-300">
-                        <Smartphone size={15} /> Coordonnées KORYXA Pay
-                      </div>
-                      <span className="rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-[10px] font-bold text-emerald-200">
-                        {selectedPaymentConfig.provider}
-                      </span>
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-950/80 p-3.5">
-                      <div>
-                        <p className="text-[11px] font-medium text-slate-400">Numéro / Compte officiel :</p>
-                        <p className="mt-0.5 font-mono text-base font-black text-white">
-                          {selectedPaymentConfig.number}
-                        </p>
-                      </div>
-                      {selectedPaymentConfig.number !== "En ligne" && selectedPaymentConfig.number !== "RIB sur demande" && (
-                        <button
-                          type="button"
-                          onClick={copyNumber}
-                          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold text-white transition hover:bg-white/20"
-                        >
-                          {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                          {copied ? "Copié !" : "Copier"}
-                        </button>
-                      )}
-                    </div>
-                    <p className="mt-3 text-xs text-slate-300">
-                      Bénéficiaire : <strong className="text-white">{selectedPaymentConfig.name}</strong>
-                    </p>
-                  </div>
-
-                  {/* Saisie de la référence */}
-                  <label className="block">
-                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.1em] text-slate-300">
-                      Référence de transaction ou ID de paiement
-                    </span>
-                    <input
-                      value={reference}
-                      onChange={(event) => setReference(event.target.value)}
-                      required
-                      minLength={3}
-                      maxLength={180}
-                      placeholder="Ex. TM987654321 ou Transaction ID"
-                      className="min-h-12 w-full rounded-2xl border border-white/15 bg-slate-900 px-4 text-sm font-bold text-white outline-none placeholder:text-slate-500 focus:border-emerald-400"
-                    />
-                  </label>
-
                   {error && (
                     <div role="alert" className="rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-xs font-bold text-red-200">
                       {error}
                     </div>
                   )}
-
-                  <button
-                    disabled={submitting || !order}
-                    type="submit"
-                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-5 text-sm font-black text-slate-950 transition hover:bg-emerald-300 disabled:opacity-60"
-                  >
-                    {submitting && <Loader2 size={18} className="animate-spin" />}
-                    Valider et envoyer ma référence
-                  </button>
-
-                  <div className="pt-2 text-center">
-                    <a
-                      href={`https://wa.me/22892092572?text=${encodeURIComponent(whatsappText)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-emerald-300"
-                    >
-                      <MessageCircleMore size={14} /> Besoin d&apos;aide pour payer ? Échanger sur WhatsApp
-                    </a>
-                  </div>
-                </form>
                 </div>
               )}
             </div>

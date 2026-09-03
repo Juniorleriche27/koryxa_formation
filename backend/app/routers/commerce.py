@@ -5,7 +5,6 @@ from app.middleware.auth import get_current_user
 from app.database import get_service_supabase
 from app.schemas.commerce import (
     CreateOrderSchema,
-    SubmitPaymentSchema,
     ConfirmPaymentSchema,
     InitiateKoryxaPaySchema,
     KoryxaPayWebhookSchema,
@@ -17,7 +16,6 @@ from app.services.commerce_service import (
     list_enrollments,
     list_orders,
     process_koryxa_pay_webhook,
-    submit_payment,
 )
 from app.services.koryxa_pay_service import create_koryxa_pay_checkout
 
@@ -38,11 +36,6 @@ def create_order(payload: CreateOrderSchema, user=Depends(get_current_user)):
 @router.get("/orders")
 def get_orders(user=Depends(get_current_user)):
     return list_orders(user)
-
-
-@router.post("/orders/{order_id}/payment")
-def submit_order_payment(order_id: str, payload: SubmitPaymentSchema, user=Depends(get_current_user)):
-    return submit_payment(user, order_id, payload.payment_method, payload.payment_reference)
 
 
 @router.get("/enrollments")
