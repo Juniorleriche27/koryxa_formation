@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, BookOpenCheck, FlaskConical, GraduationCap, LayoutDashboard, Layers3, LogOut, Medal } from "lucide-react";
+import { ArrowLeft, BookOpenCheck, FlaskConical, GraduationCap, LayoutDashboard, Layers3, Medal } from "lucide-react";
 import { courseCatalog, courseRoutes, type CourseSlug } from "@/lib/courseConfig";
-import { useAuth } from "@/hooks/useAuth";
-import { UserButton } from "@clerk/nextjs";
+import KoryxaUserNav from "@/components/auth/KoryxaUserNav";
 
 type Props = {
   courseSlug: string;
@@ -21,7 +20,6 @@ export default function LearnerCourseContext({
   total = 0,
   compact = false,
 }: Props) {
-  const { logout } = useAuth();
   const course = courseCatalog[courseSlug as CourseSlug] ?? courseCatalog["python-data-analyst"];
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
@@ -79,29 +77,8 @@ export default function LearnerCourseContext({
               <Medal size={14} />
               <span className="hidden sm:inline">Certificat</span>
             </Link>
-            {Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) && (
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/30 transition hover:ring-emerald-500">
-                <UserButton
-                  afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      rootBox: { width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" },
-                      userButtonTrigger: { width: "32px", height: "32px", borderRadius: "9999px" },
-                      avatarBox: { width: "32px", height: "32px", borderRadius: "9999px" },
-                      avatarImage: { width: "32px", height: "32px", borderRadius: "9999px", objectFit: "cover" },
-                    },
-                  }}
-                />
-              </div>
-            )}
-            <button
-              onClick={logout}
-              className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/10 px-3 text-xs font-bold text-red-300 transition hover:bg-red-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-              title="Se déconnecter de KORYXA"
-            >
-              <LogOut size={14} />
-              <span className="hidden sm:inline">Quitter</span>
-            </button>
+            <KoryxaUserNav />
+            <KoryxaUserNav variant="mobileHeader" />
           </nav>
         </div>
 

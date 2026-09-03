@@ -2,21 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, CheckCircle2, Flame, GraduationCap, Layers, LogOut, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Flame, GraduationCap, Layers, Sparkles } from "lucide-react";
 import { modulesAPI } from "@/lib/api";
 import { courseCatalog, courseRoutes, readCourseSlug, DEFAULT_COURSE_SLUG, type CourseSlug } from "@/lib/courseConfig";
 import { useProgress } from "@/hooks/useProgress";
-import { useAuth } from "@/hooks/useAuth";
 import type { Module } from "@/types";
 import ProgressBar from "@/components/dashboard/ProgressBar";
 import Stats from "@/components/dashboard/Stats";
 import ModuleCard from "@/components/modules/ModuleCard";
 import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
 import Footer from "@/components/layout/Footer";
-import { UserButton } from "@clerk/nextjs";
+import KoryxaUserNav from "@/components/auth/KoryxaUserNav";
 
 export default function DashboardPage() {
-  const { logout } = useAuth();
   const [modules, setModules] = useState<Module[]>([]);
   const [courseSlug, setCourseSlug] = useState<string>(DEFAULT_COURSE_SLUG);
   const [hasExplicitCourse, setHasExplicitCourse] = useState(false);
@@ -65,28 +63,8 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              {Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) && (
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-0.5 ring-2 ring-emerald-500/30 transition hover:ring-emerald-500">
-                  <UserButton
-                    afterSignOutUrl="/"
-                    appearance={{
-                      elements: {
-                        rootBox: { width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center" },
-                        userButtonTrigger: { width: "36px", height: "36px", borderRadius: "9999px" },
-                        avatarBox: { width: "36px", height: "36px", borderRadius: "9999px" },
-                        avatarImage: { width: "36px", height: "36px", borderRadius: "9999px", objectFit: "cover" },
-                      },
-                    }}
-                  />
-                </div>
-              )}
-              <button
-                onClick={logout}
-                className="inline-flex h-9 items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 text-xs font-bold text-red-300 transition hover:bg-red-500/20"
-              >
-                <LogOut size={14} />
-                <span>Quitter</span>
-              </button>
+              <KoryxaUserNav />
+              <KoryxaUserNav variant="mobileHeader" />
             </div>
           </div>
         </header>

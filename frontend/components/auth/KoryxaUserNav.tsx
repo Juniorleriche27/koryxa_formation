@@ -63,7 +63,7 @@ export default function KoryxaUserNav({
       .join("");
   }, [user]);
 
-  const redirectTarget = pathname === "/" ? "/dashboard" : pathname;
+  const redirectTarget = pathname || "/";
   const signInUrl = `/login?next=${encodeURIComponent(redirectTarget)}`;
 
   async function logout() {
