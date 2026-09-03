@@ -84,9 +84,17 @@ api.interceptors.response.use(
   (err) => Promise.reject(err)
 );
 
+export type AuthUser = {
+  id: string;
+  email: string;
+  full_name: string;
+  avatar_url?: string | null;
+};
+
 export const authAPI = {
   register: (payload: { full_name: string; email: string; password: string }) => api.post("/auth/register", payload),
   login: (payload: { email: string; password: string }) => api.post<{ access_token: string; token_type: string }>("/auth/login", payload),
+  me: () => api.get<AuthUser>("/auth/me"),
 };
 
 export const commerceAPI = {
