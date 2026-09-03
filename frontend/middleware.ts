@@ -1,4 +1,3 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
@@ -7,7 +6,6 @@ import {
 } from "@/lib/accessControl";
 import { findGrantById, grantMatchesCourse, summarizeGrant } from "@/lib/formationAccessAdmin";
 import { normalizeCourseSlug } from "@/lib/courseConfig";
-
 
 function redirectToAccess(request: NextRequest) {
   const accessUrl = request.nextUrl.clone();
@@ -29,14 +27,17 @@ function redirectToAccess(request: NextRequest) {
   return response;
 }
 
-export default clerkMiddleware(async (_auth, request: NextRequest) => {
+export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === "/identity/formation/launch") {
     return NextResponse.next();
   }
 
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
-  const sessionPayload = await getAccessSessionPayload(accessToken);
+  if (!accessToken) {
+    return redirectToAccess(request);
+  }
 
+  const sessionPayload = await getAccessSessionPayload(accessToken);
   if (!sessionPayload || sessionPayload.sub === "legacy-access") {
     return redirectToAccess(request);
   }
@@ -65,8 +66,8 @@ export default clerkMiddleware(async (_auth, request: NextRequest) => {
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
-  matcher: ["/identity/formation/launch", "/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
+  matcher: ["/dashboard/:path*", "/modules/:path*", "/certificate/:path*"],
 };

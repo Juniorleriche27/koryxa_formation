@@ -269,8 +269,8 @@ export default function FormationsPage() {
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.7fr] lg:items-center">
           <div className="max-w-4xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#bcf5d7]/30 bg-[#bcf5d7]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><Sparkles size={14} /> Catalogue KORYXA</span>
-            <h1 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] sm:text-6xl lg:text-7xl">Choisissez une compétence. Construisez une vraie preuve.</h1>
-            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-white/75 sm:text-lg">Des parcours pratiques et des packs métiers en data, intelligence artificielle et automatisation, conçus pour vous faire progresser jusqu’à un résultat concret.</p>
+            <h1 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] sm:text-6xl lg:text-7xl">Maîtrisez les compétences qui comptent. Prouvez votre valeur sur le marché.</h1>
+            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-white/75 sm:text-lg">Des parcours d’excellence et packs métiers en Data, IA et Automatisation, conçus pour transformer la théorie en réalisations concrètes et certifiées.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a href="#packs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">Voir les Packs Métiers (-30%) <ArrowRight size={17} /></a>
               <a href="#formations" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/8 px-6 py-3.5 text-sm font-black text-white backdrop-blur-md transition hover:bg-white/14">Parcours individuels</a>
