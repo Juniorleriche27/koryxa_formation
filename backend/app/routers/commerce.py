@@ -101,5 +101,7 @@ def _initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, customer_id: str):
         amount=amount,
         currency="XOF",
         idempotency_key=idempotency_key,
+        customer_name=payload.customer_name,
+        customer_phone=payload.customer_phone,
     )
     return checkout_res

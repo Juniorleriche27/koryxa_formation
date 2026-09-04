@@ -101,7 +101,7 @@ export const commerceAPI = {
   createOrder: (payload: { course_slug: string; partner_code?: string | null }) => api.post("/commerce/orders", payload),
   listOrders: () => api.get("/commerce/orders"),
   listEnrollments: () => api.get("/commerce/enrollments"),
-  initiateKoryxaPay: (payload: { product_code: string; item_type?: "course" | "pack"; partner_code?: string | null }) =>
+  initiateKoryxaPay: (payload: { product_code: string; item_type?: "course" | "pack"; partner_code?: string | null; customer_name: string; customer_phone: string }) =>
     internalApi.post<{ checkout_url?: string; checkout_id?: string; success?: boolean }>("/api/commerce/koryxa-pay/initiate", payload),
 };
 

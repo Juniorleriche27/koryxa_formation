@@ -16,6 +16,8 @@ def create_koryxa_pay_checkout(
     currency: str = "XOF",
     idempotency_key: str | None = None,
     provider: str | None = None,
+    customer_name: str | None = None,
+    customer_phone: str | None = None,
 ) -> dict:
     """
     Initialise une session de paiement via l'API officielle KORYXA Pay :
@@ -52,6 +54,10 @@ def create_koryxa_pay_checkout(
         "currency": currency,
         "provider": pay_provider,
         "idempotency_key": idempotency_key or f"{product_code}-{customer_id}-{int(amount)}",
+        "provider_data": {
+            "name": (customer_name or "").strip(),
+            "phone": (customer_phone or "").strip(),
+        },
     }
 
     req = urllib.request.Request(

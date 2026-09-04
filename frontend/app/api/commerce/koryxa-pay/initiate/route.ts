@@ -18,6 +18,19 @@ export async function POST(request: NextRequest) {
   const user = await currentUser();
   const email = user?.primaryEmailAddress?.emailAddress?.trim().toLowerCase();
   const payload = await request.json().catch(() => null);
+  const customerName =
+    user?.fullName?.trim() ||
+    [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim() ||
+    payload?.customer_name;
+  const customerPhone =
+    payload?.customer_phone?.trim() || user?.phoneNumbers?.[0]?.phoneNumber?.trim();
+
+  if (!customerName || !customerPhone) {
+    return NextResponse.json(
+      { detail: "Le nom et le numéro Mobile Money sont obligatoires" },
+      { status: 422 },
+    );
+  }
 
   const response = await fetch(`${API_BASE_URL}/commerce/internal/koryxa-pay/initiate`, {
     method: "POST",
@@ -25,7 +38,12 @@ export async function POST(request: NextRequest) {
       "Content-Type": "application/json",
       "x-koryxa-bridge-key": bridgeKey,
     },
-    body: JSON.stringify({ ...payload, customer_id: email || userId }),
+    body: JSON.stringify({
+      ...payload,
+      customer_id: email || userId,
+      customer_name: customerName,
+      customer_phone: customerPhone,
+    }),
     cache: "no-store",
   });
 

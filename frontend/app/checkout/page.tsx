@@ -74,6 +74,8 @@ function CheckoutContent() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
 
   useEffect(() => {
     const nextUrl = `/checkout?${packSlug ? `pack=${encodeURIComponent(packSlug)}` : `course=${encodeURIComponent(activeSlug)}`}${partnerCode ? `&ref=${encodeURIComponent(partnerCode)}` : ""}`;
@@ -108,6 +110,10 @@ function CheckoutContent() {
   const [initiatingPay, setInitiatingPay] = useState(false);
 
   async function handleKoryxaPayCheckout() {
+    if (customerName.trim().length < 2 || customerPhone.replace(/\D/g, "").length < 8) {
+      setError("Renseignez votre nom et un numéro Mobile Money valide.");
+      return;
+    }
     setInitiatingPay(true);
     setError("");
     try {
@@ -115,6 +121,8 @@ function CheckoutContent() {
         product_code: activeSlug,
         item_type: packSlug ? "pack" : "course",
         partner_code: partnerCode,
+        customer_name: customerName.trim(),
+        customer_phone: customerPhone.trim(),
       });
 
       const checkoutUrl =
@@ -241,6 +249,31 @@ function CheckoutContent() {
                     <p className="mt-2 text-xs leading-5 text-slate-300">
                       Réglez directement par Mobile Money ou Carte Bancaire sur le portail officiel KORYXA Pay. Votre formation sera activée automatiquement dès validation.
                     </p>
+
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      <label className="grid gap-1.5 text-xs font-bold text-slate-200">
+                        Nom complet
+                        <input
+                          value={customerName}
+                          onChange={(event) => setCustomerName(event.target.value)}
+                          autoComplete="name"
+                          placeholder="Votre nom complet"
+                          className="min-h-11 rounded-xl border border-white/15 bg-slate-950/70 px-3 text-sm text-white outline-none focus:border-emerald-400"
+                        />
+                      </label>
+                      <label className="grid gap-1.5 text-xs font-bold text-slate-200">
+                        Numéro Mobile Money
+                        <input
+                          value={customerPhone}
+                          onChange={(event) => setCustomerPhone(event.target.value)}
+                          type="tel"
+                          inputMode="tel"
+                          autoComplete="tel"
+                          placeholder="Ex. +228 90 00 00 00"
+                          className="min-h-11 rounded-xl border border-white/15 bg-slate-950/70 px-3 text-sm text-white outline-none focus:border-emerald-400"
+                        />
+                      </label>
+                    </div>
 
                     <button
                       type="button"

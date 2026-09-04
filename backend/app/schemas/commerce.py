@@ -25,6 +25,8 @@ class InitiateKoryxaPaySchema(BaseModel):
     product_code: str = Field(min_length=2, max_length=120)
     item_type: Literal["course", "pack"] = "course"
     partner_code: str | None = Field(default=None, max_length=120)
+    customer_name: str = Field(min_length=2, max_length=120)
+    customer_phone: str = Field(min_length=8, max_length=24)
 
 
 class InternalInitiateKoryxaPaySchema(InitiateKoryxaPaySchema):
