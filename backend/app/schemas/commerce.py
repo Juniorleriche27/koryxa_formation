@@ -32,6 +32,14 @@ class InitiateKoryxaPaySchema(BaseModel):
 
 class InternalInitiateKoryxaPaySchema(InitiateKoryxaPaySchema):
     customer_id: str = Field(min_length=2, max_length=255)
+    customer_email: str = Field(min_length=3, max_length=255)
+
+
+class KoryxaPayStatusCallbackSchema(BaseModel):
+    event: str
+    payment_id: str
+    order_id: str
+    status: str
 
 
 class KoryxaPayWebhookSchema(BaseModel):

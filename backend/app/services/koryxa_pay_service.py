@@ -18,6 +18,7 @@ def create_koryxa_pay_checkout(
     provider: str | None = None,
     customer_name: str | None = None,
     customer_phone: str | None = None,
+    metadata: dict | None = None,
 ) -> dict:
     """
     Initialise une session de paiement via l'API officielle KORYXA Pay :
@@ -58,6 +59,7 @@ def create_koryxa_pay_checkout(
             "name": (customer_name or "").strip(),
             "phone": (customer_phone or "").strip(),
         },
+        "metadata": metadata or {},
     }
 
     req = urllib.request.Request(
@@ -84,3 +86,16 @@ def create_koryxa_pay_checkout(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Impossible de contacter la passerelle KORYXA Pay.",
         ) from exc
+
+
+def get_koryxa_pay_payment(payment_id: str) -> dict:
+    url = f"{settings.KORYXA_PAY_BASE_URL.rstrip('/')}/v1/client/payments/{payment_id}"
+    req = urllib.request.Request(url, headers={
+        "X-Project-Code": settings.KORYXA_PAY_PROJECT_CODE,
+        "X-Project-Key": settings.KORYXA_PAY_PROJECT_KEY,
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=10) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Vérification KORYXA Pay impossible") from exc

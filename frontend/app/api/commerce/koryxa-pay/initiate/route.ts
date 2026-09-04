@@ -40,7 +40,8 @@ export async function POST(request: NextRequest) {
     },
     body: JSON.stringify({
       ...payload,
-      customer_id: email || userId,
+      customer_id: userId,
+      customer_email: email,
       customer_name: customerName,
       customer_phone: customerPhone,
     }),

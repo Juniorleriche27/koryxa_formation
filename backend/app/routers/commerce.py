@@ -8,6 +8,7 @@ from app.schemas.commerce import (
     ConfirmPaymentSchema,
     InitiateKoryxaPaySchema,
     InternalInitiateKoryxaPaySchema,
+    KoryxaPayStatusCallbackSchema,
     KoryxaPayWebhookSchema,
 )
 from app.services.commerce_service import (
@@ -18,7 +19,7 @@ from app.services.commerce_service import (
     list_orders,
     process_koryxa_pay_webhook,
 )
-from app.services.koryxa_pay_service import create_koryxa_pay_checkout
+from app.services.koryxa_pay_service import create_koryxa_pay_checkout, get_koryxa_pay_payment
 
 router = APIRouter()
 
@@ -76,6 +77,26 @@ def initiate_koryxa_pay_internal(
     return _initiate_koryxa_pay(payload, payload.customer_id)
 
 
+@router.post("/koryxa-pay/callback")
+def koryxa_pay_callback(payload: KoryxaPayStatusCallbackSchema):
+    payment = get_koryxa_pay_payment(payload.payment_id)
+    if payment.get("payment_status") != "succeeded" or payment.get("order_id") != payload.order_id:
+        raise HTTPException(status_code=409, detail="Paiement non confirmé")
+    metadata = payment.get("metadata") or {}
+    verified = KoryxaPayWebhookSchema(
+        event="payment.success",
+        transaction_id=payload.payment_id,
+        learner_email=metadata.get("learner_email"),
+        clerk_user_id=payment.get("customer_id"),
+        item_type=metadata.get("item_type", "course"),
+        item_slug=payment.get("product_code"),
+        amount=payment.get("amount_minor", 0),
+        currency=payment.get("currency", "XOF"),
+        payment_method="other",
+    )
+    return process_koryxa_pay_webhook(verified)
+
+
 def _initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, customer_id: str):
     db = get_service_supabase()
 
@@ -103,5 +124,9 @@ def _initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, customer_id: str):
         idempotency_key=idempotency_key,
         customer_name=payload.customer_name,
         customer_phone=payload.customer_phone,
+        metadata={
+            "learner_email": getattr(payload, "customer_email", customer_id),
+            "item_type": payload.item_type,
+        },
     )
     return checkout_res
