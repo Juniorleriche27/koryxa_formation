@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   Check,
@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { commerceAPI, getApiErrorMessage } from "@/lib/api";
+import { courseCatalog } from "@/lib/courseConfig";
 
 type Order = {
   id: string;
@@ -61,8 +62,18 @@ const careerPacksConfig: Record<
   },
 };
 
+const coursePrices: Record<string, number> = {
+  "python-data-analyst": 29000,
+  "excel-data-analyst": 39000,
+  "llm-rag": 49000,
+  "sql-data-analyst": 39000,
+  "power-bi-data-analyst": 49000,
+  "statistics-data-science-python": 49000,
+  "machine-learning-python": 59000,
+  "data-engineering-python-sql": 69000,
+};
+
 function CheckoutContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const courseSlug = searchParams.get("course");
   const packSlug = searchParams.get("pack");
@@ -71,41 +82,19 @@ function CheckoutContent() {
   const packInfo = packSlug ? careerPacksConfig[packSlug] : null;
   const activeSlug = packSlug || courseSlug || "python-data-analyst";
 
-  const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState(true);
+  const courseInfo = (courseCatalog as Record<string, { title: string }>)[activeSlug];
+  const order: Order = {
+    id: `${packSlug ? "pack" : "course"}-${activeSlug}`,
+    course_slug: activeSlug,
+    course_title: packInfo?.title || courseInfo?.title || "Formation KORYXA",
+    amount: packInfo?.price || coursePrices[activeSlug] || 29000,
+    currency: "XOF",
+    status: "pending",
+  };
+  const loading = false;
   const [error, setError] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-
-  useEffect(() => {
-    const nextUrl = `/checkout?${packSlug ? `pack=${encodeURIComponent(packSlug)}` : `course=${encodeURIComponent(activeSlug)}`}${partnerCode ? `&ref=${encodeURIComponent(partnerCode)}` : ""}`;
-
-    // Si c'est un cours unique, on utilise commerceAPI pour créer l'ordre backend
-    if (!packSlug) {
-      commerceAPI
-        .createOrder({ course_slug: activeSlug, partner_code: partnerCode })
-        .then((response) => setOrder(response.data))
-        .catch((checkoutError: any) => {
-          if (checkoutError?.response?.status === 401) {
-            router.replace(`/login?course=${encodeURIComponent(activeSlug)}&next=${encodeURIComponent(nextUrl)}`);
-            return;
-          }
-          setError(getApiErrorMessage(checkoutError));
-        })
-        .finally(() => setLoading(false));
-    } else {
-      // Pour un pack, commande pack préparée
-      setOrder({
-        id: `pack-${packSlug}-${Date.now().toString().slice(-6)}`,
-        course_slug: packSlug,
-        course_title: packInfo?.title || "Pack Carrière KORYXA",
-        amount: packInfo?.price || 89000,
-        currency: "XOF",
-        status: "pending",
-      });
-      setLoading(false);
-    }
-  }, [activeSlug, packSlug, packInfo, partnerCode, router]);
 
   const [initiatingPay, setInitiatingPay] = useState(false);
 
