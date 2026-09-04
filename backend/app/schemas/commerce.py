@@ -27,6 +27,7 @@ class InitiateKoryxaPaySchema(BaseModel):
     partner_code: str | None = Field(default=None, max_length=120)
     customer_name: str = Field(min_length=2, max_length=120)
     customer_phone: str = Field(min_length=8, max_length=24)
+    purchase_attempt_id: str = Field(min_length=8, max_length=80)
 
 
 class InternalInitiateKoryxaPaySchema(InitiateKoryxaPaySchema):

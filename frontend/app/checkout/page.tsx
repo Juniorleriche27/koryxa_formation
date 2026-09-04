@@ -96,6 +96,7 @@ function CheckoutContent() {
   const [error, setError] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [purchaseAttemptId, setPurchaseAttemptId] = useState("");
 
   const [initiatingPay, setInitiatingPay] = useState(false);
 
@@ -107,12 +108,15 @@ function CheckoutContent() {
     setInitiatingPay(true);
     setError("");
     try {
+      const attemptId = purchaseAttemptId || crypto.randomUUID();
+      if (!purchaseAttemptId) setPurchaseAttemptId(attemptId);
       const response = await commerceAPI.initiateKoryxaPay({
         product_code: activeSlug,
         item_type: packSlug ? "pack" : "course",
         partner_code: partnerCode,
         customer_name: customerName.trim(),
         customer_phone: customerPhone.trim(),
+        purchase_attempt_id: attemptId,
       });
 
       const checkoutUrl =

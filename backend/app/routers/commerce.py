@@ -94,7 +94,7 @@ def _initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, customer_id: str):
         else:
             amount = int(course_res.data[0]["price_amount"])
 
-    idempotency_key = f"{payload.product_code}-{customer_id[:8]}-{int(amount)}"
+    idempotency_key = f"{payload.product_code}-{payload.purchase_attempt_id}"
     checkout_res = create_koryxa_pay_checkout(
         product_code=payload.product_code,
         customer_id=customer_id,
