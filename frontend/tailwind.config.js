@@ -15,9 +15,9 @@ module.exports = {
         },
         koryxa: {
           sand: "#faf9f5",
-          night: "#06251c",
-          navy: "#06251c",
-          ink: "#06251c",
+          night: "#020617",
+          navy: "#0f172a",
+          ink: "#020617",
           blue: "#0a4386",
           cyan: "#14b8a6",
           emerald: "#00a86b",

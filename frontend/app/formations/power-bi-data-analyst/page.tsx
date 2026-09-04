@@ -12,13 +12,17 @@ import {
   Layers3,
   LineChart,
   LockKeyhole,
+  PlayCircle,
   ShieldCheck,
   Sparkles,
+  Star,
   Table2,
+  TrendingUp,
   Workflow,
 } from "lucide-react";
 import { courseRoutes } from "@/lib/courseConfig";
 import PurchaseCourseLink from "@/components/commerce/PurchaseCourseLink";
+import { Header, FooterSEO } from "@/components/marketing/KoryxaFormationPortal";
 
 export const metadata = {
   title: "Power BI Data Analyst — KORYXA Formation",
@@ -26,102 +30,283 @@ export const metadata = {
 };
 
 const modules = [
-  "Découvrir Power BI",
-  "Nettoyer avec Power Query",
-  "Consolider plusieurs sources",
-  "Construire un modèle en étoile",
-  "Créer une table calendrier",
+  "Découvrir Power BI & l'écosystème décisionnel",
+  "Nettoyer et transformer avec Power Query",
+  "Consolider plusieurs sources de données",
+  "Construire un modèle en étoile sans ambiguïté",
+  "Créer une table calendrier et temporalités",
   "Écrire les premières mesures DAX",
-  "Construire des KPI métier",
-  "Analyser les évolutions temporelles",
-  "Créer des visualisations efficaces",
-  "Assembler un rapport professionnel",
+  "Construire des KPI métier avancés",
+  "Analyser les évolutions temporelles & comparatifs",
+  "Créer des visualisations claires et efficaces",
+  "Assembler un rapport multi-pages professionnel",
   "Publier et collaborer dans Power BI Service",
-  "Sécuriser, optimiser et documenter",
+  "Sécuriser les accès (RLS), optimiser et documenter",
 ];
 
 const outcomes = [
   "Préparer et consolider plusieurs sources avec Power Query",
   "Construire un modèle en étoile sans ambiguïté",
-  "Créer des mesures DAX et KPI fiables",
-  "Concevoir un rapport multi-pages interactif",
-  "Configurer une vue mobile et des accès sécurisés",
-  "Présenter des recommandations fondées sur les résultats",
+  "Créer des mesures DAX et KPI fiables pour la direction",
+  "Concevoir un rapport multi-pages interactif et dynamique",
+  "Configurer une vue mobile et des accès sécurisés (RLS)",
+  "Présenter des recommandations stratégiques fondées sur la data",
 ];
 
-export default function ExcelDataAnalystLanding() {
+export default function PowerBiDataAnalystLanding() {
   return (
-    <main className="min-h-screen bg-[#f4f7f2] text-[#10251d]">
-      <header className="sticky top-0 z-50 border-b border-[#10251d]/10 bg-[#f4f7f2]/92 backdrop-blur-xl">
-        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Link href="/formations" className="flex items-center gap-3 font-black">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0f6b3f] text-white">X</span>
-            <span><span className="block text-[10px] uppercase tracking-[.18em] text-[#0f6b3f]">KORYXA Formation</span><span className="block text-sm">Power BI Data Analyst</span></span>
-          </Link>
-          <nav className="hidden items-center gap-7 text-sm font-bold lg:flex">
-            <a href="#importance">Pourquoi Power BI</a><a href="#programme">Programme</a><a href="#projet">Projet</a><a href="#prix">Prix</a>
-          </nav>
-          <Link href={courseRoutes.access("power-bi-data-analyst")} className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#10251d] px-5 text-sm font-black text-white transition hover:bg-[#0f6b3f]">Accès apprenant</Link>
-        </div>
-      </header>
+    <main className="min-h-screen bg-[#faf9f5] text-slate-950 antialiased">
+      <Header />
 
-      <section className="relative overflow-hidden bg-[#10251d] px-4 py-16 text-white sm:px-6 sm:py-20 lg:px-8 lg:py-28">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:48px_48px]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_.75fr] lg:items-center">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200/20 bg-emerald-200/10 px-4 py-2 text-xs font-black uppercase tracking-[.16em] text-emerald-200"><Sparkles size={14}/> Parcours professionnel Power BI</span>
-            <h1 className="mt-6 max-w-4xl text-4xl font-black leading-[.96] tracking-[-.055em] sm:text-6xl lg:text-7xl">Transformez vos données en décisions avec Power BI.</h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">Apprenez à préparer les données, construire un modèle fiable, écrire des mesures DAX et publier un rapport interactif exploitable en entreprise.</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <PurchaseCourseLink courseSlug="power-bi-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:-translate-y-0.5 hover:bg-white">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
-              <a href="#programme" className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/15 bg-white/[.06] px-6 py-4 text-sm font-black text-white">Voir le programme</a>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 border-b border-[#dfe5d8]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white px-4 py-2 text-xs font-bold text-[#008b58] shadow-sm">
+            <Sparkles size={14} className="text-[#00a86b]" /> Parcours Professionnel Power BI · Projet Certifiant
+          </span>
+
+          <h1 className="mt-6 max-w-4xl mx-auto font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-950 text-center leading-[1.08]">
+            Transformez vos données en décisions avec Power BI.
+          </h1>
+
+          <p className="mt-6 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed text-slate-600 text-center">
+            Apprenez à préparer les données brutes avec Power Query, construire un modèle en étoile robuste, formuler des mesures DAX précises et concevoir des rapports de pilotage interactifs prêts pour l’entreprise.
+          </p>
+
+          {/* Centered CTA row */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <PurchaseCourseLink
+              courseSlug="power-bi-data-analyst"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-700/15 transition hover:bg-[#008b58]"
+            >
+              Commencer la formation <ArrowRight size={16} />
+            </PurchaseCourseLink>
+            <a
+              href="#programme"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#dfe5d8] bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-[#faf9f5]"
+            >
+              <PlayCircle size={16} /> Voir le programme
+            </a>
+          </div>
+
+          {/* Centered reassurance checkmarks */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm font-medium text-slate-600">
+            <span className="inline-flex items-center gap-1.5"><LockKeyhole size={15} className="text-[#00a86b]" /> Accès immédiat et illimité</span>
+            <span className="inline-flex items-center gap-1.5"><Star size={15} className="text-amber-500 fill-amber-500" /> 49 000 FCFA tarif unique</span>
+            <span className="inline-flex items-center gap-1.5"><ShieldCheck size={15} className="text-[#00a86b]" /> Certificat de réussite inclus</span>
+          </div>
+
+          {/* Centered showcase card */}
+          <div className="mx-auto mt-12 max-w-4xl rounded-3xl border border-[#dfe5d8] bg-white p-6 sm:p-8 shadow-xl text-left">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#dfe5d8] pb-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#008b58]">Projet final évalué</p>
+                <h2 className="mt-1 text-2xl font-serif font-bold text-slate-950">Rapport de pilotage commercial Power BI</h2>
+              </div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#00a86b]/10 px-3.5 py-1.5 text-xs font-bold text-[#008b58]">
+                Projet Portfolio
+              </span>
             </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              {[{icon:Clock3,label:"30 heures"},{icon:Layers3,label:"12 modules"},{icon:GraduationCap,label:"Certificat inclus"}].map(({icon:Icon,label})=><div key={label} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[.06] p-4"><Icon className="text-emerald-200" size={20}/><span className="text-sm font-bold">{label}</span></div>)}
+
+            <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">
+              Consolidez plusieurs sources de vente, construisez un modèle en étoile relationnel, rédigez des formules DAX de rentabilité et concevez un tableau de bord multi-pages avec filtres dynamiques.
+            </p>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                "4 jeux de données CSV & Excel",
+                "Ingestion Power Query propre",
+                "Modèle en étoile & calendrier",
+                "Rapport interactif multi-pages",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2.5 rounded-xl border border-[#dfe5d8] bg-[#faf9f5] p-3.5">
+                  <CheckCircle2 size={16} className="shrink-0 text-[#00a86b]" />
+                  <span className="text-xs sm:text-sm font-semibold text-slate-800">{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 grid grid-cols-3 gap-3 pt-5 border-t border-[#dfe5d8]">
+              {[
+                [Clock3, "30 h", "Volume de pratique"],
+                [Layers3, "12", "Modules pas-à-pas"],
+                [GraduationCap, "Certificat", "Inclus à la fin"],
+              ].map(([Icon, value, label]) => {
+                const ItemIcon = Icon as typeof Clock3;
+                return (
+                  <div key={label as string} className="rounded-xl border border-[#dfe5d8] bg-[#faf9f5] p-3 text-center">
+                    <ItemIcon size={16} className="mx-auto text-[#00a86b]" />
+                    <p className="mt-1.5 text-base sm:text-lg font-bold text-slate-950">{value as string}</p>
+                    <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">{label as string}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <aside className="rounded-[2rem] border border-white/10 bg-white/[.07] p-5 shadow-2xl shadow-black/25 backdrop-blur-xl sm:p-7">
-            <div className="rounded-[1.5rem] bg-[#f5fff8] p-6 text-[#10251d]">
-              <div className="flex items-center justify-between"><span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black uppercase tracking-[.12em] text-emerald-800">Projet final</span><FileSpreadsheet className="text-emerald-700"/></div>
-              <h2 className="mt-6 text-3xl font-black tracking-[-.04em]">Rapport de pilotage commercial Power BI</h2>
-              <p className="mt-4 text-sm leading-7 text-slate-600">Consolidez les ventes, construisez un modèle en étoile, créez les mesures DAX, sécurisez les accès et publiez un rapport de pilotage complet.</p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">{["4 fichiers CSV","Power Query","Modèle en étoile","Rapport interactif"].map(item=><p key={item} className="flex items-center gap-2 rounded-xl bg-white p-3 text-sm font-bold shadow-sm"><CheckCircle2 size={16} className="text-emerald-700"/>{item}</p>)}</div>
-            </div>
-          </aside>
         </div>
       </section>
 
-      <section id="importance" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      {/* Pourquoi cette compétence compte */}
+      <section id="importance" className="bg-white px-4 py-20 sm:px-6 lg:px-8 border-b border-[#dfe5d8]">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[.85fr_1.15fr]">
-            <div><span className="text-xs font-black uppercase tracking-[.16em] text-[#0f6b3f]">Pourquoi cette compétence compte</span><h2 className="mt-5 text-4xl font-black leading-[1] tracking-[-.05em] sm:text-5xl">Power BI transforme les données dispersées en pilotage visuel et partagé.</h2><p className="mt-6 text-base leading-8 text-slate-600">Les équipes finance, commerce, opérations et direction ont besoin de rapports fiables, actualisables et sécurisés. Power BI permet de structurer les sources, centraliser les KPI et partager une lecture commune de la performance.</p></div>
-            <div className="grid gap-5 sm:grid-cols-2">
-              {[{icon:BriefcaseBusiness,title:"Compétence immédiatement utile",text:"Les entreprises attendent des profils capables de produire vite des analyses fiables."},{icon:Workflow,title:"Automatisation concrète",text:"Power Query réduit les tâches répétitives et rend les mises à jour reproductibles."},{icon:Database,title:"Données mieux structurées",text:"Vous apprenez à nettoyer, relier et contrôler plusieurs sources."},{icon:LineChart,title:"Décisions plus claires",text:"Les KPI et dashboards transforment les chiffres en recommandations actionnables."}].map(({icon:Icon,title,text})=><article key={title} className="rounded-[1.75rem] border border-[#10251d]/10 bg-white p-6 shadow-sm"><Icon className="text-[#0f6b3f]"/><h3 className="mt-5 text-xl font-black">{title}</h3><p className="mt-3 text-sm leading-7 text-slate-600">{text}</p></article>)}
-            </div>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              <TrendingUp size={14} /> Valeur Marché
+            </span>
+            <h2 className="mt-4 font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
+              Power BI transforme les données dispersées en pilotage stratégique.
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+              Les directions et équipes métier ont besoin de rapports fiables, actualisables et sécurisés. Power BI structure les sources, centralise les KPI et crée une lecture unifiée de la performance.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: BriefcaseBusiness,
+                title: "Compétence immédiatement utile",
+                text: "Les entreprises recherchent des analystes capables de concevoir rapidement des tableaux de bord fiables et ergonomiques.",
+              },
+              {
+                icon: Workflow,
+                title: "Automatisation concrète",
+                text: "Power Query supprime les tâches manuelles répétitives et rend chaque actualisation mensuelle 100% reproductible.",
+              },
+              {
+                icon: Database,
+                title: "Données mieux modélisées",
+                text: "Vous apprenez à structurer des modèles relationnels solides qui ne ralentissent pas quand le volume grandit.",
+              },
+              {
+                icon: LineChart,
+                title: "Décisions stratégiques",
+                text: "Les KPI visuels transforment les chiffres bruts en alertes opérationnelles et leviers de croissance concrets.",
+              },
+            ].map(({ icon: Icon, title, text }) => (
+              <article key={title} className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-6 shadow-sm flex flex-col justify-between">
+                <div>
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00a86b]/10 text-[#008b58]">
+                    <Icon size={22} />
+                  </span>
+                  <h3 className="mt-5 text-lg font-bold text-slate-950">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{text}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section id="programme" className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      {/* Programme complet */}
+      <section id="programme" className="bg-[#faf9f5] px-4 py-20 sm:px-6 lg:px-8 border-b border-[#dfe5d8]">
         <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl"><span className="text-xs font-black uppercase tracking-[.16em] text-[#0f6b3f]">Programme complet</span><h2 className="mt-5 text-4xl font-black tracking-[-.05em] sm:text-5xl">De la donnée brute au rapport Power BI professionnel.</h2></div>
-          <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{modules.map((module,index)=><article key={module} className="rounded-[1.5rem] border border-[#10251d]/10 bg-[#f7faf6] p-5"><span className="text-xs font-black text-[#0f6b3f]">MODULE {String(index+1).padStart(2,"0")}</span><h3 className="mt-3 text-lg font-black">{module}</h3></article>)}</div>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58] shadow-sm">
+              <Layers3 size={14} /> Programme détaillé
+            </span>
+            <h2 className="mt-4 font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
+              De la donnée brute au rapport Power BI interactif.
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+              12 modules structurés avec exercices pratiques et livrables pour monter en puissance pas-à-pas.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {modules.map((module, index) => (
+              <article
+                key={module}
+                className="group flex flex-col justify-between rounded-2xl border border-[#dfe5d8] bg-white p-6 shadow-sm transition hover:border-[#00a86b]/40 hover:shadow-md"
+              >
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#008b58]">
+                    Module {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-2 text-lg font-bold text-slate-950">{module}</h3>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="projet" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_.9fr] lg:items-start">
-          <div><span className="text-xs font-black uppercase tracking-[.16em] text-[#0f6b3f]">Résultats attendus</span><h2 className="mt-5 text-4xl font-black tracking-[-.05em] sm:text-5xl">Vous repartez avec un rapport démontrable et exploitable.</h2><div className="mt-8 grid gap-3">{outcomes.map(item=><p key={item} className="flex items-start gap-3 rounded-2xl bg-white p-4 font-bold shadow-sm"><CheckCircle2 className="mt-0.5 shrink-0 text-[#0f6b3f]" size={19}/>{item}</p>)}</div></div>
-          <aside className="rounded-[2rem] bg-[#0f6b3f] p-7 text-white sm:p-9"><Gauge className="text-emerald-200"/><h3 className="mt-6 text-3xl font-black">Un parcours pensé pour la décision.</h3><p className="mt-4 leading-8 text-emerald-50/80">Analyste, contrôleur, chargé d’opérations, commercial ou entrepreneur : vous apprenez à construire un rapport que les équipes peuvent comprendre, actualiser et sécuriser.</p><div className="mt-7 grid gap-3 sm:grid-cols-2">{["12 exercices","24 leçons","12 quiz","Projet sur 60 points"].map(x=><div key={x} className="rounded-xl bg-white/10 p-4 text-sm font-black">{x}</div>)}</div></aside>
+      {/* Résultats attendus */}
+      <section id="projet" className="bg-white px-4 py-20 sm:px-6 lg:px-8 border-b border-[#dfe5d8]">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              <Gauge size={14} /> Compétences opérationnelles
+            </span>
+            <h2 className="mt-4 font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
+              Vous repartez avec un rapport démontrable et exploitable.
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+              À l’issue de la formation, vous saurez concevoir des tableaux de bord Power BI de niveau entreprise.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+            {outcomes.map((item) => (
+              <div key={item} className="flex items-start gap-3 rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-5 shadow-sm">
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#00a86b]" />
+                <p className="text-sm font-semibold text-slate-800 leading-snug">{item}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="prix" className="bg-[#10251d] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto grid max-w-6xl gap-8 rounded-[2rem] border border-white/10 bg-white/[.06] p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[.16em] text-emerald-200"><ShieldCheck size={15}/> Accès sécurisé</span><h2 className="mt-4 text-4xl font-black tracking-[-.04em]">49 000 FCFA</h2><div className="mt-2 flex flex-wrap items-center gap-3"><span className="text-sm font-bold text-slate-400 line-through">59 000 FCFA</span><span className="rounded-full bg-emerald-300 px-3 py-1 text-xs font-black uppercase tracking-[.12em] text-[#10251d]">Tarif de lancement</span></div><p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">Paiement unique. Leçons, fichiers Excel et CSV, ressources Microsoft Learn, exercices, projet final et certificat inclus.</p></div>
-          <PurchaseCourseLink courseSlug="power-bi-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:bg-white">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
+      {/* Pricing Section */}
+      <section id="prix" className="bg-[#faf9f5] px-4 py-20 sm:px-6 lg:px-8 border-t border-[#dfe5d8]">
+        <div className="mx-auto max-w-xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58] shadow-sm">
+            <Sparkles size={14} /> Tarif & Accès
+          </span>
+          <h2 className="mt-4 font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
+            Rejoignez le parcours Power BI
+          </h2>
+          <p className="mt-3 text-base text-slate-600 leading-relaxed">
+            Acquérez la compétence la plus demandée en business intelligence.
+          </p>
+
+          <div className="mt-8 rounded-3xl border border-[#dfe5d8] bg-white p-8 sm:p-10 shadow-xl text-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#008b58]">Accès complet au parcours</p>
+            <div className="mt-4 flex items-baseline justify-center gap-3">
+              <span className="text-4xl sm:text-5xl font-extrabold text-slate-950">49 000 FCFA</span>
+              <span className="text-base sm:text-lg font-medium text-slate-400 line-through">59 000 FCFA</span>
+            </div>
+            <p className="mt-2 text-xs font-semibold text-[#008b58]">Paiement unique · Accès à vie garanti</p>
+
+            <div className="mt-6 space-y-3 text-left border-t border-[#dfe5d8] pt-6">
+              {[
+                "12 modules progressifs de Power Query au cloud",
+                "Fichiers d'exercice Excel et CSV réels",
+                "Guide de syntaxe DAX et bonnes pratiques de modélisation",
+                "Projet final portfolio noté sur 60 points",
+                "Certificat d'achèvement officiel KORYXA",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700">
+                  <CheckCircle2 size={16} className="shrink-0 text-[#00a86b]" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8">
+              <PurchaseCourseLink
+                courseSlug="power-bi-data-analyst"
+                className="w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-700/15 transition hover:bg-[#008b58]"
+              >
+                Commencer la formation <ArrowRight size={16} />
+              </PurchaseCourseLink>
+            </div>
+            <p className="mt-4 text-xs text-slate-500">Paiement sécurisé via Mobile Money ou Carte Bancaire</p>
+          </div>
         </div>
       </section>
+
+      <FooterSEO />
     </main>
   );
 }

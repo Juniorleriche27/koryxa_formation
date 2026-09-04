@@ -820,33 +820,33 @@ export function FAQSection() {
 
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-[#050b08] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+    <section className="relative overflow-hidden border-t border-[#dfe5d8] bg-white px-4 py-20 text-slate-950 sm:px-6 lg:px-8 lg:py-24">
       {/* Halo subtil émeraude */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00a86b]/20 blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00a86b]/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b]/20 text-[#4ade80] border border-[#00a86b]/30">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b]/10 text-[#008b58] border border-[#00a86b]/20">
           <Sparkles size={24} />
         </div>
 
-        <h2 className="mt-6 font-serif text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight">
+        <h2 className="mt-6 font-serif text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950">
           Prêt à maîtriser la Data &amp; l’IA ?
         </h2>
 
-        <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300">
+        <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600">
           Rejoignez des centaines d’apprenants, construisez des projets réels et obtenez une certification valorisable immédiatement sur le marché.
         </p>
 
         <div className="mt-9 flex flex-col justify-center gap-3.5 sm:flex-row">
           <a
             href="/formations"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.35)] transition hover:bg-[#008b58] hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.25)] transition hover:bg-[#008b58] hover:-translate-y-0.5"
           >
             Découvrir les 8 parcours <ArrowRight size={18} />
           </a>
           <a
             href="/methode"
-            className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-sm font-bold text-white backdrop-blur-xl transition hover:bg-white/10 hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center rounded-xl border border-[#dfe5d8] bg-[#faf9f5] px-8 py-4 text-sm font-bold text-slate-800 transition hover:bg-slate-100 hover:-translate-y-0.5"
           >
             Comprendre la méthode
           </a>

@@ -78,45 +78,44 @@ export default function PourQuiPage() {
     <main className="min-h-screen bg-[#faf9f5] pt-16 text-slate-950 lg:pt-20">
       <Header />
 
-      <section className="relative overflow-hidden bg-[#050b08] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,168,107,.2),transparent_32rem),linear-gradient(180deg,#050b08_0%,#07190f_50%,#050b08_100%)]" />
+      <section className="relative overflow-hidden bg-[#faf9f5] border-b border-[#dfe5d8] px-4 py-16 sm:px-6 lg:px-8 lg:py-24 text-slate-950">
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.75fr] lg:items-center">
           <div className="max-w-4xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/40 bg-[#00a86b]/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#86efac]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58] shadow-sm">
               <Users size={14} /> Profils & Objectifs
             </span>
-            <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight">
+            <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight text-slate-950">
               Pour celles et ceux qui veulent apprendre utile.
             </h1>
-            <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300">
+            <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600">
               KORYXA Formation s’adresse aux personnes qui veulent comprendre, pratiquer et terminer avec une compétence concrète, pas simplement consommer des heures de vidéos.
             </p>
             <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
               <Link
                 href="/formations"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-700/15 transition hover:bg-[#008b58]"
               >
                 Explorer nos 8 formations <ArrowRight size={17} />
               </Link>
               <Link
                 href="/methode"
-                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/10"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#dfe5d8] bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-[#faf9f5]"
               >
                 Comprendre la méthode
               </Link>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-xl sm:p-8">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b] text-white">
+          <div className="rounded-3xl border border-[#dfe5d8] bg-white p-7 sm:p-8 shadow-xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b]/10 text-[#008b58]">
               <Sparkles size={22} />
             </div>
-            <h2 className="mt-6 font-serif text-2xl font-bold">Vous vous reconnaîtrez ici si…</h2>
+            <h2 className="mt-6 font-serif text-2xl font-bold text-slate-950">Vous vous reconnaîtrez ici si…</h2>
             <div className="mt-6 grid gap-2.5">
               {signals.slice(0, 4).map((signal) => (
-                <div key={signal} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3.5">
+                <div key={signal} className="flex items-center gap-3 rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-3.5">
                   <CheckCircle2 className="h-5 w-5 shrink-0 text-[#00a86b]" />
-                  <p className="text-xs sm:text-sm font-semibold text-slate-200">{signal}</p>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-800">{signal}</p>
                 </div>
               ))}
             </div>

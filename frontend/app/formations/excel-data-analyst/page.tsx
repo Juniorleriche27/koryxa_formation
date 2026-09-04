@@ -20,108 +20,248 @@ import {
 import { courseRoutes } from "@/lib/courseConfig";
 import PurchaseCourseLink from "@/components/commerce/PurchaseCourseLink";
 
+import { Header, FooterSEO } from "@/components/marketing/KoryxaFormationPortal";
+
 export const metadata = {
   title: "Excel Data Analyst — KORYXA Formation",
   description: "Apprenez Excel, Power Query, Power Pivot et les dashboards professionnels avec un parcours pratique orienté métier.",
 };
 
 const modules = [
-  "Prendre en main Excel",
-  "Calculs et formules essentielles",
-  "Organiser des données propres",
-  "Fonctions de recherche",
-  "Manipuler le texte et les dates",
-  "Analyse conditionnelle",
-  "Tableaux croisés dynamiques",
-  "Graphiques et visualisation",
-  "Power Query",
-  "Modèle de données et Power Pivot",
-  "Dashboard professionnel",
-  "Automatisation et contrôle qualité",
+  "Prendre en main Excel & automatisation",
+  "Calculs et formules essentielles avancées",
+  "Organiser et nettoyer des données brutes",
+  "Fonctions de recherche (XLOOKUP, INDEX/MATCH)",
+  "Manipuler le texte et les formats dates",
+  "Analyse conditionnelle & règles d'alerte",
+  "Tableaux croisés dynamiques (TCD) avancés",
+  "Graphiques de direction et visualisation",
+  "Power Query & transformation automatisée",
+  "Modèle relationnel et Power Pivot",
+  "Conception d'un dashboard de direction",
+  "Automatisation, contrôles et audit qualité",
 ];
 
 const outcomes = [
-  "Nettoyer et fiabiliser des données métier",
-  "Automatiser les imports avec Power Query",
-  "Construire des KPI et tableaux croisés",
-  "Créer un modèle de données avec Power Pivot",
-  "Livrer un dashboard clair et actualisable",
-  "Présenter des recommandations fondées sur les données",
+  "Nettoyer et fiabiliser des données métier volumineuses",
+  "Automatiser les flux d'imports répétitifs avec Power Query",
+  "Construire des KPI exécutifs et des tableaux croisés dynamiques",
+  "Créer un modèle relationnel robuste avec Power Pivot",
+  "Livrer un Dashboard commercial actualisable en 1 clic",
+  "Présenter des analyses défendables devant la direction",
 ];
 
 export default function ExcelDataAnalystLanding() {
   return (
-    <main className="min-h-screen bg-[#f4f7f2] text-[#10251d]">
-      <header className="sticky top-0 z-50 border-b border-[#10251d]/10 bg-[#f4f7f2]/92 backdrop-blur-xl">
-        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Link href="/formations" className="flex items-center gap-3 font-black">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0f6b3f] text-white">X</span>
-            <span><span className="block text-[10px] uppercase tracking-[.18em] text-[#0f6b3f]">KORYXA Formation</span><span className="block text-sm">Excel Data Analyst</span></span>
-          </Link>
-          <nav className="hidden items-center gap-7 text-sm font-bold lg:flex">
-            <a href="#importance">Pourquoi Excel</a><a href="#programme">Programme</a><a href="#projet">Projet</a><a href="#prix">Prix</a>
-          </nav>
-          <Link href={courseRoutes.access("excel-data-analyst")} className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#10251d] px-5 text-sm font-black text-white transition hover:bg-[#0f6b3f]">Accès apprenant</Link>
-        </div>
-      </header>
+    <main className="min-h-screen bg-[#faf9f5] text-slate-950 antialiased">
+      <Header />
 
-      <section className="relative overflow-hidden bg-[#10251d] px-4 py-16 text-white sm:px-6 sm:py-20 lg:px-8 lg:py-28">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:48px_48px]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_.75fr] lg:items-center">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200/20 bg-emerald-200/10 px-4 py-2 text-xs font-black uppercase tracking-[.16em] text-emerald-200"><Sparkles size={14}/> Parcours professionnel Excel</span>
-            <h1 className="mt-6 max-w-4xl text-4xl font-black leading-[.96] tracking-[-.055em] sm:text-6xl lg:text-7xl">Transformez Excel en véritable outil d’analyse et de décision.</h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">Apprenez à nettoyer des données, automatiser les imports, construire des KPI et livrer un dashboard professionnel utilisable en entreprise.</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <PurchaseCourseLink courseSlug="excel-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:-translate-y-0.5 hover:bg-white">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
-              <a href="#programme" className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/15 bg-white/[.06] px-6 py-4 text-sm font-black text-white">Voir le programme</a>
-            </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              {[{icon:Clock3,label:"28 heures"},{icon:Layers3,label:"12 modules"},{icon:GraduationCap,label:"Certificat inclus"}].map(({icon:Icon,label})=><div key={label} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[.06] p-4"><Icon className="text-emerald-200" size={20}/><span className="text-sm font-bold">{label}</span></div>)}
+      {/* Hero Section Centrée */}
+      <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 border-b border-[#dfe5d8]">
+        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+            <Sparkles size={14} /> Parcours Professionnel Certifiant • Écosystème KORYXA
+          </span>
+
+          <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-[4.2rem] font-black leading-[1.08] tracking-tight text-slate-950 max-w-4xl mx-auto">
+            Transformez Excel en véritable<br />
+            <em className="text-[#00a86b] not-italic">outil d’analyse et de décision.</em>
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600">
+            Apprenez à nettoyer des données, automatiser les imports avec Power Query, modéliser avec Power Pivot et livrer un dashboard de direction interactif.
+          </p>
+
+          <div className="mt-8 flex flex-col items-center justify-center gap-3.5 sm:flex-row">
+            <PurchaseCourseLink
+              courseSlug="excel-data-analyst"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]"
+            >
+              Commencer la formation <ArrowRight size={17} />
+            </PurchaseCourseLink>
+            <a
+              href="#programme"
+              className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
+            >
+              Voir le programme
+            </a>
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <Clock3 size={16} className="text-[#00a86b]" /> 28 heures de pratique
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Layers3 size={16} className="text-[#00a86b]" /> 12 modules d’application
+            </span>
+            <span className="flex items-center gap-1.5">
+              <GraduationCap size={16} className="text-[#00a86b]" /> Certificat officiel KORYXA
+            </span>
+          </div>
+
+          {/* Carte Vitrine Projet Final */}
+          <div className="relative mx-auto mt-12 sm:mt-16 w-full max-w-4xl">
+            <div className="overflow-hidden rounded-3xl border border-[#dfe5d8] bg-white p-6 sm:p-8 shadow-xl text-left">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00a86b]/10 text-[#008b58]">
+                    <FileSpreadsheet size={20} />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#008b58]">Projet Certifiant de Sortie</span>
+                    <h2 className="font-serif text-xl sm:text-2xl font-bold text-slate-950">Dashboard commercial &amp; financier actualisable</h2>
+                  </div>
+                </div>
+                <span className="rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-3 py-1 text-xs font-bold text-[#008b58]">
+                  Cas Réel d’Entreprise
+                </span>
+              </div>
+
+              <p className="mt-4 text-sm leading-relaxed text-slate-600">
+                Consolidez plusieurs fichiers CSV de ventes, automatisez l’ingestion et le nettoyage via Power Query, construisez le modèle relationnel dans Power Pivot, calculez les marges et livrez un tableau de bord exécutif prêt à l’emploi.
+              </p>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {["4 Fichiers sources réels", "Pipeline Power Query", "Modèle Power Pivot", "Dashboard interactif"].map((item) => (
+                  <div key={item} className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs font-semibold text-slate-800">
+                    <CheckCircle2 size={16} className="text-[#00a86b] shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          <aside className="rounded-[2rem] border border-white/10 bg-white/[.07] p-5 shadow-2xl shadow-black/25 backdrop-blur-xl sm:p-7">
-            <div className="rounded-[1.5rem] bg-[#f5fff8] p-6 text-[#10251d]">
-              <div className="flex items-center justify-between"><span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black uppercase tracking-[.12em] text-emerald-800">Projet final</span><FileSpreadsheet className="text-emerald-700"/></div>
-              <h2 className="mt-6 text-3xl font-black tracking-[-.04em]">Dashboard commercial actualisable</h2>
-              <p className="mt-4 text-sm leading-7 text-slate-600">Consolidez plusieurs fichiers, nettoyez les données avec Power Query, créez le modèle, calculez les KPI et présentez vos recommandations.</p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">{["4 fichiers CSV","Power Query","Power Pivot","Dashboard interactif"].map(item=><p key={item} className="flex items-center gap-2 rounded-xl bg-white p-3 text-sm font-bold shadow-sm"><CheckCircle2 size={16} className="text-emerald-700"/>{item}</p>)}</div>
-            </div>
-          </aside>
         </div>
       </section>
 
-      <section id="importance" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[.85fr_1.15fr]">
-            <div><span className="text-xs font-black uppercase tracking-[.16em] text-[#0f6b3f]">Pourquoi cette compétence compte</span><h2 className="mt-5 text-4xl font-black leading-[1] tracking-[-.05em] sm:text-5xl">Excel reste au centre des décisions quotidiennes en entreprise.</h2><p className="mt-6 text-base leading-8 text-slate-600">Finance, commerce, opérations, RH, logistique et gestion utilisent encore massivement Excel. La différence se fait entre une utilisation manuelle fragile et une maîtrise professionnelle, automatisée et contrôlée.</p></div>
-            <div className="grid gap-5 sm:grid-cols-2">
-              {[{icon:BriefcaseBusiness,title:"Compétence immédiatement utile",text:"Les entreprises attendent des profils capables de produire vite des analyses fiables."},{icon:Workflow,title:"Automatisation concrète",text:"Power Query réduit les tâches répétitives et rend les mises à jour reproductibles."},{icon:Database,title:"Données mieux structurées",text:"Vous apprenez à nettoyer, relier et contrôler plusieurs sources."},{icon:LineChart,title:"Décisions plus claires",text:"Les KPI et dashboards transforment les chiffres en recommandations actionnables."}].map(({icon:Icon,title,text})=><article key={title} className="rounded-[1.75rem] border border-[#10251d]/10 bg-white p-6 shadow-sm"><Icon className="text-[#0f6b3f]"/><h3 className="mt-5 text-xl font-black">{title}</h3><p className="mt-3 text-sm leading-7 text-slate-600">{text}</p></article>)}
+      {/* Pourquoi Excel */}
+      <section id="importance" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-white border-b border-[#dfe5d8]">
+        <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              Valeur sur le Marché
+            </span>
+            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
+              Excel reste au cœur des décisions d’entreprise.
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
+              Finance, commerce, opérations, RH et gestion reposent quotidiennement sur Excel. La valeur se crée en passant d&apos;une utilisation manuelle fragile à une maîtrise automatisée et rigoureuse.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2">
+            {[
+              { icon: BriefcaseBusiness, title: "Compétence immédiatement rentable", text: "Les recruteurs recherchent des collaborateurs capables de produire des analyses exactes sans délais." },
+              { icon: Workflow, title: "Automatisation concrète", text: "Power Query supprime les tâches répétitives et actualise vos données en un seul clic." },
+              { icon: Database, title: "Données consolidées & fiables", text: "Apprenez à nettoyer, relier et contrôler plusieurs sources hétérogènes sans erreurs." },
+              { icon: LineChart, title: "Recommandations éclairées", text: "Les KPI et graphiques synthétiques transforment les chiffres bruts en décisions stratégiques." },
+            ].map(({ icon: Icon, title, text }) => (
+              <article key={title} className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-6 shadow-sm transition hover:border-[#00a86b] hover:shadow-md">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#00a86b]/10 text-[#008b58]">
+                  <Icon size={22} />
+                </div>
+                <h3 className="mt-4 font-serif text-xl font-bold text-slate-950">{title}</h3>
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Programme complet */}
+      <section id="programme" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-[#faf9f5] border-b border-[#dfe5d8]">
+        <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              Curriculum Détaillé
+            </span>
+            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
+              12 modules structurés : de la cellule au dashboard exécutif.
+            </h2>
+          </div>
+
+          <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {modules.map((module, index) => (
+              <article key={module} className="rounded-2xl border border-[#dfe5d8] bg-white p-5 shadow-sm transition hover:border-[#00a86b] hover:shadow-md">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#008b58]">MODULE {String(index + 1).padStart(2, "0")}</span>
+                <h3 className="mt-2 font-serif text-base font-bold text-slate-950">{module}</h3>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Résultats attendus */}
+      <section id="projet" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-white border-b border-[#dfe5d8]">
+        <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              Compétences Acquises
+            </span>
+            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
+              Une preuve tangible de maîtrise exploitable dès demain.
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {outcomes.map((item) => (
+              <div key={item} className="flex items-start gap-3 rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-5 shadow-sm">
+                <CheckCircle2 className="mt-0.5 shrink-0 text-[#00a86b]" size={18} />
+                <p className="text-sm font-semibold leading-relaxed text-slate-700">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bloc Tarif & Accès */}
+      <section id="prix" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-[#faf9f5]">
+        <div className="mx-auto max-w-4xl rounded-3xl border border-[#dfe5d8] bg-white p-8 sm:p-12 shadow-xl">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+                <ShieldCheck size={14} /> Accès Professionnel Garanti
+              </span>
+              <h2 className="mt-5 font-serif text-3xl sm:text-4xl font-black tracking-tight text-slate-950">
+                Maîtrisez Excel au standard de l’entreprise.
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                Paiement unique sans abonnement. Fichiers sources d’entraînement, cas pratiques réels, quiz d’évaluation, projet de portfolio et certificat KORYXA officiel vérifiable.
+              </p>
+              <div className="mt-6 grid gap-2.5 sm:grid-cols-2">
+                {["Accès complet à vie", "Fichiers Excel & CSV inclus", "Validation du projet final", "Certificat vérifiable"].map((item) => (
+                  <p key={item} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                    <CheckCircle2 size={16} className="text-[#00a86b]" /> {item}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-6 text-center shadow-md">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Tarif Unique</p>
+              <div className="mt-3 flex items-baseline justify-center gap-2">
+                <span className="font-serif text-4xl font-black text-slate-950">39 000 FCFA</span>
+                <span className="text-sm font-semibold text-slate-400 line-through">49 000 FCFA</span>
+              </div>
+              <p className="mt-2 text-xs text-slate-500">Paiement sécurisé via Mobile Money et carte bancaire</p>
+              <PurchaseCourseLink
+                courseSlug="excel-data-analyst"
+                className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#008b58]"
+              >
+                S’inscrire à la formation <ArrowRight size={16} />
+              </PurchaseCourseLink>
+              <Link
+                href={courseRoutes.access("excel-data-analyst")}
+                className="mt-2.5 inline-block text-xs font-semibold text-slate-500 hover:text-[#008b58] transition-colors"
+              >
+                Déjà inscrit ? Accéder à l&apos;espace apprenant →
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="programme" className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl"><span className="text-xs font-black uppercase tracking-[.16em] text-[#0f6b3f]">Programme complet</span><h2 className="mt-5 text-4xl font-black tracking-[-.05em] sm:text-5xl">De la cellule au dashboard professionnel.</h2></div>
-          <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{modules.map((module,index)=><article key={module} className="rounded-[1.5rem] border border-[#10251d]/10 bg-[#f7faf6] p-5"><span className="text-xs font-black text-[#0f6b3f]">MODULE {String(index+1).padStart(2,"0")}</span><h3 className="mt-3 text-lg font-black">{module}</h3></article>)}</div>
-        </div>
-      </section>
-
-      <section id="projet" className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_.9fr] lg:items-start">
-          <div><span className="text-xs font-black uppercase tracking-[.16em] text-[#0f6b3f]">Résultats attendus</span><h2 className="mt-5 text-4xl font-black tracking-[-.05em] sm:text-5xl">Vous repartez avec une preuve de compétence exploitable.</h2><div className="mt-8 grid gap-3">{outcomes.map(item=><p key={item} className="flex items-start gap-3 rounded-2xl bg-white p-4 font-bold shadow-sm"><CheckCircle2 className="mt-0.5 shrink-0 text-[#0f6b3f]" size={19}/>{item}</p>)}</div></div>
-          <aside className="rounded-[2rem] bg-[#0f6b3f] p-7 text-white sm:p-9"><Gauge className="text-emerald-200"/><h3 className="mt-6 text-3xl font-black">Un parcours pensé pour les métiers.</h3><p className="mt-4 leading-8 text-emerald-50/80">Assistant administratif, commercial, contrôleur, chargé d’opérations, entrepreneur ou futur analyste : vous apprenez à répondre à des problèmes réels avec des fichiers que d’autres peuvent reprendre.</p><div className="mt-7 grid gap-3 sm:grid-cols-2">{["12 exercices","24 leçons","12 quiz","Projet sur 60 points"].map(x=><div key={x} className="rounded-xl bg-white/10 p-4 text-sm font-black">{x}</div>)}</div></aside>
-        </div>
-      </section>
-
-      <section id="prix" className="bg-[#10251d] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto grid max-w-6xl gap-8 rounded-[2rem] border border-white/10 bg-white/[.06] p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div><span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[.16em] text-emerald-200"><ShieldCheck size={15}/> Accès sécurisé</span><h2 className="mt-4 text-4xl font-black tracking-[-.04em]">39 000 FCFA</h2><div className="mt-2 flex flex-wrap items-center gap-3"><span className="text-sm font-bold text-slate-400 line-through">49 000 FCFA</span><span className="rounded-full bg-emerald-300 px-3 py-1 text-xs font-black uppercase tracking-[.12em] text-[#10251d]">Tarif de lancement</span></div><p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">Paiement unique. Leçons, fichiers Excel, CSV, ressources Microsoft, exercices, projet final et certificat inclus.</p></div>
-          <PurchaseCourseLink courseSlug="excel-data-analyst" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-300 px-6 py-4 text-sm font-black text-[#10251d] transition hover:bg-white">Commencer la formation <ArrowRight size={17}/></PurchaseCourseLink>
-        </div>
-      </section>
+      <FooterSEO />
     </main>
   );
 }

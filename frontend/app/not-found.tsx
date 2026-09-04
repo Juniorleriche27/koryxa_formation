@@ -8,30 +8,29 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[#050914] px-4 py-16 text-center text-white sm:px-6">
-      <div className="relative mx-auto max-w-lg">
-        <div className="absolute -top-12 left-1/2 -translate-x-1/2 rounded-full bg-blue-500/10 p-6 blur-2xl" />
-        <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-400/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-blue-200">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#faf9f5] px-4 py-16 text-center text-slate-950 sm:px-6">
+      <div className="relative mx-auto max-w-lg rounded-3xl border border-[#dfe5d8] bg-white p-8 sm:p-12 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
           <Compass size={14} /> Erreur 404
         </span>
-        <h1 className="mt-6 text-5xl font-black tracking-tight sm:text-6xl">
+        <h1 className="mt-6 font-serif text-4xl sm:text-5xl font-black tracking-tight text-slate-950">
           Page introuvable
         </h1>
-        <p className="mt-4 text-base leading-7 text-slate-400 sm:text-lg">
-          L&apos;adresse demandée n&apos;existe pas ou le module a été déplacé dans un autre parcours.
+        <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-600">
+          L&apos;adresse demandée n&apos;existe pas ou la formation a été déplacée.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/formations"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 text-sm font-black text-white shadow-xl shadow-blue-900/30 transition hover:-translate-y-0.5 hover:bg-blue-500"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 text-sm font-bold text-white shadow-lg shadow-[#00a86b]/20 transition hover:bg-[#008b58]"
           >
             <BookOpen size={16} /> Catalogue des formations
           </Link>
           <Link
-            href="/dashboard"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-6 text-sm font-black text-slate-200 transition hover:bg-white/10 hover:text-white"
+            href="/"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-[#dfe5d8] bg-[#faf9f5] px-6 text-sm font-bold text-slate-800 transition hover:bg-slate-100"
           >
-            <Home size={16} /> Mon espace apprenant
+            <Home size={16} /> Accueil
           </Link>
         </div>
       </div>

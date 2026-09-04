@@ -262,36 +262,36 @@ export default function FormationsPage() {
     <main className="min-h-screen bg-[#faf9f5] pt-16 text-slate-950 lg:pt-20">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[#050b08] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
-        <Image src="/assets/landing/hero/koryxa-learning-hero.jpg" alt="" fill priority className="object-cover opacity-25" sizes="100vw" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,168,107,.2),transparent_32rem),linear-gradient(180deg,#050b08_0%,#07190f_50%,#050b08_100%)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.7fr] lg:items-center">
-          <div className="max-w-4xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/40 bg-[#00a86b]/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#86efac]">
-              <Sparkles size={14} /> Catalogue d&apos;Excellence KORYXA
-            </span>
-            <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight">
-              Maîtrisez les compétences qui comptent. Prouvez votre valeur sur le marché.
-            </h1>
-            <p className="mt-6 max-w-2xl text-base font-normal leading-relaxed text-slate-300 sm:text-lg">
-              Des parcours d’excellence et packs métiers en Data, IA et Automatisation, conçus pour transformer la théorie en réalisations concrètes et certifiées.
-            </p>
-            <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
-              <a href="#packs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]">
-                Voir les Packs Métiers (-30%) <ArrowRight size={17} />
-              </a>
-              <a href="#formations" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/10">
-                Parcours individuels
-              </a>
-            </div>
+      {/* Hero Section Centrée Lumineuse */}
+      <section className="relative overflow-hidden bg-[#faf9f5] px-4 py-16 text-slate-950 sm:px-6 lg:px-8 lg:py-24 border-b border-[#dfe5d8]">
+        <div className="relative mx-auto max-w-5xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+            <Sparkles size={14} /> Catalogue d&apos;Excellence KORYXA
+          </span>
+          <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tight text-slate-950">
+            Maîtrisez les compétences qui comptent.<br />
+            <em className="text-[#00a86b] not-italic">Prouvez votre valeur sur le marché.</em>
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-base font-normal leading-relaxed text-slate-600 sm:text-lg">
+            Des parcours d’excellence et packs métiers en Data, IA et Automatisation, conçus pour transformer la théorie en réalisations concrètes et certifiées.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3.5 sm:flex-row">
+            <a href="#packs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]">
+              Voir les Packs Métiers (-30%) <ArrowRight size={17} />
+            </a>
+            <a href="#formations" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50">
+              Parcours individuels
+            </a>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+
+          <div className="mt-14 grid gap-4 sm:grid-cols-3 text-left">
             {pillars.map(({ title, text, icon: Icon }) => (
-              <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl">
-                <Icon className="h-5 w-5 text-[#86efac]" />
-                <h2 className="mt-4 font-serif text-lg font-bold text-white">{title}</h2>
-                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300">{text}</p>
+              <div key={title} className="rounded-2xl border border-[#dfe5d8] bg-white p-6 shadow-sm transition hover:shadow-md">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00a86b]/10 text-[#008b58]">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h2 className="mt-4 font-serif text-lg font-bold text-slate-950">{title}</h2>
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">{text}</p>
               </div>
             ))}
           </div>
@@ -299,16 +299,16 @@ export default function FormationsPage() {
       </section>
 
       {/* Section Packs Carrière & Bundles */}
-      <section id="packs" className="border-t border-[#1b3d29] bg-[#07190f] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
+      <section id="packs" className="border-b border-[#dfe5d8] bg-white px-4 py-20 text-slate-950 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/40 bg-[#00a86b]/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#86efac]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
               <BadgePercent size={15} /> Packs Métiers & Cursus Complets
             </span>
-            <h2 className="mt-6 font-serif text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
+            <h2 className="mt-6 font-serif text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950">
               Accélérez votre carrière avec un pack tout-en-un.
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
               Regroupez plusieurs formations complémentaires pour maîtriser un métier complet tout en bénéficiant de réductions exclusives.
             </p>
           </div>
@@ -317,36 +317,36 @@ export default function FormationsPage() {
             {careerPacks.map((pack) => (
               <div
                 key={pack.title}
-                className={`relative flex flex-col justify-between rounded-3xl border p-7 shadow-2xl transition sm:p-8 ${
+                className={`relative flex flex-col justify-between rounded-3xl border p-7 sm:p-8 transition-all duration-300 ${
                   pack.featured
-                    ? "border-[#00a86b]/60 bg-gradient-to-b from-[#0d2e1c] to-[#07190f] ring-2 ring-[#00a86b]/40"
-                    : "border-white/10 bg-white/[0.04]"
+                    ? "border-2 border-[#00a86b] bg-[#faf9f5] shadow-xl ring-4 ring-[#00a86b]/10"
+                    : "border-[#dfe5d8] bg-white shadow-sm hover:shadow-md hover:border-[#00a86b]/50"
                 }`}
               >
                 {pack.featured && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#00a86b] px-4 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#00a86b] px-4 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-md">
                     ⭐ Choix Recommandé
                   </div>
                 )}
 
                 <div>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#86efac]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#008b58]">
                       {pack.eyebrow}
                     </span>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600">
                       {pack.badge}
                     </span>
                   </div>
 
-                  <h3 className="mt-4 font-serif text-2xl font-bold text-white">{pack.title}</h3>
-                  <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-300">{pack.description}</p>
+                  <h3 className="mt-4 font-serif text-2xl font-bold text-slate-950">{pack.title}</h3>
+                  <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-600">{pack.description}</p>
 
-                  <div className="my-6 border-t border-white/10 pt-6">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  <div className="my-6 border-t border-slate-100 pt-6">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
                       Formations incluses :
                     </p>
-                    <ul className="mt-3 space-y-2.5 text-xs sm:text-sm text-slate-200">
+                    <ul className="mt-3 space-y-2.5 text-xs sm:text-sm text-slate-700">
                       {pack.courses.map((course, i) => (
                         <li key={i} className="flex items-start gap-2.5">
                           <Check size={16} className="mt-0.5 shrink-0 text-[#00a86b]" />
@@ -357,15 +357,15 @@ export default function FormationsPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 border-t border-white/10 pt-6">
+                <div className="mt-6 border-t border-slate-100 pt-6">
                   <div className="mb-4">
                     <div className="flex items-baseline gap-2">
-                      <span className="font-serif text-3xl font-black text-white">{pack.price}</span>
+                      <span className="font-serif text-3xl font-black text-slate-950">{pack.price}</span>
                       <span className="text-sm font-bold text-slate-400 line-through">
                         {pack.oldPrice}
                       </span>
                     </div>
-                    <span className="mt-1 inline-block text-xs font-bold text-[#86efac]">
+                    <span className="mt-1 inline-block rounded-full bg-[#00a86b]/15 px-2.5 py-0.5 text-xs font-bold text-[#008b58]">
                       {pack.saving}
                     </span>
                   </div>
@@ -376,7 +376,7 @@ export default function FormationsPage() {
                       className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition ${
                         pack.featured
                           ? "bg-[#00a86b] text-white shadow-lg hover:bg-[#008b58]"
-                          : "border border-white/15 bg-white/10 text-white hover:bg-white/20"
+                          : "border border-slate-300 bg-white text-slate-900 shadow-sm hover:bg-slate-50"
                       }`}
                     >
                       Commander ce Pack <ArrowRight size={16} />
@@ -385,7 +385,7 @@ export default function FormationsPage() {
                       href={`https://wa.me/22892092572?text=${encodeURIComponent(pack.whatsappText)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-center text-xs font-semibold text-slate-400 transition hover:text-[#86efac]"
+                      className="text-center text-xs font-semibold text-slate-500 transition hover:text-[#008b58]"
                     >
                       Ou commander directement via WhatsApp →
                     </a>
@@ -414,54 +414,63 @@ export default function FormationsPage() {
 
           <div className="mt-14 grid gap-6 lg:grid-cols-2">
             {tracks.map(({ title, eyebrow, description, objective, level, format, icon: Icon, href, active, featured, price, oldPrice, outcome, tags }) => (
-              <article key={title} className={`relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border p-6 sm:p-8 transition-all duration-300 hover:shadow-xl ${featured ? "border-[#00a86b]/50 bg-[#07190f] text-white shadow-2xl" : active ? "border-[#dfe5d8] bg-white hover:border-[#00a86b]" : "border-slate-200 bg-white/80"}`}>
+              <article
+                key={title}
+                className={`relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border p-6 sm:p-8 transition-all duration-300 ${
+                  featured
+                    ? "border-2 border-[#00a86b]/60 bg-white shadow-xl ring-2 ring-[#00a86b]/10"
+                    : active
+                    ? "border-[#dfe5d8] bg-white shadow-sm hover:border-[#00a86b] hover:shadow-md"
+                    : "border-slate-200 bg-white/80"
+                }`}
+              >
                 <div>
                   <div className="flex items-start justify-between gap-4">
-                    <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${featured ? "bg-[#00a86b] text-white" : active ? "bg-[#00a86b]/15 text-[#008b58]" : "bg-slate-100 text-slate-600"}`}>
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b]/15 text-[#008b58]">
                       <Icon size={24} />
                     </span>
-                    <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${featured ? "bg-[#00a86b]/20 text-[#86efac] border border-[#00a86b]/30" : active ? "bg-[#00a86b]/15 text-[#008b58] border border-[#00a86b]/30" : "bg-slate-100 text-slate-500"}`}>
+                    <span className="rounded-full border border-[#00a86b]/30 bg-[#00a86b]/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#008b58]">
                       {eyebrow}
                     </span>
                   </div>
 
-                  <h3 className={`mt-6 font-serif text-2xl font-bold tracking-tight ${featured ? "text-white" : "text-slate-950"}`}>
+                  <h3 className="mt-6 font-serif text-2xl font-bold tracking-tight text-slate-950">
                     {title}
                   </h3>
-                  <p className={`mt-3 text-xs sm:text-sm leading-relaxed ${featured ? "text-slate-300" : "text-slate-600"}`}>
+                  <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-600">
                     {description}
                   </p>
                   {outcome && (
-                    <p className={`mt-4 inline-flex rounded-xl px-3.5 py-1.5 text-xs font-bold ${featured ? "bg-[#00a86b]/20 text-[#86efac]" : "bg-[#00a86b]/10 text-[#008b58]"}`}>
+                    <p className="mt-4 inline-flex rounded-xl bg-[#00a86b]/10 px-3.5 py-1.5 text-xs font-bold text-[#008b58]">
                       {outcome}
                     </p>
                   )}
 
                   <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
                     {[{ label: "Objectif", value: objective, icon: Target }, { label: "Niveau", value: level, icon: GraduationCap }, { label: "Format", value: format, icon: Clock3 }].map(({ label, value, icon: DetailIcon }) => (
-                      <div key={label} className={`rounded-xl p-3 ${featured ? "border border-white/10 bg-white/[0.04]" : "bg-slate-50 border border-slate-100"}`}>
-                        <DetailIcon className={`h-4 w-4 ${featured ? "text-[#86efac]" : "text-[#00a86b]"}`} />
-                        <p className={`mt-2 text-[10px] font-bold uppercase tracking-wider ${featured ? "text-slate-400" : "text-slate-500"}`}>{label}</p>
-                        <p className={`mt-1 text-xs font-semibold leading-snug ${featured ? "text-white" : "text-slate-900"}`}>{value}</p>
+                      <div key={label} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                        <DetailIcon className="h-4 w-4 text-[#00a86b]" />
+                        <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</p>
+                        <p className="mt-1 text-xs font-semibold leading-snug text-slate-900">{value}</p>
                       </div>
                     ))}
                   </div>
 
                   <div className="mt-5 flex flex-wrap gap-1.5">
                     {tags.map(tag => (
-                      <span key={tag} className={`rounded-lg px-2.5 py-0.5 font-mono text-[10px] font-semibold ${featured ? "bg-white/10 text-slate-200" : "bg-slate-100 text-slate-600"}`}>
+                      <span key={tag} className="rounded-lg bg-slate-100 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-slate-600">
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className={`mt-8 border-t pt-5 ${featured ? "border-white/10" : "border-slate-100"}`}>
+                <div className="mt-8 border-t border-slate-100 pt-5">
                   {price && (
                     <div className="mb-4 flex flex-wrap items-baseline gap-2.5">
-                      <p className={`font-serif text-2xl font-black ${featured ? "text-white" : "text-slate-950"}`}>{price}</p>
+                      <p className="font-serif text-2xl font-black text-slate-950">{price}</p>
                       {oldPrice && <p className="text-xs font-semibold text-slate-400 line-through">{oldPrice}</p>}
-                      <span className={`text-[10px] font-bold uppercase tracking-wider ${featured ? "text-[#86efac]" : "text-[#008b58]"}`}>Tarif officiel</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#008b58]">Tarif officiel</span>
                     </div>
                   )}
                   <Link
@@ -484,51 +493,51 @@ export default function FormationsPage() {
       </section>
 
       {/* Section Entreprises & Équipes B2B */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-slate-200 bg-gradient-to-br from-slate-950 via-[#06251c] to-slate-950 p-8 text-white shadow-2xl sm:p-12 lg:p-16">
+      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24 border-t border-[#dfe5d8]">
+        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-[#dfe5d8] bg-[#faf9f5] p-8 text-slate-950 shadow-xl sm:p-12 lg:p-16">
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#bcf5d7]/30 bg-[#bcf5d7]/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-[#008b58]">
                 <Briefcase size={14} /> Offre Entreprises & Cabinets
               </span>
-              <h2 className="mt-6 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+              <h2 className="mt-6 font-serif text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl text-slate-950">
                 Montez en compétences vos équipes sur la Data & l&apos;IA.
               </h2>
-              <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
+              <p className="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">
                 Vous dirigez une entreprise, une PME ou un cabinet ? Offrez à vos collaborateurs des compétences immédiatement opérationnelles en Excel, SQL, Power BI et IA documentaire.
               </p>
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                  <CheckCircle2 size={18} className="text-emerald-400" /> Remise de -25% dès 3 accès
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <CheckCircle2 size={18} className="text-[#00a86b]" /> Remise de -25% dès 3 accès
                 </div>
-                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                  <CheckCircle2 size={18} className="text-emerald-400" /> Facturation entreprise certifiée
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <CheckCircle2 size={18} className="text-[#00a86b]" /> Facturation entreprise certifiée
                 </div>
-                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                  <CheckCircle2 size={18} className="text-emerald-400" /> Suivi de progression pour le RH
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <CheckCircle2 size={18} className="text-[#00a86b]" /> Suivi de progression pour le RH
                 </div>
-                <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                  <CheckCircle2 size={18} className="text-emerald-400" /> Support pédagogique dédié
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <CheckCircle2 size={18} className="text-[#00a86b]" /> Support pédagogique dédié
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-md">
-              <p className="text-sm font-black text-white">Besoin d&apos;un devis ou d&apos;une convention ?</p>
-              <p className="text-xs leading-5 text-slate-300">
+            <div className="flex flex-col gap-3 rounded-3xl border border-[#dfe5d8] bg-white p-6 shadow-md">
+              <p className="font-serif text-base font-bold text-slate-950">Besoin d&apos;un devis ou d&apos;une convention ?</p>
+              <p className="text-xs leading-5 text-slate-600">
                 Contactez directement notre équipe pour une proposition adaptée au nombre de collaborateurs.
               </p>
               <a
                 href="https://wa.me/22892092572?text=Bonjour%20KORYXA,%20je%20souhaite%20un%20devis%20pour%20former%20mon%20%C3%A9quipe%20en%20entreprise."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-5 text-sm font-black text-[#06251c] transition hover:bg-emerald-300"
+                className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#00a86b] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#008b58]"
               >
                 <MessageCircleMore size={17} /> Échanger sur WhatsApp
               </a>
               <a
                 href="mailto:contact@koryxa.fr?subject=Demande%20de%20devis%20formation%20entreprise"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-5 text-sm font-black text-white transition hover:bg-white/20"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
               >
                 <Mail size={17} /> Demander un devis par Email
               </a>

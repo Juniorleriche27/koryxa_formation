@@ -9,25 +9,27 @@ const controls = [
 
 export function LlmRagSecurityPreview() {
   return (
-    <section className="bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+    <section className="bg-white border-t border-[#dfe5d8] px-4 py-20 text-slate-950 sm:px-6 lg:px-8 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-4xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-[#00a86b]/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#008b58]">
             <LockKeyhole size={14} /> Sécurité intégrée
           </span>
-          <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] sm:text-5xl">
+          <h2 className="mt-6 text-3xl sm:text-4xl lg:text-5xl font-serif font-black tracking-tight text-slate-950">
             Protéger les documents, les utilisateurs et les réponses.
           </h2>
-          <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-white/70">
+          <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-slate-600">
             Le parcours apprend à traiter la sécurité comme une partie du produit : validation des fichiers, refus hors contexte, secrets absents des logs et accès contrôlés.
           </p>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {controls.map(([Icon, title, description]) => (
-            <article key={title} className="rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-5">
-              <Icon className="h-6 w-6 text-[#bcf5d7]" />
-              <h3 className="mt-5 text-lg font-black">{title}</h3>
-              <p className="mt-2 text-sm leading-7 text-white/65">{description}</p>
+            <article key={title} className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-6 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00a86b]/10 text-[#008b58]">
+                <Icon className="h-6 w-6" />
+              </div>
+              <h3 className="mt-5 text-lg font-bold text-slate-900">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">{description}</p>
             </article>
           ))}
         </div>

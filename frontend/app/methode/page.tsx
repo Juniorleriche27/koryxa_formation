@@ -143,25 +143,25 @@ export default function MethodePage() {
         </div>
       </section>
 
-      <section className="bg-[#050b08] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+      <section className="bg-[#faf9f5] border-b border-[#dfe5d8] px-4 py-20 text-slate-950 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/40 bg-[#00a86b]/20 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#86efac]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-[#00a86b]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#008b58]">
               <CheckCircle2 size={15} /> Ce que vous obtenez
             </span>
-            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight">
+            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
               Une compétence comprise, pratiquée et prouvée.
             </h2>
-            <p className="mt-4 max-w-xl text-sm sm:text-base leading-relaxed text-slate-300">
+            <p className="mt-4 max-w-xl text-sm sm:text-base leading-relaxed text-slate-600">
               La méthode KORYXA ne cherche pas à vous noyer sous des heures de vidéos passives. Elle vous amène directement à un livrable vérifiable prêt pour votre carrière.
             </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             {outcomes.map((item) => (
-              <div key={item} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+              <div key={item} className="flex gap-3 rounded-2xl border border-[#dfe5d8] bg-white p-5 shadow-sm">
                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#00a86b]" />
-                <p className="text-xs sm:text-sm font-semibold leading-relaxed text-slate-200">{item}</p>
+                <p className="text-xs sm:text-sm font-semibold leading-relaxed text-slate-800">{item}</p>
               </div>
             ))}
           </div>

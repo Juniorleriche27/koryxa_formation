@@ -97,11 +97,11 @@ select {
   }
 
   .kx-dark-page {
-    @apply min-h-screen overflow-x-hidden bg-[#050b08] text-white;
+    @apply min-h-screen overflow-x-hidden bg-[#0a0f1d] text-white;
     background-image:
-      radial-gradient(circle at top left, rgba(0, 168, 107, 0.18), transparent 32rem),
-      radial-gradient(circle at 85% 12%, rgba(20, 184, 166, 0.10), transparent 28rem),
-      linear-gradient(180deg, #050b08 0%, #07190f 52%, #050b08 100%);
+      radial-gradient(circle at top left, rgba(0, 168, 107, 0.12), transparent 32rem),
+      radial-gradient(circle at 85% 12%, rgba(20, 184, 166, 0.08), transparent 28rem),
+      linear-gradient(180deg, #0a0f1d 0%, #0e1726 52%, #0a0f1d 100%);
   }
 
   .kx-container {
@@ -121,7 +121,7 @@ select {
   }
 
   .kx-dark-surface {
-    @apply rounded-3xl border border-[#234b33] bg-[#07190f]/95 shadow-2xl backdrop-blur-xl;
+    @apply rounded-3xl border border-white/10 bg-[#0e1726]/95 shadow-2xl backdrop-blur-xl;
   }
 
   .kx-eyebrow {
