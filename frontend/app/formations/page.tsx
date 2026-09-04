@@ -259,40 +259,56 @@ const pillars = [
 
 export default function FormationsPage() {
   return (
-    <main className="kx-marketing min-h-screen bg-white pt-16 text-slate-950 lg:pt-20">
+    <main className="min-h-screen bg-[#faf9f5] pt-16 text-slate-950 lg:pt-20">
       <Header />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
-        <Image src="/assets/landing/hero/koryxa-learning-hero.jpg" alt="" fill priority className="object-cover opacity-30" sizes="100vw" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,37,28,.94)_0%,rgba(6,37,28,.78)_48%,rgba(6,37,28,.42)_100%)]" />
+      <section className="relative overflow-hidden bg-[#050b08] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
+        <Image src="/assets/landing/hero/koryxa-learning-hero.jpg" alt="" fill priority className="object-cover opacity-25" sizes="100vw" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,168,107,.2),transparent_32rem),linear-gradient(180deg,#050b08_0%,#07190f_50%,#050b08_100%)]" />
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.7fr] lg:items-center">
           <div className="max-w-4xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#bcf5d7]/30 bg-[#bcf5d7]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]"><Sparkles size={14} /> Catalogue KORYXA</span>
-            <h1 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] sm:text-6xl lg:text-7xl">Maîtrisez les compétences qui comptent. Prouvez votre valeur sur le marché.</h1>
-            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-white/75 sm:text-lg">Des parcours d’excellence et packs métiers en Data, IA et Automatisation, conçus pour transformer la théorie en réalisations concrètes et certifiées.</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#packs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">Voir les Packs Métiers (-30%) <ArrowRight size={17} /></a>
-              <a href="#formations" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/8 px-6 py-3.5 text-sm font-black text-white backdrop-blur-md transition hover:bg-white/14">Parcours individuels</a>
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/40 bg-[#00a86b]/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#86efac]">
+              <Sparkles size={14} /> Catalogue d&apos;Excellence KORYXA
+            </span>
+            <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight">
+              Maîtrisez les compétences qui comptent. Prouvez votre valeur sur le marché.
+            </h1>
+            <p className="mt-6 max-w-2xl text-base font-normal leading-relaxed text-slate-300 sm:text-lg">
+              Des parcours d’excellence et packs métiers en Data, IA et Automatisation, conçus pour transformer la théorie en réalisations concrètes et certifiées.
+            </p>
+            <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
+              <a href="#packs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]">
+                Voir les Packs Métiers (-30%) <ArrowRight size={17} />
+              </a>
+              <a href="#formations" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/10">
+                Parcours individuels
+              </a>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            {pillars.map(({ title, text, icon: Icon }) => <div key={title} className="rounded-[1.5rem] border border-white/12 bg-white/8 p-5 backdrop-blur-xl"><Icon className="h-5 w-5 text-[#bcf5d7]" /><h2 className="mt-4 text-lg font-black">{title}</h2><p className="mt-2 text-sm leading-6 text-white/65">{text}</p></div>)}
+            {pillars.map(({ title, text, icon: Icon }) => (
+              <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl">
+                <Icon className="h-5 w-5 text-[#86efac]" />
+                <h2 className="mt-4 font-serif text-lg font-bold text-white">{title}</h2>
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300">{text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Section Packs Carrière & Bundles */}
-      <section id="packs" className="bg-[#0b1e19] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
+      <section id="packs" className="border-t border-[#1b3d29] bg-[#07190f] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-emerald-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/40 bg-[#00a86b]/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#86efac]">
               <BadgePercent size={15} /> Packs Métiers & Cursus Complets
             </span>
-            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-6xl">
+            <h2 className="mt-6 font-serif text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
               Accélérez votre carrière avec un pack tout-en-un.
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
               Regroupez plusieurs formations complémentaires pour maîtriser un métier complet tout en bénéficiant de réductions exclusives.
             </p>
           </div>
@@ -301,39 +317,39 @@ export default function FormationsPage() {
             {careerPacks.map((pack) => (
               <div
                 key={pack.title}
-                className={`relative flex flex-col justify-between rounded-[2.25rem] border p-7 shadow-2xl transition sm:p-8 ${
+                className={`relative flex flex-col justify-between rounded-3xl border p-7 shadow-2xl transition sm:p-8 ${
                   pack.featured
-                    ? "border-emerald-300/40 bg-gradient-to-b from-[#10382b] to-[#081e17] ring-2 ring-emerald-400/30"
+                    ? "border-[#00a86b]/60 bg-gradient-to-b from-[#0d2e1c] to-[#07190f] ring-2 ring-[#00a86b]/40"
                     : "border-white/10 bg-white/[0.04]"
                 }`}
               >
                 {pack.featured && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 px-4 py-1 text-xs font-black uppercase tracking-[0.14em] text-[#06251c] shadow-lg shadow-emerald-950/40">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#00a86b] px-4 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
                     ⭐ Choix Recommandé
                   </div>
                 )}
 
                 <div>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs font-black uppercase tracking-[0.14em] text-emerald-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#86efac]">
                       {pack.eyebrow}
                     </span>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-slate-200">
+                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-200">
                       {pack.badge}
                     </span>
                   </div>
 
-                  <h3 className="mt-4 text-2xl font-black text-white">{pack.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">{pack.description}</p>
+                  <h3 className="mt-4 font-serif text-2xl font-bold text-white">{pack.title}</h3>
+                  <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-300">{pack.description}</p>
 
                   <div className="my-6 border-t border-white/10 pt-6">
-                    <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
                       Formations incluses :
                     </p>
-                    <ul className="mt-3 space-y-2.5 text-sm text-slate-200">
+                    <ul className="mt-3 space-y-2.5 text-xs sm:text-sm text-slate-200">
                       {pack.courses.map((course, i) => (
                         <li key={i} className="flex items-start gap-2.5">
-                          <Check size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+                          <Check size={16} className="mt-0.5 shrink-0 text-[#00a86b]" />
                           <span>{course}</span>
                         </li>
                       ))}
@@ -344,12 +360,12 @@ export default function FormationsPage() {
                 <div className="mt-6 border-t border-white/10 pt-6">
                   <div className="mb-4">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-black text-white">{pack.price}</span>
+                      <span className="font-serif text-3xl font-black text-white">{pack.price}</span>
                       <span className="text-sm font-bold text-slate-400 line-through">
                         {pack.oldPrice}
                       </span>
                     </div>
-                    <span className="mt-1 inline-block text-xs font-black text-emerald-300">
+                    <span className="mt-1 inline-block text-xs font-bold text-[#86efac]">
                       {pack.saving}
                     </span>
                   </div>
@@ -357,9 +373,9 @@ export default function FormationsPage() {
                   <div className="flex flex-col gap-2">
                     <Link
                       href={`/checkout?pack=${pack.slug}`}
-                      className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black transition ${
+                      className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition ${
                         pack.featured
-                          ? "bg-emerald-400 text-[#06251c] shadow-lg shadow-emerald-900/40 hover:bg-emerald-300"
+                          ? "bg-[#00a86b] text-white shadow-lg hover:bg-[#008b58]"
                           : "border border-white/15 bg-white/10 text-white hover:bg-white/20"
                       }`}
                     >
@@ -369,7 +385,7 @@ export default function FormationsPage() {
                       href={`https://wa.me/22892092572?text=${encodeURIComponent(pack.whatsappText)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-center text-xs font-bold text-slate-400 transition hover:text-emerald-300"
+                      className="text-center text-xs font-semibold text-slate-400 transition hover:text-[#86efac]"
                     >
                       Ou commander directement via WhatsApp →
                     </a>
@@ -382,46 +398,84 @@ export default function FormationsPage() {
       </section>
 
       {/* Section Parcours Individuels */}
-      <section id="formations" className="bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section id="formations" className="bg-[#faf9f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#bcf5d7] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#06251c]"><Target size={14} /> Les parcours individuels</span>
-            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] text-[#06251c] sm:text-5xl lg:text-6xl">Une formation ciblée par compétence.</h2>
-            <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">Comparez les objectifs, le niveau, le résultat attendu et le prix avant de choisir votre parcours.</p>
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              <Target size={14} /> Les parcours individuels
+            </span>
+            <h2 className="mt-6 font-serif text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950">
+              Une formation ciblée par compétence.
+            </h2>
+            <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
+              Comparez les objectifs, le niveau, le résultat attendu et le prix avant de choisir votre parcours.
+            </p>
           </div>
 
           <div className="mt-14 grid gap-6 lg:grid-cols-2">
             {tracks.map(({ title, eyebrow, description, objective, level, format, icon: Icon, href, active, featured, price, oldPrice, outcome, tags }) => (
-              <article key={title} className={`relative flex h-full flex-col overflow-hidden rounded-[2rem] border p-6 shadow-sm sm:p-8 ${featured ? "border-emerald-300/30 bg-[#06251c] text-white shadow-2xl shadow-emerald-950/20" : active ? "border-[#00bd72]/35 bg-white shadow-[#06251c]/8" : "border-[#06251c]/10 bg-white/80"}`}>
-                {featured && <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_0%,rgba(16,185,129,.22),transparent_18rem),linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[length:auto,40px_40px,40px_40px]" />}
-                <div className="relative flex items-start justify-between gap-4">
-                  <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${featured ? "bg-emerald-300 text-[#06251c]" : active ? "bg-[#bcf5d7] text-[#06251c]" : "bg-[#06251c]/6 text-[#06251c]/65"}`}><Icon size={25} /></span>
-                  <span className={`rounded-full px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.12em] ${active ? "bg-[#00bd72] text-[#06251c]" : "bg-[#06251c]/8 text-[#06251c]/55"}`}>{eyebrow}</span>
+              <article key={title} className={`relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border p-6 sm:p-8 transition-all duration-300 hover:shadow-xl ${featured ? "border-[#00a86b]/50 bg-[#07190f] text-white shadow-2xl" : active ? "border-[#dfe5d8] bg-white hover:border-[#00a86b]" : "border-slate-200 bg-white/80"}`}>
+                <div>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${featured ? "bg-[#00a86b] text-white" : active ? "bg-[#00a86b]/15 text-[#008b58]" : "bg-slate-100 text-slate-600"}`}>
+                      <Icon size={24} />
+                    </span>
+                    <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${featured ? "bg-[#00a86b]/20 text-[#86efac] border border-[#00a86b]/30" : active ? "bg-[#00a86b]/15 text-[#008b58] border border-[#00a86b]/30" : "bg-slate-100 text-slate-500"}`}>
+                      {eyebrow}
+                    </span>
+                  </div>
+
+                  <h3 className={`mt-6 font-serif text-2xl font-bold tracking-tight ${featured ? "text-white" : "text-slate-950"}`}>
+                    {title}
+                  </h3>
+                  <p className={`mt-3 text-xs sm:text-sm leading-relaxed ${featured ? "text-slate-300" : "text-slate-600"}`}>
+                    {description}
+                  </p>
+                  {outcome && (
+                    <p className={`mt-4 inline-flex rounded-xl px-3.5 py-1.5 text-xs font-bold ${featured ? "bg-[#00a86b]/20 text-[#86efac]" : "bg-[#00a86b]/10 text-[#008b58]"}`}>
+                      {outcome}
+                    </p>
+                  )}
+
+                  <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
+                    {[{ label: "Objectif", value: objective, icon: Target }, { label: "Niveau", value: level, icon: GraduationCap }, { label: "Format", value: format, icon: Clock3 }].map(({ label, value, icon: DetailIcon }) => (
+                      <div key={label} className={`rounded-xl p-3 ${featured ? "border border-white/10 bg-white/[0.04]" : "bg-slate-50 border border-slate-100"}`}>
+                        <DetailIcon className={`h-4 w-4 ${featured ? "text-[#86efac]" : "text-[#00a86b]"}`} />
+                        <p className={`mt-2 text-[10px] font-bold uppercase tracking-wider ${featured ? "text-slate-400" : "text-slate-500"}`}>{label}</p>
+                        <p className={`mt-1 text-xs font-semibold leading-snug ${featured ? "text-white" : "text-slate-900"}`}>{value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {tags.map(tag => (
+                      <span key={tag} className={`rounded-lg px-2.5 py-0.5 font-mono text-[10px] font-semibold ${featured ? "bg-white/10 text-slate-200" : "bg-slate-100 text-slate-600"}`}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="relative">
-                  <h3 className={`mt-8 text-2xl font-black tracking-[-0.03em] sm:text-3xl ${featured ? "text-white" : "text-[#06251c]"}`}>{title}</h3>
-                  <p className={`mt-4 text-sm leading-7 sm:text-base ${featured ? "text-slate-300" : "text-slate-600"}`}>{description}</p>
-                  {outcome && <p className={`mt-5 inline-flex rounded-full px-4 py-2 text-sm font-black ${featured ? "bg-emerald-300/12 text-emerald-200" : "bg-emerald-50 text-emerald-800"}`}>{outcome}</p>}
-                </div>
-
-                <div className="relative mt-7 grid gap-3 sm:grid-cols-3">
-                  {[{ label: "Objectif", value: objective, icon: Target }, { label: "Niveau", value: level, icon: GraduationCap }, { label: "Format", value: format, icon: Clock3 }].map(({ label, value, icon: DetailIcon }) => (
-                    <div key={label} className={`rounded-2xl p-4 ${featured ? "border border-white/10 bg-white/[0.06]" : "bg-[#f2fbf5]"}`}>
-                      <DetailIcon className="h-4 w-4 text-[#00bd72]" />
-                      <p className={`mt-3 text-[0.68rem] font-black uppercase tracking-[0.12em] ${featured ? "text-emerald-200/70" : "text-slate-500"}`}>{label}</p>
-                      <p className={`mt-2 text-sm font-bold leading-6 ${featured ? "text-white" : "text-[#06251c]"}`}>{value}</p>
+                <div className={`mt-8 border-t pt-5 ${featured ? "border-white/10" : "border-slate-100"}`}>
+                  {price && (
+                    <div className="mb-4 flex flex-wrap items-baseline gap-2.5">
+                      <p className={`font-serif text-2xl font-black ${featured ? "text-white" : "text-slate-950"}`}>{price}</p>
+                      {oldPrice && <p className="text-xs font-semibold text-slate-400 line-through">{oldPrice}</p>}
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${featured ? "text-[#86efac]" : "text-[#008b58]"}`}>Tarif officiel</span>
                     </div>
-                  ))}
-                </div>
-
-                <div className="relative mt-6 flex flex-wrap gap-2">
-                  {tags.map(tag => <span key={tag} className={`rounded-full px-3 py-1.5 text-xs font-black ${featured ? "bg-white/8 text-slate-200" : "bg-[#06251c]/6 text-[#06251c]/65"}`}>{tag}</span>)}
-                </div>
-
-                <div className={`relative mt-8 border-t pt-6 ${featured ? "border-white/10" : "border-[#06251c]/8"}`}>
-                  {price && <div className="mb-5 flex flex-wrap items-end gap-3"><p className={`text-2xl font-black ${featured ? "text-white" : "text-[#06251c]"}`}>{price}</p>{oldPrice && <p className="pb-1 text-sm font-bold text-slate-400 line-through">{oldPrice}</p>}<span className={`pb-1 text-xs font-black uppercase tracking-[.12em] ${featured ? "text-emerald-200" : "text-emerald-700"}`}>Tarif de lancement</span></div>}
-                  <Link href={href} className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-black transition ${featured ? "bg-emerald-300 text-[#06251c] hover:bg-white" : active ? "bg-[#06251c] text-white hover:bg-[#008f58]" : "text-[#06251c]/55"}`}>{active ? "Voir le programme complet" : "Voir les informations"} <ArrowRight size={16} /></Link>
+                  )}
+                  <Link
+                    href={href}
+                    className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold transition ${
+                      featured
+                        ? "bg-[#00a86b] text-white hover:bg-[#008b58]"
+                        : active
+                        ? "bg-slate-950 text-white hover:bg-[#00a86b]"
+                        : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {active ? "Voir le programme complet" : "Voir les informations"} <ArrowRight size={14} />
+                  </Link>
                 </div>
               </article>
             ))}

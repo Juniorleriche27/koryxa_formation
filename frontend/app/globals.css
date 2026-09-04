@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --bg: #fbfcf8;
+  --bg: #faf9f5;
   --paper: #ffffff;
-  --ink: #06251c;
-  --muted: rgba(6, 37, 28, 0.64);
-  --line: rgba(6, 37, 28, 0.12);
-  --emerald: #056b46;
-  --emerald-2: #0ea873;
+  --ink: #020617;
+  --muted: #475569;
+  --line: #dfe5d8;
+  --emerald: #00a86b;
+  --emerald-2: #008b58;
   --mint: #bcf5d7;
   --aqua: #14b8a6;
-  --cora-green: #00bd72;
+  --cora-green: #00a86b;
 }
 
 * {
@@ -33,21 +33,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body::before {
-  pointer-events: none;
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  opacity: 0.014;
-  background-image: radial-gradient(var(--ink) 0.7px, transparent 0.7px);
-  background-size: 22px 22px;
-  mix-blend-mode: multiply;
-}
-
 ::selection {
-  background: var(--mint);
-  color: var(--ink);
+  background: #00a86b;
+  color: #ffffff;
 }
 
 a,
@@ -64,7 +52,7 @@ select {
   input,
   textarea,
   select {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a86b] focus-visible:ring-offset-2 focus-visible:ring-offset-white;
   }
 
   code,
@@ -85,38 +73,35 @@ select {
   }
 }
 
-
 @layer components {
-
   .kx-marketing {
-    --kx-ink: #06251c;
-    --kx-green: #00bd72;
+    --kx-ink: #020617;
+    --kx-green: #00a86b;
     --kx-mint: #bcf5d7;
-    --kx-paper: #f5fbf7;
-    background: #ffffff;
+    --kx-paper: #ffffff;
+    background: #faf9f5;
   }
 
   .kx-marketing h1,
   .kx-marketing h2 {
     font-family: var(--font-playfair), Georgia, serif;
-    font-weight: 700;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.025em;
   }
 
   .kx-marketing section {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 5rem;
   }
 
   .kx-page {
-    @apply min-h-screen bg-[#f5fbf7] text-[#06251c];
+    @apply min-h-screen bg-[#faf9f5] text-slate-950;
   }
 
   .kx-dark-page {
-    @apply min-h-screen overflow-x-hidden bg-[#06251c] text-white;
+    @apply min-h-screen overflow-x-hidden bg-[#050b08] text-white;
     background-image:
-      radial-gradient(circle at top left, rgba(16, 185, 129, 0.20), transparent 32rem),
-      radial-gradient(circle at 85% 12%, rgba(20, 184, 166, 0.13), transparent 28rem),
-      linear-gradient(180deg, #06251c 0%, #04130f 52%, #06251c 100%);
+      radial-gradient(circle at top left, rgba(0, 168, 107, 0.18), transparent 32rem),
+      radial-gradient(circle at 85% 12%, rgba(20, 184, 166, 0.10), transparent 28rem),
+      linear-gradient(180deg, #050b08 0%, #07190f 52%, #050b08 100%);
   }
 
   .kx-container {
@@ -128,31 +113,31 @@ select {
   }
 
   .kx-glass {
-    @apply border border-white/10 bg-white/[0.06] shadow-2xl shadow-emerald-950/30 backdrop-blur-xl;
+    @apply border border-white/10 bg-white/[0.06] shadow-2xl shadow-black/20 backdrop-blur-xl;
   }
 
   .kx-surface {
-    @apply rounded-3xl border border-emerald-100 bg-white shadow-sm;
+    @apply rounded-3xl border border-[#dfe5d8] bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)];
   }
 
   .kx-dark-surface {
-    @apply rounded-3xl border border-white/10 bg-white/[0.06] shadow-2xl shadow-emerald-950/30 backdrop-blur-xl;
+    @apply rounded-3xl border border-[#234b33] bg-[#07190f]/95 shadow-2xl backdrop-blur-xl;
   }
 
   .kx-eyebrow {
-    @apply inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700;
+    @apply inline-flex items-center rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-3.5 py-1 text-xs font-bold tracking-wider text-[#008b58];
   }
 
   .kx-dark-eyebrow {
-    @apply inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-100;
+    @apply inline-flex items-center rounded-full border border-[#00a86b]/30 bg-[#00a86b]/20 px-3.5 py-1 text-xs font-bold tracking-wider text-[#86efac];
   }
 
   .kx-heading-xl {
-    @apply text-3xl font-black tracking-tight text-[#06251c] sm:text-5xl lg:text-6xl;
+    @apply font-serif text-3xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl;
   }
 
   .kx-dark-heading-xl {
-    @apply text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl;
+    @apply font-serif text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl;
   }
 
   .kx-muted {
@@ -160,13 +145,13 @@ select {
   }
 
   .kx-dark-muted {
-    @apply text-sm leading-6 text-emerald-50/80 sm:text-base;
+    @apply text-sm leading-6 text-slate-300 sm:text-base;
   }
 }
 
 @layer utilities {
-  .text-gradient-mint {
-    background: linear-gradient(110deg, #057a4c 0%, #10b981 54%, #b8f7d2 100%);
+  .text-gradient-koryxa {
+    background: linear-gradient(110deg, #00a86b 0%, #008b58 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

@@ -16,17 +16,16 @@ import {
   ChevronDown,
   Code2,
   Database,
+  FileCode2,
   FileText,
   GraduationCap,
   Layers3,
   LineChart,
   Mail,
+  Menu,
   MessageCircleMore,
   Linkedin,
   Facebook,
-  LogIn,
-  Menu,
-  MousePointerClick,
   ShieldCheck,
   Sparkles,
   Target,
@@ -45,188 +44,240 @@ const navItems = [
   { label: "FAQ", href: "/faq" },
 ];
 
-const formations = [
+export const formations = [
   {
     title: "Python Data Analyst",
     status: "Disponible",
     href: "/formations/python-data-analyst",
     cta: "Voir le programme",
-    description: "Apprenez Python, organisez les données, créez des analyses et construisez un projet portfolio crédible.",
+    description: "Apprenez Python, nettoyez et analysez les données avec Pandas et NumPy, et construisez un portfolio prêt pour l’emploi.",
     icon: BarChart3,
     active: true,
-    tags: ["Python", "Pandas", "Visualisation"],
+    accentColor: "#10b981",
+    accentBg: "rgba(16, 185, 129, 0.12)",
+    tags: ["Python", "Pandas", "NumPy", "Visualisation"],
   },
   {
     title: "Excel Data Analyst",
     status: "Disponible",
     href: "/formations/excel-data-analyst",
     cta: "Voir le programme",
-    description: "Nettoyez, analysez et automatisez les données avec Excel, Power Query, Power Pivot et un dashboard professionnel.",
+    description: "Nettoyez, modélisez et automatisez les données avec Excel avancé, Power Query, Power Pivot et des tableaux de bord interactifs.",
     icon: LineChart,
     active: true,
-    tags: ["Excel", "Power Query", "Dashboard"],
+    accentColor: "#16a34a",
+    accentBg: "rgba(22, 163, 74, 0.12)",
+    tags: ["Excel", "Power Query", "Power Pivot", "KPIs"],
   },
   {
     title: "LLM RAG Developer",
     status: "Disponible",
     href: "/formations/llm-rag",
     cta: "Voir le programme",
-    description: "Construisez des assistants IA capables d’exploiter des documents privés et de répondre avec des sources vérifiables.",
+    description: "Construisez des assistants IA capables d’exploiter des documents d’entreprise privés avec recherche vectorielle Qdrant et sources vérifiables.",
     icon: BrainCircuit,
     active: true,
-    tags: ["LLM", "RAG", "Qdrant"],
+    accentColor: "#8b5cf6",
+    accentBg: "rgba(139, 92, 246, 0.12)",
+    tags: ["LLM", "RAG", "Qdrant", "Agents IA"],
   },
   {
     title: "Power BI Data Analyst",
     status: "Disponible",
     href: "/formations/power-bi-data-analyst",
     cta: "Voir le programme",
-    description: "Préparez, modélisez et visualisez les données avec Power Query, DAX et des rapports interactifs professionnels.",
+    description: "Préparez, reliez et visualisez les données décisionnelles avec Power Query, formules DAX avancées et rapports interactifs.",
     icon: TrendingUp,
     active: true,
-    tags: ["Power BI", "DAX", "Power Query"],
+    accentColor: "#f59e0b",
+    accentBg: "rgba(245, 158, 11, 0.12)",
+    tags: ["Power BI", "DAX", "Power Query", "Data Modeling"],
   },
   {
     title: "SQL Data Analyst avec PostgreSQL",
     status: "Disponible",
     href: "/formations/sql-data-analyst",
     cta: "Voir le programme",
-    description: "Interrogez, reliez et analysez les données avec SQL, PostgreSQL, CTE, fonctions de fenêtre et vues analytiques.",
+    description: "Interrogez, reliez et transformez les données d’entreprise avec SQL, PostgreSQL, CTE, fonctions de fenêtrage et vues analytiques.",
     icon: Database,
     active: true,
-    tags: ["SQL", "PostgreSQL", "CTE"],
+    accentColor: "#06b6d4",
+    accentBg: "rgba(6, 182, 212, 0.12)",
+    tags: ["SQL", "PostgreSQL", "CTE", "Window Functions"],
   },
   {
     title: "Statistiques & Data Science avec Python",
     status: "Disponible",
     href: "/formations",
     cta: "Voir le catalogue",
-    description: "Maîtrisez le raisonnement statistique, la segmentation client, la prévision des ventes et l’évaluation rigoureuse des modèles.",
-    icon: BrainCircuit,
+    description: "Maîtrisez le raisonnement statistique, la segmentation client, les tests d’hypothèses, la prévision et l’évaluation rigoureuse de modèles.",
+    icon: BarChart3,
     active: true,
-    tags: ["Statistiques", "Data Science", "Python"],
+    accentColor: "#2563eb",
+    accentBg: "rgba(37, 99, 235, 0.12)",
+    tags: ["Statistiques", "Data Science", "Python", "Inférence"],
   },
   {
     title: "Machine Learning avec Python",
     status: "Disponible",
     href: "/formations/machine-learning-python",
     cta: "Voir le programme",
-    description: "Construisez, comparez et interprétez des modèles prédictifs avec Python, scikit-learn et un projet churn complet.",
+    description: "Construisez, comparez, optimisez et interprétez des modèles prédictifs avec Python, scikit-learn et un cas complet de prédiction du churn.",
     icon: BrainCircuit,
     active: true,
-    tags: ["Machine Learning", "scikit-learn", "SHAP"],
+    accentColor: "#ec4899",
+    accentBg: "rgba(236, 72, 153, 0.12)",
+    tags: ["Machine Learning", "scikit-learn", "Classification", "SHAP"],
   },
   {
     title: "Data Engineering avec Python et SQL",
     status: "Disponible",
     href: "/formations/data-engineering-python-sql",
     cta: "Voir le programme",
-    description: "Construisez des pipelines fiables avec Python, PostgreSQL, dbt, Airflow, Docker et une vraie stratégie d’observabilité.",
+    description: "Concevez des pipelines de données fiables avec PostgreSQL, dbt, Airflow, Docker, tests de qualité automatisés et observabilité.",
     icon: Database,
     active: true,
-    tags: ["Data Engineering", "dbt", "Airflow"],
+    accentColor: "#0f766e",
+    accentBg: "rgba(15, 118, 110, 0.12)",
+    tags: ["Data Engineering", "dbt", "Airflow", "Docker"],
   },
   {
     title: "Assistant IA pour métier",
     status: "Bientôt",
     href: "/formations",
     cta: "En préparation",
-    description: "Utiliser l’IA pour écrire, synthétiser, vendre, organiser et produire plus vite dans un contexte réel.",
+    description: "Exploitez l’intelligence artificielle générative pour rédiger, synthétiser, automatiser et produire plus vite dans votre métier.",
     icon: Bot,
     active: false,
-    tags: ["IA métier", "Productivité", "Cas pratiques"],
+    accentColor: "#64748b",
+    accentBg: "rgba(100, 116, 139, 0.12)",
+    tags: ["IA Métier", "Productivité", "Prompts avancés"],
   },
   {
-    title: "Automatisation IA & no-code",
+    title: "Automatisation IA & No-Code",
     status: "Bientôt",
     href: "/formations",
     cta: "En préparation",
-    description: "Créer des workflows simples pour réduire les tâches répétitives et structurer des opérations.",
+    description: "Créez des flux automatisés intelligents pour supprimer les tâches répétitives et relier vos applications métiers sans coder.",
     icon: Workflow,
     active: false,
-    tags: ["Workflows", "No-code", "Opérations"],
+    accentColor: "#64748b",
+    accentBg: "rgba(100, 116, 139, 0.12)",
+    tags: ["Workflows", "No-code", "Automatisations"],
   },
 ];
 
-const proofItems = [
-  { label: "Formations orientées projets", icon: Layers3 },
-  { label: "Pages dédiées par parcours", icon: FileText },
-  { label: "Progression guidée", icon: BookOpenCheck },
-  { label: "Preuves visibles", icon: Award },
+const proofMetrics = [
+  {
+    stat: "8",
+    label: "Parcours Certifiants",
+    sub: "De l'initiation à l'expertise avancée",
+    icon: Layers3,
+  },
+  {
+    stat: "100%",
+    label: "Pratique & Projets Réels",
+    sub: "Notebooks & code exécutable en direct",
+    icon: Code2,
+  },
+  {
+    stat: "ID Unique",
+    label: "Certifications KORYXA",
+    sub: "Vérifiables avec QR Code public",
+    icon: Award,
+  },
+  {
+    stat: "SSO",
+    label: "Compte KORYXA Unique",
+    sub: "Pass universel vers tout l'écosystème",
+    icon: ShieldCheck,
+  },
 ];
 
 const methodSteps = [
   {
-    title: "Choisir",
-    description: "Sélectionner le parcours qui correspond à votre objectif : data, IA ou automatisation.",
-    icon: Target,
+    step: "01",
+    title: "Fondations & Code en Ligne",
+    description: "Accédez immédiatement à votre environnement interactif sans installer de logiciels complexes. Testez le code directement dans votre navigateur.",
+    icon: FileCode2,
   },
   {
-    title: "Apprendre",
-    description: "Avancer avec des modules clairs, des exemples et des ressources pratiques.",
-    icon: GraduationCap,
+    step: "02",
+    title: "Cas Métiers & Données Réelles",
+    description: "Travaillez sur des jeux de données authentiques : finance, banques, mobile money, télécoms, distribution et e-commerce.",
+    icon: Database,
   },
   {
-    title: "Construire",
-    description: "Produire un livrable concret lié au parcours choisi.",
-    icon: Workflow,
+    step: "03",
+    title: "Validation Continue & Quizz",
+    description: "Mesurez vos acquis à chaque étape grâce à des évaluations interactives et des retours immédiats sur votre compréhension.",
+    icon: BookOpenCheck,
   },
   {
-    title: "Montrer",
-    description: "Présenter un résultat visible : projet, analyse, interface ou automatisation.",
-    icon: Sparkles,
+    step: "04",
+    title: "Projet Portfolio & Certification",
+    description: "Concluez votre parcours par un projet d’envergure validé, obtenez votre certificat KORYXA officiel et exposez-le aux recruteurs.",
+    icon: Award,
   },
-];
-
-const experienceItems = [
-  { title: "Une entrée générale", description: "La page actuelle présente l’ensemble des parcours KORYXA Formation.", icon: Database },
-  { title: "Une page par formation", description: "Chaque formation garde sa landing dédiée avec son programme, son prix et son accès.", icon: FileText },
-  { title: "Un apprentissage guidé", description: "Les parcours sont pensés pour progresser étape par étape jusqu’à un livrable.", icon: BookOpenCheck },
-  { title: "Un résultat concret", description: "L’objectif est de repartir avec une compétence appliquée et une preuve visible.", icon: ShieldCheck },
 ];
 
 const audiences = [
-  { title: "Étudiants", description: "Construire des projets pour renforcer un dossier ou un portfolio.", icon: GraduationCap },
-  { title: "Professionnels", description: "Apprendre la data, l’IA ou l’automatisation pour travailler plus efficacement.", icon: TrendingUp },
-  { title: "Entrepreneurs", description: "Mieux lire ses données, créer des assistants et automatiser certaines tâches.", icon: Target },
-  { title: "Débutants motivés", description: "Démarrer avec une progression claire et des exemples concrets.", icon: Users },
+  {
+    title: "Reconversion & Débutants",
+    badge: "Accessibilité & Clarté",
+    description: "Démarrez dans la data et l’IA sans prérequis lourds grâce à un accompagnement progressif, visuel et très structuré.",
+    icon: GraduationCap,
+  },
+  {
+    title: "Professionnels & Analystes",
+    badge: "Impact Métier Immédiat",
+    description: "Montez en compétence sur Python, SQL, Power BI et l’automatisation pour booster votre valeur sur le marché de l’emploi.",
+    icon: TrendingUp,
+  },
+  {
+    title: "Développeurs & Tech Leads",
+    badge: "Architecture & IA Avancée",
+    description: "Maîtrisez les architectures LLM RAG, les bases vectorielles et les pipelines de données robustes pour vos applications.",
+    icon: BrainCircuit,
+  },
+  {
+    title: "Entreprises & Managers",
+    badge: "Transformation Numérique",
+    description: "Formez vos équipes aux technologies data & IA souveraines pour automatiser leurs opérations et sécuriser leurs données.",
+    icon: Target,
+  },
 ];
 
 const faqs = [
   {
     question: "Cette page concerne-t-elle une seule formation ?",
-    answer:
-      "Non. Cette page est le portail général KORYXA Formation. Elle présente l’ensemble des parcours. Chaque formation possède ensuite sa propre page dédiée.",
+    answer: "Non. Cette page est le portail officiel de l’académie KORYXA Formation. Elle présente l’ensemble de nos 8 parcours certifiants. Chaque formation possède sa page dédiée avec son programme exhaustif et ses modalités d’accès.",
   },
   {
-    question: "Quelle formation est disponible aujourd’hui ?",
-    answer:
-      "Les parcours Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL, Statistiques & Data Science avec Python, Machine Learning avec Python et Data Engineering avec Python et SQL sont disponibles. Les autres parcours restent clairement indiqués comme bientôt disponibles.",
+    question: "Quelles formations sont immédiatement disponibles ?",
+    answer: "Les 8 parcours principaux sont immédiatement accessibles : Python Data Analyst, Excel Data Analyst, LLM RAG Developer, Power BI Data Analyst, SQL Data Analyst avec PostgreSQL, Statistiques & Data Science, Machine Learning avec Python et Data Engineering.",
   },
   {
-    question: "Où voir le détail d’une formation ?",
-    answer:
-      "Depuis la section Formations, chaque parcours renvoie vers sa page dédiée lorsque celle-ci est disponible. La page générale sert d’entrée principale.",
+    question: "Comment fonctionne la certification KORYXA ?",
+    answer: "À l’issue de la validation des modules et du projet final de portfolio, un certificat officiel KORYXA doté d’un identifiant unique infalsifiable et d’un QR code de vérification publique vous est délivré.",
   },
   {
-    question: "Quels parcours IA sont déjà ouverts ?",
-    answer:
-      "Le parcours LLM RAG Developer est disponible. Les parcours Assistant IA pour métier et Automatisation IA & no-code restent en préparation.",
+    question: "Dois-je installer des logiciels complexes sur mon ordinateur ?",
+    answer: "Non. KORYXA Formation intègre un moteur de code Python et des interfaces de données directement dans votre navigateur web. Vous pouvez commencer à coder et analyser dès votre première connexion.",
   },
   {
-    question: "Ai-je besoin d’être développeur ?",
-    answer:
-      "Cela dépend du parcours. Les formations KORYXA sont pensées pour rester pratiques, progressives et centrées sur la construction d’un résultat concret.",
+    question: "Puis-je utiliser mon compte unique KORYXA ?",
+    answer: "Oui. Grâce au SSO souverain KORYXA Identity, votre compte unique fonctionne sur KORYXA Formation ainsi que sur l’ensemble des produits de la suite (MERQALOR, CoraBiz, ChatLAYA, FlowCore, etc.).",
   },
 ];
 
 function SectionLabel({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.18em] shadow-sm backdrop-blur-xl ${
+      className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider ${
         dark
-          ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-100"
-          : "border-emerald-400/20 bg-emerald-400/10 text-emerald-700 shadow-[0_0_32px_rgba(16,185,129,.12)]"
+          ? "border-[#00a86b]/40 bg-[#00a86b]/20 text-[#86efac]"
+          : "border-[#00a86b]/30 bg-[#00a86b]/10 text-[#008b58]"
       }`}
     >
       {children}
@@ -239,56 +290,73 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-950/10 bg-white/86 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
-        <Link href="/" className="flex items-center" aria-label="Accueil KORYXA Formation">
-          <Image
-            src="/assets/brand/koryxa-formation-logo.webp"
-            alt="KORYXA Formation"
-            width={205}
-            height={76}
-            className="h-11 w-auto object-contain sm:h-12 lg:h-14"
-            sizes="(max-width: 640px) 150px, 205px"
-            priority
-          />
-        </Link>
+    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-[0_2px_20px_rgba(0,0,0,0.04)] backdrop-blur-xl transition-colors duration-200">
+      <div className="mx-auto flex h-16 sm:h-[68px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((value) => !value)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-800 transition hover:bg-slate-100 lg:hidden"
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
 
-        <nav className="hidden items-center gap-7 text-sm font-black text-slate-600 lg:flex" aria-label="Navigation principale">
+          <Link href="/" className="group flex shrink-0 items-center gap-2.5" aria-label="Accueil KORYXA Formation">
+            <span className="relative inline-flex overflow-hidden rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm transition group-hover:scale-105 h-9 w-9">
+              <Image
+                src="/assets/brand/koryxa-formation-logo.webp"
+                alt="Logo KORYXA"
+                width={36}
+                height={36}
+                className="h-full w-full object-contain"
+                priority
+              />
+            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-serif text-xl font-bold tracking-tight text-slate-950">
+                KORY<span className="text-[#00a86b]">XA</span>
+              </span>
+              <span className="rounded-md bg-[#00a86b]/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#008b58]">
+                Formation
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigation principale">
           {navItems.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
-              <Link key={item.href} href={item.href} className={`transition ${active ? "text-emerald-700" : "hover:text-emerald-700"}`}>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors duration-150 ${
+                  active
+                    ? "bg-slate-100 text-[#008b58]"
+                    : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                }`}
+              >
                 {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <KoryxaUserNav />
-
-        <div className="flex items-center gap-2 lg:hidden">
-          <KoryxaUserNav variant="mobileHeader" />
-
-        <button
-          type="button"
-          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#06251c] shadow-sm lg:hidden"
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-3">
+          <KoryxaUserNav variant="desktop" />
         </div>
       </div>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -14 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -14 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.18 }}
-            className="border-t border-slate-200 bg-white px-4 py-4 shadow-xl shadow-slate-950/10 lg:hidden"
+            className="border-t border-slate-200 bg-white/95 px-4 py-5 shadow-xl backdrop-blur-xl lg:hidden"
           >
             <nav className="mx-auto grid max-w-7xl gap-2" aria-label="Navigation mobile">
               {navItems.map((item) => {
@@ -298,7 +366,9 @@ export function Header() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`rounded-2xl px-4 py-3 text-sm font-black transition ${active ? "bg-emerald-50 text-emerald-700" : "text-slate-700 hover:bg-emerald-50 hover:text-[#06251c]"}`}
+                    className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                      active ? "bg-[#00a86b]/10 text-[#008b58]" : "text-slate-700 hover:bg-slate-100"
+                    }`}
                   >
                     {item.label}
                   </Link>
@@ -315,88 +385,156 @@ export function Header() {
 
 function Hero() {
   return (
-    <section id="contenu" className="relative min-h-[92vh] overflow-hidden bg-[#f2fbf5] px-4 pb-12 pt-28 text-slate-950 sm:px-6 lg:px-8 lg:pt-32">
-      <div className="absolute inset-0">
-        <Image
-          src="/assets/landing/hero/koryxa-learning-hero.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="scale-105 object-cover opacity-[0.26] saturate-[0.86] contrast-[0.96]"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-8%,rgba(16,185,129,.12),transparent_34rem),radial-gradient(ellipse_at_12%_18%,rgba(20,184,166,.06),transparent_30rem),radial-gradient(ellipse_at_88%_20%,rgba(188,245,215,.12),transparent_34rem),linear-gradient(180deg,rgba(247,252,249,.42)_0%,rgba(238,249,243,.50)_48%,rgba(251,254,252,.62)_100%)]" />
-        <motion.div
-          aria-hidden="true"
-          initial={{ opacity: 0.25, scale: 1 }}
-          animate={{ opacity: [0.25, 0.45, 0.25], scale: [1, 1.08, 1] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute right-[-10%] top-[18%] h-80 w-80 rounded-full bg-emerald-300/35 blur-3xl"
-        />
-      </div>
+    <section id="contenu" className="relative overflow-hidden bg-[#faf9f5] pt-10 pb-16 sm:pt-16 sm:pb-24">
+      {/* Halos d'ambiance KORYXA ultra-doux */}
+      <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-[#00a86b]/10 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute top-1/3 right-10 h-80 w-80 rounded-full bg-[#f59e0b]/8 blur-3xl" aria-hidden="true" />
 
-      <div className="pointer-events-none absolute left-1/2 top-28 hidden h-[calc(100%-8rem)] w-[min(72rem,calc(100%-4rem))] -translate-x-1/2 rounded-[clamp(2rem,4vw,4.5rem)] border border-emerald-300/10 bg-[radial-gradient(ellipse_at_50%_22%,rgba(16,185,129,.18),transparent_30rem),radial-gradient(ellipse_at_50%_54%,rgba(52,211,153,.14),transparent_34rem),linear-gradient(rgba(5,122,76,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(5,122,76,.03)_1px,transparent_1px),linear-gradient(180deg,rgba(220,252,231,.44),rgba(187,247,208,.26))] bg-[length:auto,auto,62px_62px,62px_62px,auto] shadow-[inset_0_1px_0_rgba(255,255,255,.66),0_28px_96px_rgba(5,46,22,.055)] [mask-image:radial-gradient(ellipse_at_50%_46%,black_0%,black_64%,transparent_90%)] lg:block" aria-hidden="true" />
-      <div className="relative mx-auto grid min-h-[calc(92vh-7rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.78fr]">
-        <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }} className="max-w-4xl">
-          <SectionLabel>
-            <Sparkles size={14} /> Portail de formations pratiques
-          </SectionLabel>
-          <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] text-slate-950 sm:text-7xl lg:text-[6.15rem]">
-            Apprenez la data, l’IA et l’automatisation par projets.
-          </h1>
-          <p className="mt-7 max-w-2xl text-base font-semibold leading-8 text-slate-600 sm:text-xl sm:leading-9">
-            KORYXA Formation rassemble plusieurs parcours pour apprendre des compétences utiles, choisir une formation dédiée et construire des résultats concrets.
-          </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="/formations"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[#12d184] via-[#00bd72] to-[#0ea873] px-7 py-4 text-sm font-black text-[#06251c] shadow-2xl shadow-emerald-500/18 ring-1 ring-emerald-500/20 transition hover:-translate-y-1 hover:from-[#22dc92] hover:to-[#0ea873]"
-            >
-              Voir les formations <ArrowRight size={18} />
-            </a>
-            <a
-              href="/methode"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-emerald-200/80 bg-white/75 px-7 py-4 text-sm font-black text-slate-950 shadow-sm backdrop-blur-xl transition hover:-translate-y-1 hover:border-emerald-300 hover:bg-emerald-50"
-            >
-              Comprendre la méthode
-            </a>
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          {/* Colonne gauche : Accroche & Titre */}
+          <div>
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-slate-200/90 bg-white/95 px-4 py-1.5 text-xs font-semibold text-slate-800 shadow-sm">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00a86b] opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#00a86b]" />
+              </span>
+              <span>Académie d’Excellence Data &amp; IA • Écosystème KORYXA</span>
+            </div>
+
+            <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-[4.2rem] font-black leading-[1.08] tracking-tight text-slate-950">
+              Apprenez la Data &amp; l’IA.<br />
+              <em className="text-[#00a86b] not-italic">Des compétences concrètes par la pratique.</em>
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600">
+              KORYXA Formation rassemble 8 parcours certifiants intensifs, conçus pour les défis réels du marché africain et international. Développez des compétences recherchées en manipulant de vrais jeux de données et construisez un portfolio prêt pour l’emploi.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
+              <a
+                href="/formations"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]"
+              >
+                Explorer les 8 formations <ArrowRight size={18} />
+              </a>
+              <a
+                href="/methode"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
+              >
+                Découvrir notre méthode
+              </a>
+            </div>
+
+            <div className="mt-8 flex items-center gap-4 text-xs font-semibold text-slate-500">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={16} className="text-[#00a86b]" /> Aucun prérequis lourd
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={16} className="text-[#00a86b]" /> Code en ligne immédiat
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={16} className="text-[#00a86b]" /> Certifications vérifiables
+              </span>
+            </div>
           </div>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 32 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.75, delay: 0.2 }}
-          className="relative hidden lg:block"
-        >
-          <motion.div
-            animate={{ y: [0, -16, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="rounded-[2rem] border border-emerald-200/80 bg-white/82 p-5 shadow-2xl shadow-emerald-950/10 backdrop-blur-2xl ring-1 ring-emerald-300/20"
-          >
-            <div className="rounded-[1.5rem] bg-white p-5 text-[#06251c]">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Parcours KORYXA</p>
-              <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Un portail. Plusieurs formations.</h2>
-              <div className="mt-6 grid gap-3">
-                {formations.map((formation, index) => (
-                  <motion.div
-                    key={formation.title}
-                    initial={{ opacity: 0, x: 18 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + index * 0.08 }}
-                    className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-200"
-                  >
-                    <span className="text-sm font-black text-slate-800">{formation.title}</span>
-                    <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black ${formation.active ? "bg-emerald-100 text-[#06251c]" : "bg-slate-200 text-slate-600"}`}>
-                      {formation.status}
-                    </span>
-                  </motion.div>
-                ))}
+          {/* Colonne droite : Cockpit Vitrine KORYXA */}
+          <div className="relative">
+            <div className="overflow-hidden rounded-3xl border border-[#dfe5d8] bg-white/95 p-6 shadow-2xl backdrop-blur-xl">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#00a86b]/15 text-[#008b58]">
+                    <Sparkles size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-sm font-bold text-slate-900">KORYXA Formation Kernel</h3>
+                    <p className="text-[11px] text-slate-500">8 Filières Certifiantes Actives</p>
+                  </div>
+                </div>
+                <span className="rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#008b58]">
+                  Opérationnel
+                </span>
+              </div>
+
+              {/* Aperçu des 4 filières phares */}
+              <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                {[
+                  {
+                    title: "Python Data Analyst",
+                    tag: "Data & Visualisation",
+                    icon: BarChart3,
+                    color: "#10b981",
+                    href: "/formations/python-data-analyst",
+                  },
+                  {
+                    title: "LLM RAG Developer",
+                    tag: "IA Générative & Vecteurs",
+                    icon: BrainCircuit,
+                    color: "#8b5cf6",
+                    href: "/formations/llm-rag",
+                  },
+                  {
+                    title: "Power BI Data Analyst",
+                    tag: "Business Intelligence & DAX",
+                    icon: TrendingUp,
+                    color: "#f59e0b",
+                    href: "/formations/power-bi-data-analyst",
+                  },
+                  {
+                    title: "Machine Learning",
+                    tag: "Modèles Prédictifs",
+                    icon: BrainCircuit,
+                    color: "#ec4899",
+                    href: "/formations/machine-learning-python",
+                  },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      className="group flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 transition hover:border-[#00a86b]/40 hover:bg-white hover:shadow-md"
+                    >
+                      <div
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition group-hover:scale-105"
+                        style={{ backgroundColor: `${item.color}15`, color: item.color }}
+                      >
+                        <Icon size={20} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-xs font-bold text-slate-900 group-hover:text-[#008b58]">
+                          {item.title}
+                        </p>
+                        <p className="truncate text-[10px] text-slate-500">{item.tag}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-slate-600">Garantie d’authenticité</span>
+                  <span className="font-bold text-[#008b58]">100% Vérifiable</span>
+                </div>
+                <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+                  Chaque certificat KORYXA est horodaté et vérifiable par employeurs et clients via QR code et identifiant unique.
+                </p>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between pt-2">
+                <Link
+                  href="/formations"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#008b58] transition hover:text-[#00a86b]"
+                >
+                  Voir les 8 parcours du catalogue <ArrowRight size={14} />
+                </Link>
+                <span className="text-[11px] font-medium text-slate-400">Écosystème KORYXA</span>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -404,23 +542,27 @@ function Hero() {
 
 function ProofStrip() {
   return (
-    <section className="relative z-10 -mt-8 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-6xl gap-3 rounded-[2rem] border border-emerald-100/80 bg-white/90 p-3 shadow-2xl shadow-emerald-950/8 backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
-        {proofItems.map((item, index) => {
+    <section className="relative z-10 px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8">
+      <div className="mx-auto grid max-w-7xl gap-4 rounded-3xl border border-[#dfe5d8] bg-white/95 p-6 shadow-xl backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
+        {proofMetrics.map((item, index) => {
           const Icon = item.icon;
           return (
             <motion.div
               key={item.label}
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.06 }}
-              className="flex items-center gap-3 rounded-[1.35rem] bg-slate-50 px-5 py-4 ring-1 ring-slate-200"
+              transition={{ delay: index * 0.05 }}
+              className="flex items-start gap-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500 text-white">
-                <Icon size={19} />
-              </span>
-              <p className="text-sm font-black leading-5 text-slate-800">{item.label}</p>
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#00a86b]/15 text-[#008b58]">
+                <Icon size={20} />
+              </div>
+              <div>
+                <span className="font-serif text-2xl font-black text-slate-950">{item.stat}</span>
+                <p className="text-xs font-bold text-slate-800">{item.label}</p>
+                <p className="mt-0.5 text-[11px] text-slate-500 leading-tight">{item.sub}</p>
+              </div>
             </motion.div>
           );
         })}
@@ -431,66 +573,85 @@ function ProofStrip() {
 
 export function FormationsSection() {
   return (
-    <section id="formations" className="scroll-mt-24 bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+    <section id="formations" className="scroll-mt-24 bg-[#faf9f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="mx-auto flex max-w-6xl flex-col items-center text-center">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <SectionLabel>
-            <Zap size={14} /> Toutes les formations
+            <Zap size={14} /> Catalogue d&apos;Excellence
           </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[#06251c] sm:text-5xl lg:whitespace-nowrap lg:text-[3.35rem] xl:text-6xl">
-            Choisissez le parcours qui correspond à votre objectif.
+          <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
+            Choisissez le parcours qui propulse vos ambitions.
           </h2>
-          <p className="mt-6 max-w-4xl text-base font-medium leading-8 text-slate-600 sm:text-lg sm:leading-9">
-            Cette page est le point d’entrée général. Chaque formation garde sa propre page dédiée avec son programme, ses détails et son parcours d’accès.
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-600">
+            Chaque formation KORYXA est autonome, certifiante et dotée d’un environnement interactif avec notebooks et jeux de données réels.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {formations.map((formation, index) => {
             const Icon = formation.icon;
-            const CardContent = (
+            return (
               <motion.article
-                initial={{ opacity: 0, y: 24 }}
+                key={formation.title}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ delay: index * 0.06 }}
-                className={`group flex h-full flex-col rounded-[2rem] border p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-950/8 ${
-                  formation.active
-                    ? "border-emerald-300/70 bg-white ring-1 ring-emerald-300/20"
-                    : "border-slate-200 bg-white/85"
-                }`}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.04 }}
+                className="group flex flex-col justify-between rounded-3xl border border-[#dfe5d8] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#00a86b] hover:shadow-xl"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${formation.active ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-600"}`}>
-                    <Icon size={24} />
-                  </span>
-                  <span className={`rounded-full px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.12em] ${formation.active ? "bg-[#00bd72] text-[#06251c]" : "bg-slate-200 text-slate-600"}`}>
-                    {formation.status}
-                  </span>
-                </div>
-                <h3 className="mt-8 text-2xl font-black tracking-tight text-[#06251c]">{formation.title}</h3>
-                <p className="mt-4 flex-1 text-sm leading-7 text-slate-600">{formation.description}</p>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {formation.tags.map((tag) => (
-                    <span key={tag} className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-black text-slate-600">
-                      {tag}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div
+                      className="flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm transition group-hover:scale-105"
+                      style={{ backgroundColor: formation.accentBg, color: formation.accentColor }}
+                    >
+                      <Icon size={24} />
+                    </div>
+                    <span
+                      className={`rounded-full px-3 py-1 text-[11px] font-bold ${
+                        formation.active
+                          ? "border border-[#00a86b]/30 bg-[#00a86b]/15 text-[#008b58]"
+                          : "border border-slate-200 bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      {formation.status}
                     </span>
-                  ))}
-                </div>
-                <span className={`mt-8 inline-flex items-center gap-2 text-sm font-black ${formation.active ? "text-[#06251c]" : "text-slate-500"}`}>
-                  {formation.cta} <ArrowRight size={16} />
-                </span>
-              </motion.article>
-            );
+                  </div>
 
-            return formation.active ? (
-              <Link key={formation.title} href={formation.href} className="block h-full">
-                {CardContent}
-              </Link>
-            ) : (
-              <a key={formation.title} href={formation.href} className="block h-full">
-                {CardContent}
-              </a>
+                  <h3 className="mt-5 font-serif text-lg font-bold text-slate-950 group-hover:text-[#008b58] transition-colors">
+                    {formation.title}
+                  </h3>
+
+                  <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-slate-600 line-clamp-3">
+                    {formation.description}
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {formation.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-lg bg-slate-100 px-2 py-0.5 font-mono text-[10px] font-semibold text-slate-600"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-6 border-t border-slate-100 pt-4">
+                  <Link
+                    href={formation.href}
+                    className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition ${
+                      formation.active
+                        ? "bg-slate-50 text-slate-900 group-hover:bg-[#00a86b] group-hover:text-white"
+                        : "bg-slate-50 text-slate-400 cursor-not-allowed"
+                    }`}
+                  >
+                    <span>{formation.cta}</span>
+                    <ArrowRight size={14} />
+                  </Link>
+                </div>
+              </motion.article>
             );
           })}
         </div>
@@ -499,154 +660,63 @@ export function FormationsSection() {
   );
 }
 
-export function GeneralVisionSection() {
-  return (
-    <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -28 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-120px" }}
-          transition={{ duration: 0.65 }}
-          className="relative"
-        >
-          <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-emerald-300/30 to-teal-200/20 blur-3xl" />
-          <div className="relative overflow-hidden rounded-[2rem] border border-white bg-white p-3 shadow-2xl shadow-slate-950/12">
-            <Image
-              src="/assets/landing/formations/python-data-workspace.jpg"
-              alt="Ordinateur portable utilisé pour apprendre avec des parcours pratiques"
-              width={1400}
-              height={950}
-              className="h-[28rem] w-full rounded-[1.5rem] object-cover"
-            />
-            <div className="absolute bottom-8 left-8 right-8 rounded-[1.5rem] border border-white/70 bg-white/88 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-xl">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Principe commun</p>
-              <p className="mt-2 text-xl font-black tracking-tight text-[#06251c]">chaque parcours mène vers un livrable concret.</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <div>
-          <SectionLabel>
-            <Target size={14} /> Objectif commun
-          </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.045em] text-[#06251c] sm:text-6xl">
-            Plusieurs formations, une même logique : apprendre utile.
-          </h2>
-          <p className="mt-6 max-w-2xl text-lg font-medium leading-9 text-slate-600">
-            Data, IA ou automatisation : l’objectif reste le même. Comprendre, pratiquer et construire quelque chose que vous pouvez utiliser, présenter ou améliorer.
-          </p>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {["Data", "IA appliquée", "Automatisation", "Projets visibles"].map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-black text-slate-800">
-                <CheckCircle2 className="h-5 w-5 text-emerald-700" />
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function MethodSection() {
   return (
-    <section id="methode" className="relative scroll-mt-24 overflow-hidden border-y border-emerald-100/80 bg-[#f2fbf5] px-4 py-20 text-slate-950 sm:px-6 lg:px-8 lg:py-28">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_18%_0%,rgba(16,185,129,.115),transparent_24rem),radial-gradient(ellipse_at_86%_16%,rgba(20,184,166,.075),transparent_28rem),radial-gradient(ellipse_at_50%_100%,rgba(188,245,215,.22),transparent_30rem),linear-gradient(180deg,#f7fcf9_0%,#eef9f3_100%)]" aria-hidden="true" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(5,122,76,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(5,122,76,.028)_1px,transparent_1px)] bg-[length:64px_64px] opacity-80 [mask-image:radial-gradient(circle_at_50%_18%,black,transparent_76%)]" aria-hidden="true" />
-      <div className="relative mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+    <section id="methode" className="scroll-mt-24 border-y border-[#dfe5d8] bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
             <SectionLabel>
-              <Workflow size={14} /> Méthode générale
+              <Workflow size={14} /> Pédagogie KORYXA
             </SectionLabel>
-            <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-slate-950 sm:text-6xl">
-              Choisir. Apprendre. Construire. Montrer.
+            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
+              La Méthode KORYXA :<br />
+              <em className="text-[#00a86b] not-italic">Apprendre par l’Action.</em>
             </h2>
-            <p className="mt-6 text-lg font-semibold leading-9 text-slate-600">
-              La méthode s’applique à tous les parcours KORYXA Formation. Le sujet change, mais la logique reste concrète.
+            <p className="mt-5 text-base sm:text-lg leading-relaxed text-slate-600">
+              Chaque formation applique une boucle d’apprentissage rigoureuse. Pas de longues théories passives : vous codez, testez, corrigez et validez des projets concrets étape par étape.
             </p>
-          </div>
 
-          <div className="relative">
-            <motion.div
-              initial={{ scaleY: 0 }}
-              whileInView={{ scaleY: 1 }}
-              viewport={{ once: true, margin: "-120px" }}
-              transition={{ duration: 1.1 }}
-              className="absolute bottom-10 left-6 top-10 w-1 origin-top rounded-full bg-gradient-to-b from-emerald-300 via-emerald-300 to-teal-300 md:left-1/2 md:-translate-x-1/2"
-            />
-            <div className="grid gap-5 md:grid-cols-2">
-              {methodSteps.map((step, index) => {
-                const Icon = step.icon;
-                return (
-                  <motion.article
-                    key={step.title}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ delay: index * 0.08 }}
-                    className="relative overflow-hidden rounded-[1.7rem] border border-[rgba(5,122,76,.145)] bg-[radial-gradient(ellipse_at_85%_0%,rgba(16,185,129,.095),transparent_17rem),linear-gradient(180deg,rgba(255,255,255,.9),rgba(240,253,244,.78))] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,.78),0_22px_64px_rgba(5,46,22,.072)] backdrop-blur-xl transition hover:-translate-y-1 hover:border-[#00bd72]/30 hover:shadow-[0_26px_82px_rgba(5,46,22,.105)]"
-                  >
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00bd72] text-[#06251c]">
-                      <Icon size={22} />
-                    </span>
-                    <p className="mt-8 font-mono text-sm font-black uppercase tracking-[0.22em] text-emerald-700">0{index + 1}</p>
-                    <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950">{step.title}</h3>
-                    <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">{step.description}</p>
-                  </motion.article>
-                );
-              })}
+            <div className="mt-8 space-y-3">
+              {[
+                "Pratique immédiate dès la première minute",
+                "Données réelles issues de contextes économiques concrets",
+                "Validation progressive par tests et exercices automatisés",
+                "Certification souveraine avec identifiant infalsifiable",
+              ].map((point) => (
+                <div key={point} className="flex items-center gap-3 text-sm font-semibold text-slate-700">
+                  <CheckCircle2 size={18} className="text-[#00a86b] shrink-0" />
+                  <span>{point}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-export function ExperienceSection() {
-  return (
-    <section id="experience" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        <div className="relative order-2 lg:order-1">
-          <Image
-            src="/assets/landing/platform/koryxa-platform-workspace.jpg"
-            alt="Équipe travaillant sur ordinateur dans un environnement moderne"
-            width={1400}
-            height={950}
-            className="h-[32rem] w-full rounded-[2.2rem] object-cover shadow-2xl shadow-slate-950/12"
-          />
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-6 left-6 right-6 rounded-[1.7rem] border border-emerald-100/80 bg-white/90 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-xl sm:left-auto sm:w-80"
-          >
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Expérience apprenant</p>
-            <p className="mt-2 text-xl font-black tracking-tight text-[#06251c]">un parcours dédié après le choix de la formation.</p>
-          </motion.div>
-        </div>
-
-        <div className="order-1 lg:order-2">
-          <SectionLabel>
-            <Database size={14} /> Expérience générale
-          </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-6xl">
-            Le portail présente. Les pages dédiées détaillent.
-          </h2>
-          <p className="mt-6 text-lg leading-9 text-slate-600">
-            Cette page donne une vue d’ensemble. Ensuite, chaque formation possède sa propre page pour expliquer le programme, les bénéfices et les modalités.
-          </p>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {experienceItems.map((item) => {
-              const Icon = item.icon;
+          <div className="grid gap-4 sm:grid-cols-2">
+            {methodSteps.map((step, index) => {
+              const Icon = step.icon;
               return (
-                <div key={item.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <Icon className="mb-3 h-5 w-5 text-emerald-700" />
-                  <h3 className="text-sm font-black text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                </div>
+                <motion.div
+                  key={step.title}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.06 }}
+                  className="rounded-3xl border border-[#dfe5d8] bg-[#faf9f5] p-6 transition hover:border-[#00a86b] hover:shadow-lg"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-bold text-[#008b58]">{step.step}</span>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00a86b]/15 text-[#008b58]">
+                      <Icon size={20} />
+                    </div>
+                  </div>
+                  <h3 className="mt-4 font-serif text-base sm:text-lg font-bold text-slate-950">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
+                    {step.description}
+                  </p>
+                </motion.div>
               );
             })}
           </div>
@@ -658,32 +728,45 @@ export function ExperienceSection() {
 
 export function AudienceSection() {
   return (
-    <section className="bg-[#f2fbf5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+    <section id="pour-qui" className="scroll-mt-24 bg-[#faf9f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <SectionLabel>
-            <Users size={14} /> Pour qui
+            <Users size={14} /> Public Cible
           </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-5xl lg:whitespace-nowrap lg:text-[3.35rem] xl:text-6xl">
-            Pour celles et ceux qui veulent apprendre utile.
+          <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
+            Pour celles et ceux qui visent l’excellence.
           </h2>
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-600">
+            Que vous découvriez la data ou dirigiez une équipe technique, nos parcours s’adaptent avec rigueur et clarté.
+          </p>
         </div>
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {audiences.map((audience, index) => {
-            const Icon = audience.icon;
+
+        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {audiences.map((aud, index) => {
+            const Icon = aud.icon;
             return (
-              <motion.article
-                key={audience.title}
-                initial={{ opacity: 0, y: 18 }}
+              <motion.div
+                key={aud.title}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.06 }}
-                className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-slate-950/10"
+                transition={{ delay: index * 0.05 }}
+                className="rounded-3xl border border-[#dfe5d8] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#00a86b] hover:shadow-xl"
               >
-                <Icon className="h-7 w-7 text-emerald-700" />
-                <h3 className="mt-7 text-xl font-black tracking-tight text-[#06251c]">{audience.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{audience.description}</p>
-              </motion.article>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b]/15 text-[#008b58]">
+                  <Icon size={22} />
+                </div>
+                <span className="mt-4 inline-block rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[10px] font-bold text-slate-600">
+                  {aud.badge}
+                </span>
+                <h3 className="mt-3 font-serif text-lg font-bold text-slate-950">
+                  {aud.title}
+                </h3>
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
+                  {aud.description}
+                </p>
+              </motion.div>
             );
           })}
         </div>
@@ -692,55 +775,43 @@ export function AudienceSection() {
   );
 }
 
-
-export function PartnerSection() {
-  return (
-    <section className="border-y border-emerald-100 bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-      <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] border border-emerald-100 bg-[#f5fbf7] p-6 shadow-sm sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center lg:p-10">
-        <div>
-          <SectionLabel>
-            <Users size={14} /> Partenaires
-          </SectionLabel>
-          <h2 className="mt-5 text-3xl font-black tracking-[-0.04em] text-[#06251c] sm:text-4xl">
-            Vous représentez une école, une entreprise ou une communauté ?
-          </h2>
-          <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600">
-            KORYXA étudie les collaborations pédagogiques, cohortes privées et partenariats de diffusion. Cette page reste informative et ne remplace pas le portail partenaire dédié.
-          </p>
-        </div>
-        <a
-          href="https://koryxa.fr/contact"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-emerald-200 bg-white px-6 py-3 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:border-emerald-400"
-        >
-          Nous contacter <ArrowRight size={17} />
-        </a>
-      </div>
-    </section>
-  );
-}
-
 export function FAQSection() {
   return (
-    <section id="faq" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr]">
+    <section id="faq" className="scroll-mt-24 border-t border-[#dfe5d8] bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
           <SectionLabel>
-            <FileText size={14} /> FAQ
+            <FileText size={14} /> Réponses aux questions
           </SectionLabel>
-          <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] text-[#06251c] sm:text-6xl">
-            Avant de choisir.
+          <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
+            Tout ce que vous devez savoir avant de commencer.
           </h2>
+          <p className="mt-4 text-base leading-relaxed text-slate-600">
+            Une question spécifique ? Notre équipe et nos assistants IA restent disponibles 24/7 pour vous orienter.
+          </p>
+          <div className="mt-8">
+            <a
+              href="mailto:contact.koryxa@gmail.com"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-xs font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
+            >
+              <Mail size={16} className="text-[#00a86b]" /> Poser une question à l’équipe
+            </a>
+          </div>
         </div>
-        <div className="space-y-3">
+
+        <div className="space-y-3.5">
           {faqs.map((faq) => (
-            <details key={faq.question} className="group rounded-3xl border border-slate-200 bg-slate-50 p-5 open:bg-white open:shadow-xl open:shadow-slate-950/10">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-black text-[#06251c]">
+            <details
+              key={faq.question}
+              className="group rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-5 open:bg-white open:shadow-lg transition-all"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-base font-bold text-slate-900">
                 {faq.question}
-                <ChevronDown className="h-5 w-5 shrink-0 text-slate-500 transition group-open:rotate-180" />
+                <ChevronDown className="h-5 w-5 shrink-0 text-slate-400 transition group-open:rotate-180 text-[#00a86b]" />
               </summary>
-              <p className="mt-4 text-sm leading-7 text-slate-600">{faq.answer}</p>
+              <p className="mt-3.5 text-xs sm:text-sm leading-relaxed text-slate-600 border-t border-slate-100 pt-3">
+                {faq.answer}
+              </p>
             </details>
           ))}
         </div>
@@ -751,35 +822,35 @@ export function FAQSection() {
 
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
-      <Image
-        src="/assets/landing/hero/koryxa-modern-office.jpg"
-        alt="Bureau moderne pour apprendre et travailler avec la technologie"
-        width={1400}
-        height={900}
-        className="absolute inset-0 h-full w-full object-cover opacity-25"
-      />
-      <div className="absolute inset-0 bg-[#06251c]/70" />
-      <div className="relative mx-auto max-w-5xl text-center">
-        <Sparkles className="mx-auto h-10 w-10 text-emerald-700" />
-        <h2 className="mt-6 text-4xl font-black leading-[0.96] tracking-[-0.055em] sm:text-6xl">
-          Trouvez le parcours qui vous fait avancer.
+    <section className="relative overflow-hidden bg-[#050b08] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+      {/* Halo subtil émeraude */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00a86b]/20 blur-3xl" />
+
+      <div className="relative mx-auto max-w-4xl text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b]/20 text-[#4ade80] border border-[#00a86b]/30">
+          <Sparkles size={24} />
+        </div>
+
+        <h2 className="mt-6 font-serif text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight">
+          Prêt à maîtriser la Data &amp; l’IA ?
         </h2>
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-9 text-slate-200">
-          Data, IA ou automatisation : commencez par choisir la formation adaptée à votre objectif.
+
+        <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300">
+          Rejoignez des centaines d’apprenants, construisez des projets réels et obtenez une certification valorisable immédiatement sur le marché.
         </p>
-        <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+
+        <div className="mt-9 flex flex-col justify-center gap-3.5 sm:flex-row">
           <a
             href="/formations"
-            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-7 py-4 text-sm font-black text-[#06251c] shadow-2xl shadow-emerald-500/18 transition hover:-translate-y-1 hover:bg-[#0ea873]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.35)] transition hover:bg-[#008b58] hover:-translate-y-0.5"
           >
-            Voir les formations <ArrowRight size={18} />
+            Découvrir les 8 parcours <ArrowRight size={18} />
           </a>
           <a
             href="/methode"
-            className="inline-flex min-h-14 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/[0.18]"
+            className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-sm font-bold text-white backdrop-blur-xl transition hover:bg-white/10 hover:-translate-y-0.5"
           >
-            Voir la méthode
+            Comprendre la méthode
           </a>
         </div>
       </div>
@@ -796,51 +867,77 @@ export function FooterSEO() {
   ];
 
   return (
-    <footer className="border-t border-[#06251c]/8 bg-[#f5fbf7] px-4 py-14 text-[#06251c] sm:px-6 lg:px-8 lg:py-16">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.75fr_0.75fr_0.9fr]">
+    <footer className="border-t border-[#dfe5d8] bg-[#faf9f5] px-4 py-14 text-slate-900 sm:px-6 lg:px-8 lg:py-16">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.9fr]">
         <div>
-          <p className="text-2xl font-black tracking-[-0.04em]">KORYXA Formation</p>
-          <p className="mt-3 max-w-md text-sm leading-7 text-slate-600">Portail de formations pratiques en data, IA et automatisation, intégré à l’écosystème KORYXA.</p>
+          <div className="flex items-center gap-2">
+            <span className="font-serif text-2xl font-black tracking-tight text-slate-950">
+              KORY<span className="text-[#00a86b]">XA</span>
+            </span>
+            <span className="rounded-md bg-[#00a86b]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#008b58]">
+              Formation
+            </span>
+          </div>
+          <p className="mt-3 max-w-md text-xs sm:text-sm leading-relaxed text-slate-600">
+            Académie d’excellence en Data, IA et Automatisation, conçue pour les professionnels, créateurs et entreprises. Membre officiel de l’écosystème souverain KORYXA.
+          </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {socialLinks.map(({ label, href, icon: Icon }) => (
-              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#06251c]/10 bg-white text-[#06251c] transition hover:-translate-y-0.5 hover:border-[#00bd72]/40 hover:text-[#008f58]">
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={label}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-[#00a86b] hover:text-[#008b58]"
+              >
                 <Icon size={18} />
               </a>
             ))}
           </div>
         </div>
+
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#008f58]">Formations</p>
-          <div className="mt-4 space-y-3 text-sm font-semibold text-slate-600">
-            <Link href="/formations/python-data-analyst" className="block hover:text-[#06251c]">Python Data Analyst</Link>
-            <Link href="/formations/excel-data-analyst" className="block hover:text-[#06251c]">Excel Data Analyst</Link>
-            <Link href="/formations/llm-rag" className="block hover:text-[#06251c]">LLM RAG Developer</Link>
-            <Link href="/formations/power-bi-data-analyst" className="block hover:text-[#06251c]">Power BI Data Analyst</Link>
-            <Link href="/formations/sql-data-analyst" className="block hover:text-[#06251c]">SQL Data Analyst</Link>
-            <Link href="/formations" className="block hover:text-[#06251c]">Statistiques & Data Science</Link>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#008b58]">Formations</p>
+          <div className="mt-4 space-y-2.5 text-xs sm:text-sm font-semibold text-slate-600">
+            <Link href="/formations/python-data-analyst" className="block hover:text-[#008b58] transition-colors">Python Data Analyst</Link>
+            <Link href="/formations/excel-data-analyst" className="block hover:text-[#008b58] transition-colors">Excel Data Analyst</Link>
+            <Link href="/formations/llm-rag" className="block hover:text-[#008b58] transition-colors">LLM RAG Developer</Link>
+            <Link href="/formations/power-bi-data-analyst" className="block hover:text-[#008b58] transition-colors">Power BI Data Analyst</Link>
+            <Link href="/formations/sql-data-analyst" className="block hover:text-[#008b58] transition-colors">SQL Data Analyst</Link>
+            <Link href="/formations/machine-learning-python" className="block hover:text-[#008b58] transition-colors">Machine Learning Python</Link>
+            <Link href="/formations/data-engineering-python-sql" className="block hover:text-[#008b58] transition-colors">Data Engineering</Link>
           </div>
         </div>
+
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#008f58]">Navigation</p>
-          <div className="mt-4 space-y-3 text-sm font-semibold text-slate-600">
-            <Link href="/formations" className="block hover:text-[#06251c]">Toutes les formations</Link>
-            <Link href="/methode" className="block hover:text-[#06251c]">Méthode</Link>
-            <Link href="/pour-qui" className="block hover:text-[#06251c]">Pour qui</Link>
-            <Link href="/faq" className="block hover:text-[#06251c]">FAQ</Link>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#008b58]">Navigation</p>
+          <div className="mt-4 space-y-2.5 text-xs sm:text-sm font-semibold text-slate-600">
+            <Link href="/formations" className="block hover:text-[#008b58] transition-colors">Catalogue complet</Link>
+            <Link href="/methode" className="block hover:text-[#008b58] transition-colors">Notre méthode</Link>
+            <Link href="/pour-qui" className="block hover:text-[#008b58] transition-colors">À qui s’adresse KORYXA</Link>
+            <Link href="/faq" className="block hover:text-[#008b58] transition-colors">Foire aux questions</Link>
+            <a href="https://koryxa.fr" target="_blank" rel="noreferrer" className="block hover:text-[#008b58] transition-colors">Portail KORYXA Mère ↗</a>
           </div>
         </div>
+
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#008f58]">Contacts officiels</p>
-          <div className="mt-4 space-y-4 text-sm text-slate-600">
-            <a href="mailto:contact.koryxa@gmail.com" className="block hover:text-[#06251c]"><span className="block font-black text-[#06251c]">Email</span>contact.koryxa@gmail.com</a>
-            <a href="https://wa.me/22892092572?text=Bonjour%20KORYXA%2C%20je%20souhaite%20vous%20contacter." target="_blank" rel="noreferrer" className="block hover:text-[#06251c]"><span className="block font-black text-[#06251c]">WhatsApp</span>+228 92 09 25 72</a>
-            <a href="https://koryxa.fr/contact" target="_blank" rel="noreferrer" className="block font-black text-[#008f58] hover:text-[#06251c]">Page contact KORYXA →</a>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#008b58]">Écosystème KORYXA</p>
+          <div className="mt-4 space-y-2.5 text-xs sm:text-sm text-slate-600">
+            <a href="https://merqalor.koryxa.fr" target="_blank" rel="noreferrer" className="block hover:text-[#008b58] transition-colors">MERQALOR — Finance &amp; Trésorerie</a>
+            <a href="https://corabiz.koryxa.fr" target="_blank" rel="noreferrer" className="block hover:text-[#008b58] transition-colors">CoraBiz — ERP &amp; Agents PME</a>
+            <a href="https://chatlaya.koryxa.fr" target="_blank" rel="noreferrer" className="block hover:text-[#008b58] transition-colors">ChatLAYA — IA Conversationnelle</a>
+            <a href="https://service-ia.koryxa.fr" target="_blank" rel="noreferrer" className="block hover:text-[#008b58] transition-colors">Service IA &amp; Web — Studio</a>
+            <a href="https://koryxa.fr/contact" target="_blank" rel="noreferrer" className="mt-4 block font-bold text-[#008b58] hover:text-[#00a86b] transition-colors">
+              Portail Partenaires &amp; Contact →
+            </a>
           </div>
         </div>
       </div>
-      <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-3 border-t border-[#06251c]/10 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+
+      <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-3 border-t border-[#dfe5d8] pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
         <span>© {new Date().getFullYear()} KORYXA Formation. Tous droits réservés.</span>
-        <span>Un produit de l’écosystème KORYXA.</span>
+        <span>Infrastructure IA Souveraine Africaine • Écosystème KORYXA</span>
       </div>
     </footer>
   );
@@ -848,19 +945,19 @@ export function FooterSEO() {
 
 export function KoryxaFormationPortal() {
   return (
-    <main className="kx-marketing min-h-screen overflow-x-hidden bg-white text-[#06251c]">
-      <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-black focus:text-[#06251c] focus:shadow-xl">
+    <main className="min-h-screen bg-[#faf9f5] text-slate-950 antialiased">
+      <a
+        href="#contenu"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-slate-950 focus:shadow-xl"
+      >
         Aller au contenu
       </a>
       <Header />
       <Hero />
       <ProofStrip />
       <FormationsSection />
-      <GeneralVisionSection />
       <MethodSection />
-      <ExperienceSection />
       <AudienceSection />
-      <PartnerSection />
       <FAQSection />
       <FinalCTA />
       <FooterSEO />

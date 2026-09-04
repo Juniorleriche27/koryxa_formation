@@ -14,8 +14,8 @@ import {
 import { FooterSEO, Header } from "@/components/marketing/KoryxaFormationPortal";
 
 export const metadata = {
-  title: "Méthode — KORYXA Formation",
-  description: "Comprenez la méthode KORYXA : choisir, apprendre, construire et montrer.",
+  title: "Méthode Pédagogique — KORYXA Formation",
+  description: "Découvrez la méthode KORYXA : un apprentissage par l'action, des données réelles et un livrable certifiant.",
 };
 
 const steps = [
@@ -34,7 +34,7 @@ const steps = [
   {
     number: "03",
     title: "Construire par étapes",
-    description: "Vous avancez à travers des exercices guidés qui s’assemblent progressivement en un vrai projet.",
+    description: "Vous avancez à travers des exercices guidés et des notebooks qui s’assemblent progressivement en un vrai projet.",
     icon: Layers3,
   },
   {
@@ -46,56 +46,65 @@ const steps = [
   {
     number: "05",
     title: "Savoir présenter le résultat",
-    description: "Vous apprenez à expliquer votre démarche, vos choix et la valeur de ce que vous avez construit.",
+    description: "Vous apprenez à expliquer votre démarche, vos choix techniques et la valeur de ce que vous avez construit.",
     icon: Rocket,
   },
 ];
 
 const outcomes = [
-  "Vous comprenez ce que vous faites, au lieu de simplement recopier.",
-  "Vous avancez avec une progression claire et mesurable.",
-  "Vous terminez avec un résultat exploitable ou montrable.",
-  "Vous pouvez réutiliser la méthode sur un autre projet.",
+  "Vous comprenez ce que vous faites, au lieu de simplement recopier du code passif.",
+  "Vous avancez avec une progression claire, balisée et mesurable.",
+  "Vous terminez avec un projet réel directement exploitable sur votre portfolio.",
+  "Vous obtenez une certification souveraine vérifiable par identifiant unique.",
 ];
 
 export default function MethodePage() {
   return (
-    <main className="kx-marketing min-h-screen bg-white pt-16 text-slate-950 lg:pt-20">
+    <main className="min-h-screen bg-[#faf9f5] pt-16 text-slate-950 lg:pt-20">
       <Header />
 
-      <section className="relative overflow-hidden bg-[#f5fbf7] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(188,245,215,.65),transparent_22rem),radial-gradient(circle_at_85%_20%,rgba(0,189,114,.12),transparent_26rem)]" />
+      <section className="relative overflow-hidden bg-[#faf9f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-[#00a86b]/10 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.75fr] lg:items-center">
           <div className="max-w-4xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#bcf5d7] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#06251c]">
-              <Compass size={14} /> Méthode KORYXA
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              <Compass size={14} /> Pédagogie KORYXA
             </span>
-            <h1 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.055em] text-[#06251c] sm:text-6xl lg:text-7xl">
-              Apprendre moins de théorie. Construire plus de résultats.
+            <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight text-slate-950">
+              Moins de théorie passive.<br />
+              <em className="text-[#00a86b] not-italic">Plus de résultats concrets.</em>
             </h1>
-            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-slate-600 sm:text-lg">
-              La méthode KORYXA transforme un objectif concret en progression guidée, puis en projet final capable de prouver ce que vous savez réellement faire.
+            <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600">
+              La méthode KORYXA transforme un objectif professionnel en progression guidée, puis en projet final capable de prouver ce que vous savez réellement faire.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/formations" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:-translate-y-0.5 hover:bg-[#bcf5d7]">
+            <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
+              <Link
+                href="/formations"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]"
+              >
                 Choisir une formation <ArrowRight size={17} />
               </Link>
-              <Link href="/pour-qui" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06251c]/12 bg-white px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:border-[#00bd72]/40 hover:bg-[#f2fbf5]">
+              <Link
+                href="/pour-qui"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
+              >
                 Vérifier si cette méthode vous convient
               </Link>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-[#06251c]/10 bg-white p-6 shadow-xl shadow-[#06251c]/8 sm:p-8">
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#06251c] text-[#bcf5d7]">
+          <div className="rounded-3xl border border-[#dfe5d8] bg-white p-7 shadow-xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00a86b]/15 text-[#008b58]">
               <Workflow size={22} />
-            </span>
-            <h2 className="mt-6 text-2xl font-black tracking-[-0.04em] text-[#06251c]">La logique du parcours</h2>
-            <div className="mt-6 grid gap-3">
-              {["Objectif réel", "Notions essentielles", "Exercices guidés", "Projet final", "Présentation du résultat"].map((item, index) => (
-                <div key={item} className="flex items-center gap-3 rounded-2xl bg-[#f2fbf5] px-4 py-3">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#bcf5d7] text-xs font-black text-[#06251c]">{index + 1}</span>
-                  <span className="text-sm font-black text-[#06251c]">{item}</span>
+            </div>
+            <h2 className="mt-6 font-serif text-2xl font-bold text-slate-950">La logique du parcours</h2>
+            <div className="mt-6 grid gap-2.5">
+              {["Objectif réel métier", "Notions essentielles & Notebooks", "Exercices guidés pas à pas", "Projet final de portfolio", "Certification KORYXA vérifiable"].map((item, index) => (
+                <div key={item} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-[#faf9f5] px-4 py-3">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#00a86b] text-xs font-bold text-white">
+                    {index + 1}
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-900">{item}</span>
                 </div>
               ))}
             </div>
@@ -103,74 +112,79 @@ export default function MethodePage() {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="border-y border-[#dfe5d8] bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#bcf5d7] px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#06251c]">
-              <Sparkles size={14} /> Les étapes
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+              <Sparkles size={14} /> Les 5 Étapes Clés
             </span>
-            <h2 className="mt-6 text-4xl font-black leading-[0.98] tracking-[-0.05em] text-[#06251c] sm:text-5xl lg:text-6xl">
+            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight text-slate-950">
               Une progression pensée pour vous faire terminer.
             </h2>
-            <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+            <p className="mx-auto mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
               Chaque étape prépare la suivante. Vous savez toujours ce que vous apprenez, pourquoi vous l’apprenez et ce que cela permet de construire.
             </p>
           </div>
 
           <div className="mt-14 grid gap-5 lg:grid-cols-5">
             {steps.map(({ number, title, description, icon: Icon }) => (
-              <article key={number} className="rounded-[1.75rem] border border-[#06251c]/10 bg-[#f5fbf7] p-6">
+              <article key={number} className="rounded-3xl border border-[#dfe5d8] bg-[#faf9f5] p-6 transition hover:border-[#00a86b] hover:shadow-lg">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-xs font-black tracking-[0.14em] text-[#00bd72]">{number}</span>
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#06251c] shadow-sm">
+                  <span className="font-mono text-xs font-bold text-[#008b58]">{number}</span>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm text-[#008b58]">
                     <Icon size={18} />
-                  </span>
+                  </div>
                 </div>
-                <h3 className="mt-8 text-xl font-black leading-tight tracking-[-0.03em] text-[#06251c]">{title}</h3>
-                <p className="mt-4 text-sm leading-7 text-slate-600">{description}</p>
+                <h3 className="mt-6 font-serif text-lg font-bold text-slate-950">{title}</h3>
+                <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-slate-600">{description}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-[#06251c] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
+      <section className="bg-[#050b08] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
-            <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#bcf5d7]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/40 bg-[#00a86b]/20 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#86efac]">
               <CheckCircle2 size={15} /> Ce que vous obtenez
             </span>
-            <h2 className="mt-5 text-4xl font-black leading-[1] tracking-[-0.05em] sm:text-5xl">
+            <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-black tracking-tight">
               Une compétence comprise, pratiquée et prouvée.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-8 text-white/65">
-              La méthode ne cherche pas à vous impressionner avec du contenu. Elle cherche à vous amener jusqu’à un résultat que vous pouvez utiliser, expliquer et améliorer.
+            <p className="mt-4 max-w-xl text-sm sm:text-base leading-relaxed text-slate-300">
+              La méthode KORYXA ne cherche pas à vous noyer sous des heures de vidéos passives. Elle vous amène directement à un livrable vérifiable prêt pour votre carrière.
             </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             {outcomes.map((item) => (
-              <div key={item} className="flex gap-3 rounded-[1.5rem] border border-white/10 bg-white/6 p-5">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#00bd72]" />
-                <p className="text-sm font-bold leading-7 text-white/80">{item}</p>
+              <div key={item} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#00a86b]" />
+                <p className="text-xs sm:text-sm font-semibold leading-relaxed text-slate-200">{item}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-        <div className="mx-auto grid max-w-6xl gap-8 rounded-[2.25rem] bg-[#f5fbf7] p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
+      <section className="bg-[#faf9f5] px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-6xl gap-8 rounded-3xl border border-[#dfe5d8] bg-white p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12 shadow-sm">
           <div>
-            <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#008f58]">
+            <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008b58]">
               <CheckCircle2 size={15} /> Prochaine étape
             </span>
-            <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-[#06251c] sm:text-4xl">Choisissez maintenant le parcours qui correspond à votre objectif.</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Comparez les formations disponibles, leur niveau et leur résultat final avant de commencer.
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl font-black text-slate-950">
+              Choisissez maintenant le parcours qui correspond à vos ambitions.
+            </h2>
+            <p className="mt-3 max-w-2xl text-xs sm:text-sm leading-relaxed text-slate-600">
+              Comparez les 8 formations certifiantes disponibles, leurs compétences clés et démarrez immédiatement.
             </p>
           </div>
-          <Link href="/formations" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#00bd72] px-6 py-3.5 text-sm font-black text-[#06251c] transition hover:bg-[#bcf5d7]">
+          <Link
+            href="/formations"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:bg-[#008b58]"
+          >
             Voir les formations <ArrowRight size={17} />
           </Link>
         </div>
