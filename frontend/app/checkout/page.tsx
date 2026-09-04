@@ -133,7 +133,7 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f5] pt-16 text-slate-950 lg:pt-20">
+    <div className="min-h-screen bg-[#faf9f5] text-slate-950 antialiased">
       <Header />
 
       <main className="px-4 py-10 sm:px-6 lg:px-8 lg:py-16">

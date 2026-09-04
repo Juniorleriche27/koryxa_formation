@@ -259,7 +259,7 @@ const pillars = [
 
 export default function FormationsPage() {
   return (
-    <main className="min-h-screen bg-[#faf9f5] pt-16 text-slate-950 lg:pt-20">
+    <main className="min-h-screen bg-[#faf9f5] text-slate-950 antialiased">
       <Header />
 
       {/* Hero Section Centrée Lumineuse */}
