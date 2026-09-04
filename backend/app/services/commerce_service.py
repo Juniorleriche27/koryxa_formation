@@ -250,8 +250,19 @@ def process_koryxa_pay_webhook(payload) -> dict:
     else:
         course_slugs = [payload.item_slug]
 
-    learner_user_id = payload.clerk_user_id or payload.learner_email.strip().lower()
     learner_email = payload.learner_email.strip().lower()
+    identity_ref = str(payload.clerk_user_id or "").strip()
+    profile = None
+    if identity_ref and "@" not in identity_ref:
+        try:
+            result = db.table("profiles").select("id").eq("koryxa_identity_user_id", identity_ref).limit(1).execute()
+            profile = (result.data or [None])[0]
+        except Exception:
+            profile = None
+    if profile is None:
+        result = db.table("profiles").select("id").eq("email", learner_email).limit(1).execute()
+        profile = (result.data or [None])[0]
+    learner_user_id = str(profile.get("id")) if profile else (identity_ref or learner_email)
 
     enrolled_courses = []
     created_orders = []

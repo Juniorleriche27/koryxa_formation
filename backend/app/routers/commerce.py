@@ -83,11 +83,13 @@ def koryxa_pay_callback(payload: KoryxaPayStatusCallbackSchema):
     if payment.get("payment_status") != "succeeded" or payment.get("order_id") != payload.order_id:
         raise HTTPException(status_code=409, detail="Paiement non confirmé")
     metadata = payment.get("metadata") or {}
+    customer_id = str(payment.get("customer_id") or "")
+    learner_email = metadata.get("learner_email") or (customer_id if "@" in customer_id else None)
     verified = KoryxaPayWebhookSchema(
         event="payment.success",
         transaction_id=payload.payment_id,
-        learner_email=metadata.get("learner_email"),
-        clerk_user_id=payment.get("customer_id"),
+        learner_email=learner_email,
+        clerk_user_id=customer_id,
         item_type=metadata.get("item_type", "course"),
         item_slug=payment.get("product_code"),
         amount=payment.get("amount_minor", 0),
