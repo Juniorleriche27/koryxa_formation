@@ -27,6 +27,10 @@ class InitiateKoryxaPaySchema(BaseModel):
     partner_code: str | None = Field(default=None, max_length=120)
 
 
+class InternalInitiateKoryxaPaySchema(InitiateKoryxaPaySchema):
+    customer_id: str = Field(min_length=2, max_length=255)
+
+
 class KoryxaPayWebhookSchema(BaseModel):
     event: Literal["payment.success", "payment.failed", "order.created"]
     transaction_id: str = Field(min_length=3, max_length=180)

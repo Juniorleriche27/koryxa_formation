@@ -7,6 +7,7 @@ from app.schemas.commerce import (
     CreateOrderSchema,
     ConfirmPaymentSchema,
     InitiateKoryxaPaySchema,
+    InternalInitiateKoryxaPaySchema,
     KoryxaPayWebhookSchema,
 )
 from app.services.commerce_service import (
@@ -63,8 +64,20 @@ def koryxa_pay_webhook(
 
 @router.post("/koryxa-pay/initiate")
 def initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, user=Depends(get_current_user)):
+    return _initiate_koryxa_pay(payload, str(user.id) or (user.email or "client"))
+
+
+@router.post("/internal/koryxa-pay/initiate")
+def initiate_koryxa_pay_internal(
+    payload: InternalInitiateKoryxaPaySchema,
+    x_koryxa_bridge_key: str | None = Header(default=None),
+):
+    _require_internal_bridge(x_koryxa_bridge_key)
+    return _initiate_koryxa_pay(payload, payload.customer_id)
+
+
+def _initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, customer_id: str):
     db = get_service_supabase()
-    customer_id = str(user.id) or (user.email or "client")
 
     pack_prices = {
         "full-stack-data-analyst": 89000,

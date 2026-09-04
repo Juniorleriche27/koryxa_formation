@@ -102,7 +102,7 @@ export const commerceAPI = {
   listOrders: () => api.get("/commerce/orders"),
   listEnrollments: () => api.get("/commerce/enrollments"),
   initiateKoryxaPay: (payload: { product_code: string; item_type?: "course" | "pack"; partner_code?: string | null }) =>
-    api.post<{ checkout_url?: string; checkout_id?: string; success?: boolean }>("/commerce/koryxa-pay/initiate", payload),
+    internalApi.post<{ checkout_url?: string; checkout_id?: string; success?: boolean }>("/api/commerce/koryxa-pay/initiate", payload),
 };
 
 export type AccessUser = {
