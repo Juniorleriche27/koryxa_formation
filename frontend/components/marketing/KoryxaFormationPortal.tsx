@@ -303,7 +303,7 @@ export function Header() {
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          <Link href="/" className="group flex shrink-0 items-center gap-2.5" aria-label="Accueil KORYXA Formation">
+          <Link href="/" className="group flex shrink-0 items-center gap-2.5" aria-label="Accueil KORYXA Pôle Formation">
             <span className="relative inline-flex overflow-hidden rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm transition group-hover:scale-105 h-9 w-9">
               <Image
                 src="/assets/brand/koryxa-formation-logo.webp"
@@ -314,12 +314,12 @@ export function Header() {
                 priority
               />
             </span>
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-xl font-bold tracking-tight text-slate-950">
+            <div className="flex flex-col leading-none">
+              <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-slate-950">
                 KORY<span className="text-[#00a86b]">XA</span>
               </span>
-              <span className="rounded-md bg-[#00a86b]/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#008b58]">
-                Formation
+              <span className="text-[10px] sm:text-[11px] font-semibold tracking-wide text-slate-500 mt-0.5">
+                Pôle Formation
               </span>
             </div>
           </Link>
@@ -385,117 +385,117 @@ export function Header() {
 
 function Hero() {
   return (
-    <section id="contenu" className="relative overflow-hidden bg-[#faf9f5] pt-10 pb-16 sm:pt-16 sm:pb-24">
+    <section id="contenu" className="relative overflow-hidden bg-[#faf9f5] pt-12 pb-16 sm:pt-20 sm:pb-24">
       {/* Halos d'ambiance KORYXA ultra-doux */}
-      <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-[#00a86b]/10 blur-3xl" aria-hidden="true" />
-      <div className="pointer-events-none absolute top-1/3 right-10 h-80 w-80 rounded-full bg-[#f59e0b]/8 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[28rem] w-[42rem] rounded-full bg-[#00a86b]/10 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute top-1/2 right-10 h-72 w-72 rounded-full bg-[#f59e0b]/8 blur-3xl" aria-hidden="true" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          {/* Colonne gauche : Accroche & Titre */}
-          <div>
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-slate-200/90 bg-white/95 px-4 py-1.5 text-xs font-semibold text-slate-800 shadow-sm">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00a86b] opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#00a86b]" />
-              </span>
-              <span>Académie d’Excellence Data &amp; IA • Écosystème KORYXA</span>
-            </div>
-
-            <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-[4.2rem] font-black leading-[1.08] tracking-tight text-slate-950">
-              Apprenez la Data &amp; l’IA.<br />
-              <em className="text-[#00a86b] not-italic">Des compétences concrètes par la pratique.</em>
-            </h1>
-
-            <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600">
-              KORYXA Formation rassemble 8 parcours certifiants intensifs, conçus pour les défis réels du marché africain et international. Développez des compétences recherchées en manipulant de vrais jeux de données et construisez un portfolio prêt pour l’emploi.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
-              <a
-                href="/formations"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]"
-              >
-                Explorer les 8 formations <ArrowRight size={18} />
-              </a>
-              <a
-                href="/methode"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
-              >
-                Découvrir notre méthode
-              </a>
-            </div>
-
-            <div className="mt-8 flex items-center gap-4 text-xs font-semibold text-slate-500">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={16} className="text-[#00a86b]" /> Aucun prérequis lourd
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={16} className="text-[#00a86b]" /> Code en ligne immédiat
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={16} className="text-[#00a86b]" /> Certifications vérifiables
-              </span>
-            </div>
+      <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Partie 1 : Accroche & Titres centrés */}
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-slate-200/90 bg-white/95 px-4 py-1.5 text-xs font-semibold text-slate-800 shadow-sm">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00a86b] opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#00a86b]" />
+            </span>
+            <span>Académie d’Excellence Data &amp; IA • Écosystème KORYXA</span>
           </div>
 
-          {/* Colonne droite : Cockpit Vitrine KORYXA */}
-          <div className="relative">
-            <div className="overflow-hidden rounded-3xl border border-[#dfe5d8] bg-white/95 p-6 shadow-2xl backdrop-blur-xl">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#00a86b]/15 text-[#008b58]">
-                    <Sparkles size={18} />
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-sm font-bold text-slate-900">KORYXA Formation Kernel</h3>
-                    <p className="text-[11px] text-slate-500">8 Filières Certifiantes Actives</p>
-                  </div>
-                </div>
-                <span className="rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#008b58]">
-                  Opérationnel
-                </span>
-              </div>
+          <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-[4.2rem] font-black leading-[1.08] tracking-tight text-slate-950">
+            Apprenez la Data &amp; l’IA.<br />
+            <em className="text-[#00a86b] not-italic">Des compétences concrètes par la pratique.</em>
+          </h1>
 
-              {/* Aperçu des 4 filières phares */}
-              <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-                {[
-                  {
-                    title: "Python Data Analyst",
-                    tag: "Data & Visualisation",
-                    icon: BarChart3,
-                    color: "#10b981",
-                    href: "/formations/python-data-analyst",
-                  },
-                  {
-                    title: "LLM RAG Developer",
-                    tag: "IA Générative & Vecteurs",
-                    icon: BrainCircuit,
-                    color: "#8b5cf6",
-                    href: "/formations/llm-rag",
-                  },
-                  {
-                    title: "Power BI Data Analyst",
-                    tag: "Business Intelligence & DAX",
-                    icon: TrendingUp,
-                    color: "#f59e0b",
-                    href: "/formations/power-bi-data-analyst",
-                  },
-                  {
-                    title: "Machine Learning",
-                    tag: "Modèles Prédictifs",
-                    icon: BrainCircuit,
-                    color: "#ec4899",
-                    href: "/formations/machine-learning-python",
-                  },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.title}
-                      href={item.href}
-                      className="group flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 transition hover:border-[#00a86b]/40 hover:bg-white hover:shadow-md"
-                    >
+          <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600">
+            KORYXA Formation rassemble 8 parcours certifiants intensifs, conçus pour les défis réels du marché africain et international. Développez des compétences recherchées en manipulant de vrais jeux de données et construisez un portfolio prêt pour l’emploi.
+          </p>
+
+          <div className="mt-8 flex flex-col items-center justify-center gap-3.5 sm:flex-row">
+            <a
+              href="/formations"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_24px_rgba(0,168,107,0.3)] transition hover:-translate-y-0.5 hover:bg-[#008b58]"
+            >
+              Explorer les 8 formations <ArrowRight size={18} />
+            </a>
+            <a
+              href="/methode"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50"
+            >
+              Découvrir notre méthode
+            </a>
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-semibold text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 size={16} className="text-[#00a86b]" /> Aucun prérequis lourd
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 size={16} className="text-[#00a86b]" /> Code en ligne immédiat
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 size={16} className="text-[#00a86b]" /> Certifications vérifiables
+            </span>
+          </div>
+        </div>
+
+        {/* Partie 2 : Cockpit Vitrine KORYXA en pleine largeur sous le texte */}
+        <div className="relative mx-auto mt-12 sm:mt-16 w-full max-w-5xl">
+          <div className="overflow-hidden rounded-3xl border border-[#dfe5d8] bg-white/95 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#00a86b]/15 text-[#008b58]">
+                  <Sparkles size={18} />
+                </div>
+                <div>
+                  <h3 className="font-serif text-sm sm:text-base font-bold text-slate-900">KORYXA Formation Kernel</h3>
+                  <p className="text-[11px] text-slate-500">8 Filières Certifiantes Actives • Environnement Interactif</p>
+                </div>
+              </div>
+              <span className="rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-3 py-1 text-xs font-bold text-[#008b58]">
+                Opérationnel
+              </span>
+            </div>
+
+            {/* Aperçu des 4 filières phares */}
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                {
+                  title: "Python Data Analyst",
+                  tag: "Data & Visualisation",
+                  icon: BarChart3,
+                  color: "#10b981",
+                  href: "/formations/python-data-analyst",
+                },
+                {
+                  title: "LLM RAG Developer",
+                  tag: "IA Générative & Vecteurs",
+                  icon: BrainCircuit,
+                  color: "#8b5cf6",
+                  href: "/formations/llm-rag",
+                },
+                {
+                  title: "Power BI Data Analyst",
+                  tag: "BI & DAX Avancé",
+                  icon: TrendingUp,
+                  color: "#f59e0b",
+                  href: "/formations/power-bi-data-analyst",
+                },
+                {
+                  title: "Machine Learning",
+                  tag: "Modèles Prédictifs",
+                  icon: BrainCircuit,
+                  color: "#ec4899",
+                  href: "/formations/machine-learning-python",
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="group flex flex-col justify-between rounded-2xl border border-slate-100 bg-slate-50/80 p-4 transition hover:border-[#00a86b]/40 hover:bg-white hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-3">
                       <div
                         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition group-hover:scale-105"
                         style={{ backgroundColor: `${item.color}15`, color: item.color }}
@@ -508,30 +508,28 @@ function Hero() {
                         </p>
                         <p className="truncate text-[10px] text-slate-500">{item.tag}</p>
                       </div>
-                    </Link>
-                  );
-                })}
-              </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
 
-              <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-600">Garantie d’authenticité</span>
-                  <span className="font-bold text-[#008b58]">100% Vérifiable</span>
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
+              <div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-semibold text-slate-700">Garantie d’authenticité KORYXA</span>
+                  <span className="rounded-full bg-[#00a86b]/15 px-2 py-0.5 text-[10px] font-bold text-[#008b58]">100% Vérifiable</span>
                 </div>
                 <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
                   Chaque certificat KORYXA est horodaté et vérifiable par employeurs et clients via QR code et identifiant unique.
                 </p>
               </div>
-
-              <div className="mt-5 flex items-center justify-between pt-2">
-                <Link
-                  href="/formations"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#008b58] transition hover:text-[#00a86b]"
-                >
-                  Voir les 8 parcours du catalogue <ArrowRight size={14} />
-                </Link>
-                <span className="text-[11px] font-medium text-slate-400">Écosystème KORYXA</span>
-              </div>
+              <Link
+                href="/formations"
+                className="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold text-[#008b58] transition hover:text-[#00a86b]"
+              >
+                Voir les 8 parcours du catalogue <ArrowRight size={14} />
+              </Link>
             </div>
           </div>
         </div>
@@ -870,12 +868,12 @@ export function FooterSEO() {
     <footer className="border-t border-[#dfe5d8] bg-[#faf9f5] px-4 py-14 text-slate-900 sm:px-6 lg:px-8 lg:py-16">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.9fr]">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col leading-none">
             <span className="font-serif text-2xl font-black tracking-tight text-slate-950">
               KORY<span className="text-[#00a86b]">XA</span>
             </span>
-            <span className="rounded-md bg-[#00a86b]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#008b58]">
-              Formation
+            <span className="text-xs font-semibold tracking-wider text-slate-500 mt-1">
+              Pôle Formation
             </span>
           </div>
           <p className="mt-3 max-w-md text-xs sm:text-sm leading-relaxed text-slate-600">
@@ -936,7 +934,7 @@ export function FooterSEO() {
       </div>
 
       <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-3 border-t border-[#dfe5d8] pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-        <span>© {new Date().getFullYear()} KORYXA Formation. Tous droits réservés.</span>
+        <span>© {new Date().getFullYear()} KORYXA — Pôle Formation. Tous droits réservés.</span>
         <span>Infrastructure IA Souveraine Africaine • Écosystème KORYXA</span>
       </div>
     </footer>
