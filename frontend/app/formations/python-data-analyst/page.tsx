@@ -32,12 +32,14 @@ const words = ["Data Analyst", "analyste métier", "profil data", "portfolio sol
 const skills = ["Python", "Pandas", "NumPy", "Matplotlib", "Data Cleaning", "EDA", "Dashboard", "Portfolio", "Certificat"];
 
 const modules = [
-  { title: "Installation & notebooks", desc: "Anaconda, Jupyter et environnement de travail.", icon: FileCode2 },
-  { title: "Bases de Python", desc: "Variables, conditions, boucles et fonctions.", icon: Code2 },
-  { title: "NumPy", desc: "Calcul numérique, tableaux et opérations rapides.", icon: Database },
-  { title: "Pandas", desc: "Importer, nettoyer et transformer des données.", icon: BookOpen },
-  { title: "Visualisation", desc: "Graphiques propres avec une lecture métier.", icon: BarChart3 },
-  { title: "Projet portfolio", desc: "Cas complet, restitution et certificat.", icon: Award },
+  { title: "Installation & Environnement Data", desc: "Anaconda, VS Code, Google Colab, Jupyter et bonnes pratiques d'ingénierie.", icon: FileCode2 },
+  { title: "Fondations Python pour la Data", desc: "Variables, types primitifs, listes, dictionnaires, conditions, boucles et fonctions métier.", icon: Code2 },
+  { title: "NumPy & Calcul Vectoriel", desc: "Tableaux ndarray, vectorisation sans boucle, masquage booléen et métriques de rentabilité.", icon: Database },
+  { title: "Pandas : Manipulation & Transformation", desc: "DataFrames, indexation, filtres avancés, jointures et agrégations groupby sur données réelles.", icon: BookOpen },
+  { title: "Nettoyage de Données & Qualité Entreprise", desc: "Traitement des doublons, imputation des valeurs manquantes, dates et harmonisation géographique.", icon: Sparkles },
+  { title: "Visualisation Métier avec Matplotlib", desc: "Storytelling visuel, distributions, séries chronologiques et graphiques d'aide à la décision.", icon: BarChart3 },
+  { title: "Analyse Exploratoire (EDA)", desc: "Segmentation par canal, cohortes de paiement Mobile Money et détection d'opportunités de croissance.", icon: TrendingUp },
+  { title: "Projet Portfolio : Audit Commercial KORYXA", desc: "Audit complet de 2 800 transactions, synthèse exécutive, KPI de direction et recommandations.", icon: Award },
 ];
 
 const benefits = [
@@ -344,7 +346,7 @@ export default function LandingPage() {
                     <Icon size={22} />
                   </div>
                   <p className="mt-5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    Module 0{index + 1}
+                    {index === 0 ? "Module 00 · Démarrage" : `Module 0${index}`}
                   </p>
                   <h3 className="mt-1 font-serif text-lg font-bold text-slate-950">{module.title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-slate-600">{module.desc}</p>

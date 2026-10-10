@@ -13,11 +13,18 @@ interface Theory { glossary:Array<{id:string;term:string;definition:string;examp
 interface Project { id:string; title:string; summary:string; brief_md:string; minimum_version:string[]; advanced_version:string[]; milestones:Array<{id:string;module_id:string;title:string;description:string;deliverables:string[];acceptance_criteria:string[];order_index:number}>; }
 
 const classeurByOrder: Record<number, {title:string; href:string}> = {
-  3: { title: "Laboratoire chunking", href: "/classeurs/llm-rag/03-chunking.ipynb" },
-  4: { title: "Laboratoire embeddings", href: "/classeurs/llm-rag/04-embeddings.ipynb" },
-  5: { title: "Laboratoire recherche vectorielle", href: "/classeurs/llm-rag/05-vector-search.ipynb" },
-  6: { title: "Laboratoire retrieval", href: "/classeurs/llm-rag/06-retrieval.ipynb" },
-  8: { title: "Laboratoire évaluation RAG", href: "/classeurs/llm-rag/08-evaluation.ipynb" },
+  0: { title: "Classeur Fondamentaux & Formules (XLSX)", href: "/resources/excel-data-analyst/01_fondamentaux_formules.xlsx" },
+  1: { title: "Ventes Janvier 2026 (CSV)", href: "/resources/excel-data-analyst/ventes_2026_01.csv" },
+  2: { title: "Ventes Février 2026 (CSV)", href: "/resources/excel-data-analyst/ventes_2026_02.csv" },
+  3: { title: "Classeur Recherches & KPI RECHERCHEX (XLSX)", href: "/resources/excel-data-analyst/02_recherches_et_kpi.xlsx" },
+  4: { title: "Ventes Mars 2026 (CSV)", href: "/resources/excel-data-analyst/ventes_2026_03.csv" },
+  5: { title: "Ventes Avril 2026 (CSV)", href: "/resources/excel-data-analyst/ventes_2026_04.csv" },
+  6: { title: "Classeur TCD & Visualisation Décisionnelle (XLSX)", href: "/resources/excel-data-analyst/03_tcd_et_visualisation.xlsx" },
+  7: { title: "Guide Graphiques & Storytelling TCD", href: "/resources/excel-data-analyst/03_tcd_et_visualisation.xlsx" },
+  8: { title: "Classeur Power Query, Modèle & Dashboard (XLSX)", href: "/resources/excel-data-analyst/04_power_query_modele_dashboard.xlsx" },
+  9: { title: "Architecture Schéma en Étoile Power Pivot", href: "/resources/excel-data-analyst/04_power_query_modele_dashboard.xlsx" },
+  10: { title: "Maquette Dashboard Commercial Exécutif", href: "/resources/excel-data-analyst/04_power_query_modele_dashboard.xlsx" },
+  11: { title: "Classeur Final & Grille d'Évaluation CODIR", href: "/resources/excel-data-analyst/04_power_query_modele_dashboard.xlsx" },
 };
 
 function Markdown({ children }: { children?: string }) {
@@ -67,7 +74,7 @@ export default function ExcelLearningContent({ moduleId, moduleOrder, completed,
     setSubmittingProject(true);
     setProjectMessage("");
     try {
-      await validationAPI.submitFinalProject(submissionUrl || undefined, submissionNotes || undefined, "llm-rag");
+      await validationAPI.submitFinalProject(submissionUrl || undefined, submissionNotes || undefined, "excel-data-analyst");
       setProjectMessage("Projet envoyé pour évaluation.");
     } catch (err) {
       setProjectMessage(getApiErrorMessage(err));

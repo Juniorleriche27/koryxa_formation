@@ -13,10 +13,18 @@ interface Theory { glossary:Array<{id:string;term:string;definition:string;examp
 interface Project { id:string; title:string; summary:string; brief_md:string; minimum_version:string[]; advanced_version:string[]; milestones:Array<{id:string;module_id:string;title:string;description:string;deliverables:string[];acceptance_criteria:string[];order_index:number}>; }
 
 const classeurByOrder: Record<number, {title:string; href:string}> = {
-  0: { title: "Sources et référentiels", href: "/resources/power-bi-data-analyst/01_sources_et_referentiels.xlsx" },
-  3: { title: "Dictionnaire du modèle", href: "/resources/power-bi-data-analyst/02_modele_donnees.xlsx" },
-  5: { title: "Mesures DAX et objectifs", href: "/resources/power-bi-data-analyst/03_dax_kpi.xlsx" },
-  9: { title: "Cahier du dashboard", href: "/resources/power-bi-data-analyst/04_cahier_dashboard.xlsx" },
+  0: { title: "Kit Sources & Référentiels (XLSX)", href: "/resources/power-bi-data-analyst/01_sources_et_referentiels.xlsx" },
+  1: { title: "Ventes Janvier 2026 (CSV)", href: "/resources/power-bi-data-analyst/ventes_2026_01.csv" },
+  2: { title: "Ventes Février 2026 (CSV)", href: "/resources/power-bi-data-analyst/ventes_2026_02.csv" },
+  3: { title: "Dictionnaire du Modèle Relationnel (XLSX)", href: "/resources/power-bi-data-analyst/02_modele_donnees.xlsx" },
+  4: { title: "Spécification Table Calendrier DimDate (XLSX)", href: "/resources/power-bi-data-analyst/02_modele_donnees.xlsx" },
+  5: { title: "Mesures DAX Fondamentales (XLSX)", href: "/resources/power-bi-data-analyst/03_dax_kpi.xlsx" },
+  6: { title: "Catalogue des Mesures & KPIs Métier (XLSX)", href: "/resources/power-bi-data-analyst/03_dax_kpi.xlsx" },
+  7: { title: "Calculs Time Intelligence N-1 (XLSX)", href: "/resources/power-bi-data-analyst/03_dax_kpi.xlsx" },
+  8: { title: "Cahier Visuel & Navigation (XLSX)", href: "/resources/power-bi-data-analyst/04_cahier_dashboard.xlsx" },
+  9: { title: "Architecture Rapport Multi-Pages (XLSX)", href: "/resources/power-bi-data-analyst/04_cahier_dashboard.xlsx" },
+  10: { title: "Guide Power BI Service & Flux Cloud (XLSX)", href: "/resources/power-bi-data-analyst/04_cahier_dashboard.xlsx" },
+  11: { title: "Matrice Sécurité RLS & Audit Qualité (XLSX)", href: "/resources/power-bi-data-analyst/04_cahier_dashboard.xlsx" },
 };
 
 function Markdown({ children }: { children?: string }) {

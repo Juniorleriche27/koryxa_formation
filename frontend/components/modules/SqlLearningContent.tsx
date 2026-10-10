@@ -13,12 +13,18 @@ interface Theory { glossary:Array<{id:string;term:string;definition:string;examp
 interface Project { id:string; title:string; summary:string; brief_md:string; minimum_version:string[]; advanced_version:string[]; milestones:Array<{id:string;module_id:string;title:string;description:string;deliverables:string[];acceptance_criteria:string[];order_index:number}>; }
 
 const classeurByOrder: Record<number, {title:string; href:string}> = {
-  0: { title: "Schéma PostgreSQL", href: "/resources/sql-data-analyst/01_schema_postgresql.sql" },
-  1: { title: "Clients et régions", href: "/resources/sql-data-analyst/clients.csv" },
-  3: { title: "Ventes et objectifs", href: "/resources/sql-data-analyst/ventes.csv" },
-  4: { title: "Requêtes de départ", href: "/resources/sql-data-analyst/03_requetes_depart.sql" },
-  8: { title: "Corrigés de référence", href: "/resources/sql-data-analyst/04_solutions_reference.sql" },
-  11: { title: "Kit de chargement PostgreSQL", href: "/resources/sql-data-analyst/02_chargement_donnees.sql" },
+  0: { title: "Script DDL Schéma PostgreSQL (SQL)", href: "/resources/sql-data-analyst/01_schema_postgresql.sql" },
+  1: { title: "Table Clients & Régions (CSV)", href: "/resources/sql-data-analyst/clients.csv" },
+  2: { title: "Catalogue Produits & Tarifs (CSV)", href: "/resources/sql-data-analyst/produits.csv" },
+  3: { title: "Table des Ventes & Objectifs (CSV)", href: "/resources/sql-data-analyst/ventes.csv" },
+  4: { title: "Script Jointures & Vue Enrichie (SQL)", href: "/resources/sql-data-analyst/03_requetes_depart.sql" },
+  5: { title: "Sous-Requêtes & Filtres Avancés (SQL)", href: "/resources/sql-data-analyst/03_requetes_depart.sql" },
+  6: { title: "Pipeline Analytique CTE & WITH (SQL)", href: "/resources/sql-data-analyst/03_requetes_depart.sql" },
+  7: { title: "Fonctions Fenêtre & Cumuls Temporels (SQL)", href: "/resources/sql-data-analyst/04_solutions_reference.sql" },
+  8: { title: "Vues Analytiques & Vues Matérialisées (SQL)", href: "/resources/sql-data-analyst/04_solutions_reference.sql" },
+  9: { title: "Transactions & Intégrité des Données (SQL)", href: "/resources/sql-data-analyst/01_schema_postgresql.sql" },
+  10: { title: "Optimisation EXPLAIN, Index & Rôles (SQL)", href: "/resources/sql-data-analyst/04_solutions_reference.sql" },
+  11: { title: "Kit de Connexion PostgreSQL vers Power BI", href: "/resources/sql-data-analyst/02_chargement_donnees.sql" },
 };
 
 function Markdown({ children }: { children?: string }) {

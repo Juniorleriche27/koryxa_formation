@@ -7,20 +7,18 @@ import { AlertTriangle, ArrowRight, CheckCircle2, ChevronRight, Clock3, Compass,
 import { getApiErrorMessage, modulesAPI, validationAPI } from "@/lib/api";
 import { DEFAULT_COURSE_SLUG, EXCEL_DATA_ANALYST_COURSE_SLUG, POWER_BI_DATA_ANALYST_COURSE_SLUG, SQL_DATA_ANALYST_COURSE_SLUG, LLM_RAG_COURSE_SLUG, courseCatalog, courseRoutes, readCourseSlug } from "@/lib/courseConfig";
 import type { Module, ModuleStatus } from "@/types";
-import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LearnerCourseContext from "@/components/learner/LearnerCourseContext";
-import Badge from "@/components/ui/Badge";
 
 type ModuleWithStatus = Module & { validation?: ModuleStatus };
 
 function statusCopy(status?: ModuleStatus) {
-  if (!status) return { label: "Disponible", className: "bg-blue-400/10 text-blue-200 ring-blue-300/20" };
-  if (status.is_validated) return { label: "Validé", className: "bg-emerald-400/10 text-emerald-200 ring-emerald-300/20" };
-  if (status.status === "locked") return { label: "À débloquer", className: "bg-slate-400/10 text-slate-300 ring-white/10" };
-  if (status.status === "quiz_failed") return { label: "QCM à refaire", className: "bg-amber-400/10 text-amber-200 ring-amber-300/20" };
-  if (status.status === "in_progress") return { label: "En cours", className: "bg-cyan-400/10 text-cyan-200 ring-cyan-300/20" };
-  return { label: "Disponible", className: "bg-blue-400/10 text-blue-200 ring-blue-300/20" };
+  if (!status) return { label: "Disponible", className: "bg-blue-50 text-blue-700 border-blue-200" };
+  if (status.is_validated) return { label: "Validé", className: "bg-emerald-50 text-[#008b58] border-emerald-200" };
+  if (status.status === "locked") return { label: "À débloquer", className: "bg-slate-100 text-slate-600 border-slate-200" };
+  if (status.status === "quiz_failed") return { label: "QCM à refaire", className: "bg-amber-50 text-amber-700 border-amber-200" };
+  if (status.status === "in_progress") return { label: "En cours", className: "bg-cyan-50 text-cyan-700 border-cyan-200" };
+  return { label: "Disponible", className: "bg-blue-50 text-blue-700 border-blue-200" };
 }
 
 export default function ModulesPage() {
@@ -66,7 +64,7 @@ export default function ModulesPage() {
     loadModules();
   }, []);
 
-  const modulesWithStatus = useMemo<ModuleWithStatus[]>(() => {
+  const modulesWithStatus: ModuleWithStatus[] = useMemo(() => {
     const byId = new Map(statuses.map((status) => [status.module_id, status]));
     return modules.map((module) => ({ ...module, validation: byId.get(module.id) }));
   }, [modules, statuses]);
@@ -77,38 +75,40 @@ export default function ModulesPage() {
   const dedicatedLearnerLayout = courseSlug !== DEFAULT_COURSE_SLUG;
 
   return (
-    <div className="kx-dark-page flex flex-col">
-      <LearnerCourseContext courseSlug={courseSlug} completed={validatedCount} total={modules.length} />
+    <div className="min-h-screen bg-[#faf9f5] text-slate-950 flex flex-col antialiased">
+      <LearnerCourseContext courseSlug={courseSlug} completed={validatedCount} total={modules.length} current="module" />
       <main className="flex-1">
-        <section className="relative overflow-hidden border-b border-white/10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(59,130,246,0.25),transparent_34rem),radial-gradient(circle_at_82%_18%,rgba(14,165,233,0.12),transparent_28rem)]" />
-          <div className="kx-container relative py-8 sm:py-12 lg:py-16">
-            <div className="grid gap-8 lg:grid-cols-[1fr_24rem] lg:items-end">
+        <section className="relative overflow-hidden border-b border-[#dfe5d8] bg-white">
+          <div className="kx-container relative py-8 sm:py-12 lg:py-14">
+            <div className="grid gap-8 lg:grid-cols-[1fr_24rem] lg:items-center">
               <div>
-                <span className="kx-dark-eyebrow">{courseMeta.title}</span>
-                <h1 className="mt-5 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-6xl">
-                  Avance dans le bon ordre, valide chaque étape.
+                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-[#00a86b]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+                  {courseMeta.title}
+                </span>
+                <h1 className="mt-4 font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
+                  Avancez dans l&apos;ordre, validez chaque étape.
                 </h1>
-                <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                  Chaque module se débloque après validation du précédent. Avance dans l’ordre et reprends toujours au dernier point atteint.
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
+                  Chaque module se débloque après validation du précédent. Progressez à votre rythme et reprenez toujours au dernier point atteint.
                 </p>
               </div>
-              <div className="grid gap-3 rounded-3xl border border-white/10 bg-white/[0.08] p-5 shadow-2xl shadow-blue-950/30 backdrop-blur-xl">
+
+              <div className="grid gap-3 rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-5 shadow-xs">
                 <div className="flex items-center gap-3">
-                  <Compass className="h-7 w-7 text-blue-200" />
+                  <Compass className="h-7 w-7 text-[#00a86b]" />
                   <div>
-                    <p className="text-3xl font-black text-white">{modules.length || "—"}</p>
-                    <p className="text-sm font-semibold text-slate-400">modules du parcours</p>
+                    <p className="text-3xl font-black text-slate-950">{modules.length || "—"}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">modules du parcours</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
-                    <p className="text-2xl font-black text-emerald-200">{validatedCount}</p>
-                    <p className="text-xs font-bold text-slate-400">validés</p>
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="rounded-xl bg-white p-3 border border-[#dfe5d8]">
+                    <p className="text-2xl font-black text-[#008b58]">{validatedCount}</p>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">validés</p>
                   </div>
-                  <div className="rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
-                    <p className="text-2xl font-black text-blue-200">{totalPlatformPoints}/40</p>
-                    <p className="text-xs font-bold text-slate-400">score plateforme</p>
+                  <div className="rounded-xl bg-white p-3 border border-[#dfe5d8]">
+                    <p className="text-2xl font-black text-slate-950">{totalPlatformPoints}/40</p>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">score plateforme</p>
                   </div>
                 </div>
               </div>
@@ -118,25 +118,25 @@ export default function ModulesPage() {
 
         <section className="kx-container py-8 sm:py-12">
           {loading && (
-            <div aria-live="polite" aria-busy="true" className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center text-slate-300 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="mx-auto h-8 w-8 rounded-full border-2 border-blue-400 border-t-transparent" />
-              <p className="mt-4 font-bold">Chargement du parcours…</p>
+            <div aria-live="polite" aria-busy="true" className="rounded-2xl border border-[#dfe5d8] bg-white px-6 py-16 text-center text-slate-600 shadow-xs">
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="mx-auto h-8 w-8 rounded-full border-2 border-[#00a86b] border-t-transparent" />
+              <p className="mt-4 font-bold text-slate-950">Chargement du parcours…</p>
             </div>
           )}
 
           {error && (
-            <div className="rounded-3xl border border-red-300/20 bg-red-400/10 p-6 text-red-100 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-900 shadow-xs">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="mt-1 h-6 w-6 shrink-0" />
+                <AlertTriangle className="mt-1 h-6 w-6 shrink-0 text-red-600" />
                 <div>
-                  <p className="text-lg font-black">{error}</p>
-                  <p className="mt-2 text-sm leading-6 text-red-100/80">Le backend peut être en réveil. Réessaie après quelques secondes.</p>
+                  <p className="text-lg font-bold">{error}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-red-700">Le serveur est peut-être en cours de réveil. Veuillez réessayer dans quelques secondes.</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-black text-slate-950 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
+                className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white transition hover:bg-red-700"
               >
                 <RefreshCw size={16} /> Réessayer
               </button>
@@ -144,19 +144,26 @@ export default function ModulesPage() {
           )}
 
           {statusWarning && !error && (
-            <div className="mb-5 rounded-3xl border border-amber-300/20 bg-amber-400/10 p-5 text-amber-100 shadow-2xl shadow-slate-950/10 backdrop-blur-xl">
+            <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-900 shadow-xs">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="mt-1 h-5 w-5 shrink-0" />
+                <AlertTriangle className="mt-1 h-5 w-5 shrink-0 text-amber-600" />
                 <div>
-                  <p className="font-black">Progression certifiante indisponible temporairement.</p>
-                  <p className="mt-1 text-sm leading-6 text-amber-100/80">Les modules restent visibles, mais les badges de verrouillage peuvent être incomplets.</p>
+                  <p className="font-bold">Progression certifiante temporairement indisponible.</p>
+                  <p className="mt-1 text-xs leading-relaxed text-amber-700">Les modules restent accessibles, mais les statuts de validation peuvent mettre un instant à s&apos;actualiser.</p>
                 </div>
               </div>
             </div>
           )}
 
-          {!loading && !error && (
-            <div className="grid gap-5">
+          {!loading && !error && modulesWithStatus.length === 0 && (
+            <div className="rounded-2xl border border-[#dfe5d8] bg-white p-12 text-center text-slate-500 shadow-xs">
+              <p className="text-base font-bold text-slate-900">Aucun module disponible.</p>
+              <p className="mt-1 text-xs text-slate-500">Les modules de ce parcours seront bientôt publiés.</p>
+            </div>
+          )}
+
+          {!loading && !error && modulesWithStatus.length > 0 && (
+            <div className="grid gap-4">
               {modulesWithStatus.map((module, index) => {
                 const validation = module.validation;
                 const accessible = validation?.is_accessible ?? module.order_index === 0;
@@ -169,43 +176,64 @@ export default function ModulesPage() {
                   is_accessible: false,
                   is_validated: false,
                 } as ModuleStatus : undefined));
+
                 const cardClass = accessible
-                  ? "group grid gap-5 rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl transition hover:-translate-y-1 hover:border-blue-300/35 hover:bg-white/[0.085] md:grid-cols-[5rem_1fr_auto] md:items-center"
-                  : "grid gap-5 rounded-3xl border border-white/10 bg-white/[0.035] p-5 opacity-75 shadow-2xl shadow-slate-950/10 backdrop-blur-xl md:grid-cols-[5rem_1fr_auto] md:items-center";
+                  ? "group grid gap-5 rounded-2xl border border-[#dfe5d8] bg-white p-5 shadow-xs transition hover:-translate-y-0.5 hover:border-[#00a86b]/60 hover:shadow-md md:grid-cols-[4.5rem_1fr_auto] md:items-center sm:p-6"
+                  : "grid gap-5 rounded-2xl border border-[#dfe5d8] bg-[#faf9f5]/70 p-5 opacity-75 md:grid-cols-[4.5rem_1fr_auto] md:items-center sm:p-6";
 
                 const content = (
                   <>
-                    <div className={`flex h-16 w-16 items-center justify-center rounded-3xl text-2xl font-black ring-1 ${accessible ? "bg-blue-400/10 text-blue-100 ring-blue-300/20" : "bg-white/5 text-slate-500 ring-white/10"}`}>
-                      {accessible ? module.order_index : <Lock size={24} />}
+                    <div className={`flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-black ${accessible ? "bg-[#00a86b]/10 text-[#008b58] border border-emerald-200" : "bg-slate-100 text-slate-400 border border-slate-200"}`}>
+                      {accessible ? module.order_index : <Lock size={20} />}
                     </div>
+
                     <div className="min-w-0">
-                      <div className="mb-3 flex flex-wrap items-center gap-2">
-                        <Badge color="blue" className="bg-blue-400/10 text-blue-200 ring-blue-300/20">Module {module.order_index}</Badge>
-                        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 ${copy.className}`}>
+                      <div className="mb-2.5 flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg border border-emerald-200 bg-[#faf9f5] px-2.5 py-0.5 text-xs font-bold text-[#008b58]">
+                          Module {module.order_index}
+                        </span>
+                        <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${copy.className}`}>
                           {validation?.is_validated && <CheckCircle2 size={13} />}
                           {validation?.status === "quiz_failed" && <RefreshCw size={13} />}
                           {validation?.status === "locked" && <Lock size={13} />}
                           {copy.label}
                         </span>
-                        {module.duration && <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.05] px-3 py-1 text-xs font-bold text-slate-300 ring-1 ring-white/10"><Clock3 size={13} /> {module.duration}</span>}
-                        {validation?.quiz_best_score != null && <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-400/10 px-3 py-1 text-xs font-bold text-purple-200 ring-1 ring-purple-300/20"><Trophy size={13} /> QCM {validation.quiz_best_score}/20</span>}
+                        {module.duration && (
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
+                            <Clock3 size={13} className="text-[#00a86b]" /> {module.duration}
+                          </span>
+                        )}
+                        {validation?.quiz_best_score != null && (
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-bold text-purple-700">
+                            <Trophy size={13} /> QCM {validation.quiz_best_score}/20
+                          </span>
+                        )}
                       </div>
-                      <h2 className={`text-xl font-black transition ${accessible ? "text-white group-hover:text-blue-100" : "text-slate-300"}`}>{module.title}</h2>
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-400">{module.description}</p>
-                      {!accessible && <p className="mt-3 text-sm font-semibold text-slate-500">Valide le module précédent pour débloquer cette étape.</p>}
-                      {fallbackLocked && <p className="mt-2 text-sm font-semibold text-amber-200/80">Progression en vérification : accès bloqué par sécurité.</p>}
+
+                      <h2 className={`font-serif text-lg font-bold transition ${accessible ? "text-slate-950 group-hover:text-[#008b58]" : "text-slate-600"}`}>
+                        {module.title}
+                      </h2>
+                      <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                        {module.description}
+                      </p>
+                      {!accessible && (
+                        <p className="mt-2 text-xs font-semibold text-slate-500">
+                          Validez le module précédent pour débloquer automatiquement cette étape.
+                        </p>
+                      )}
                     </div>
+
                     <div className="flex items-center justify-between gap-4 md:justify-end">
-                      <span className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-black transition ${accessible ? "bg-white text-slate-950 group-hover:bg-blue-600 group-hover:text-white" : "bg-white/10 text-slate-500"}`}>
-                        {accessible ? "Ouvrir" : "Bloqué"} {accessible ? <ArrowRight size={16} /> : <Lock size={16} />}
+                      <span className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition ${accessible ? "bg-[#00a86b] text-white group-hover:bg-[#008b58] shadow-xs" : "bg-slate-200 text-slate-500"}`}>
+                        {accessible ? "Ouvrir" : "Bloqué"} {accessible ? <ArrowRight size={14} /> : <Lock size={14} />}
                       </span>
-                      {accessible && <ChevronRight className="hidden text-slate-500 transition group-hover:text-blue-200 md:block" size={18} />}
+                      {accessible && <ChevronRight className="hidden text-slate-400 transition group-hover:text-[#008b58] md:block" size={18} />}
                     </div>
                   </>
                 );
 
                 return (
-                  <motion.div key={module.id} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
+                  <motion.div key={module.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }}>
                     {accessible ? (
                       <Link href={courseRoutes.module(module.id, courseSlug)} className={cardClass}>
                         {content}
@@ -218,29 +246,11 @@ export default function ModulesPage() {
                   </motion.div>
                 );
               })}
-
-              {modules.length === 0 && (
-                <div className="rounded-3xl border border-white/10 bg-white/[0.06] px-6 py-16 text-center shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
-                  <Layers3 className="mx-auto h-10 w-10 text-blue-200" />
-                  <p className="mt-4 text-lg font-black text-white">
-                    Aucun module disponible.
-                  </p>
-                  <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-400">
-                    Les modules apparaîtront ici dès qu’ils seront disponibles pour ce parcours.
-                  </p>
-                  <Link
-                    href={courseMeta.landingPath}
-                    className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-black text-slate-950 transition hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-                  >
-                    Voir la présentation <ArrowRight size={16} />
-                  </Link>
-                </div>
-              )}
             </div>
           )}
         </section>
       </main>
-      {!dedicatedLearnerLayout && <Footer />}
+      <Footer />
     </div>
   );
 }

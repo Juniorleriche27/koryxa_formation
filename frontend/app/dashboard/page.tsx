@@ -48,21 +48,25 @@ export default function DashboardPage() {
     const coursesList = Object.entries(courseCatalog);
 
     return (
-      <div className="kx-dark-page flex min-h-screen flex-col">
-        {/* Header unique KORYXA Hub */}
-        <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07111f]/90 backdrop-blur-2xl">
+      <div className="min-h-screen bg-[#faf9f5] text-slate-950 flex flex-col antialiased">
+        {/* Header KORYXA Hub */}
+        <header className="sticky top-0 z-50 border-b border-[#dfe5d8] bg-white/95 backdrop-blur-md">
           <div className="kx-container flex h-16 items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20">
-                K
-              </span>
-              <div>
-                <span className="block text-sm font-black text-white sm:text-base">KORYXA Formation</span>
-                <span className="block text-[11px] font-bold text-emerald-400">Espace Apprenant Central</span>
+            <Link href="/" className="flex items-center gap-3 transition hover:opacity-90">
+              <div className="flex flex-col">
+                <span className="font-serif text-lg font-black tracking-tight text-slate-950 leading-none">
+                  KORYXA
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#008b58] leading-tight">
+                  Pôle Formation
+                </span>
               </div>
-            </div>
+            </Link>
 
             <div className="flex items-center gap-3">
+              <span className="hidden sm:inline-block rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-[#008b58]">
+                Espace Apprenant Central
+              </span>
               <KoryxaUserNav />
               <KoryxaUserNav variant="mobileHeader" />
             </div>
@@ -71,28 +75,29 @@ export default function DashboardPage() {
 
         <main className="flex-1">
           {/* Hero Hub */}
-          <section className="relative overflow-hidden border-b border-white/10 py-10 sm:py-16">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(16,185,129,0.22),transparent_32rem),radial-gradient(circle_at_82%_20%,rgba(59,130,246,0.15),transparent_28rem)]" />
-            <div className="kx-container relative">
-              <span className="kx-dark-eyebrow">Espace Apprenant</span>
-              <h1 className="mt-4 max-w-3xl text-3xl font-black tracking-tight text-white sm:text-5xl">
+          <section className="relative overflow-hidden border-b border-[#dfe5d8] bg-white py-12 sm:py-16">
+            <div className="kx-container relative text-center max-w-3xl mx-auto">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-[#00a86b]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+                <GraduationCap size={14} /> Espace Apprenant
+              </span>
+              <h1 className="mt-4 font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
                 Vos parcours de formation KORYXA
               </h1>
-              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-                Sélectionnez la formation que vous souhaitez travailler pour accéder à vos modules d’apprentissage, vos notebooks interactifs et vos certifications.
+              <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+                Sélectionnez le parcours que vous souhaitez travailler pour accéder directement à vos leçons, vos laboratoires interactifs et vos certifications.
               </p>
             </div>
           </section>
 
           {/* Grille des parcours */}
           <section className="kx-container py-10 sm:py-14">
-            <div className="mb-8 flex items-center justify-between">
+            <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-400">Catalogue disponible</p>
-                <h2 className="mt-1 text-2xl font-black text-white">Choisissez votre parcours</h2>
+                <p className="text-xs font-bold uppercase tracking-wider text-[#008b58]">Catalogue certifiant</p>
+                <h2 className="mt-1 font-serif text-2xl font-bold text-slate-950">Choisissez votre parcours actif</h2>
               </div>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-bold text-slate-400">
-                {coursesList.length} parcours
+              <span className="rounded-full border border-[#dfe5d8] bg-white px-3.5 py-1 text-xs font-semibold text-slate-600">
+                {coursesList.length} formations certifiantes
               </span>
             </div>
 
@@ -100,33 +105,33 @@ export default function DashboardPage() {
               {coursesList.map(([slug, course]) => (
                 <div
                   key={slug}
-                  className="group flex flex-col justify-between rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-slate-950/20 backdrop-blur-xl transition hover:-translate-y-1 hover:border-emerald-500/40 hover:bg-white/[0.07]"
+                  className="group flex flex-col justify-between rounded-2xl border border-[#dfe5d8] bg-white p-6 shadow-xs transition hover:-translate-y-0.5 hover:border-[#00a86b]/60 hover:shadow-md"
                 >
                   <div>
                     <div className="mb-4 flex items-center justify-between">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-400 ring-1 ring-emerald-400/20">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#00a86b]/10 text-[#008b58]">
                         <GraduationCap size={20} />
                       </span>
-                      <span className="rounded-full bg-emerald-400/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-300">
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#008b58]">
                         Certifiant
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-black text-white transition group-hover:text-emerald-300">
+                    <h3 className="font-serif text-xl font-bold text-slate-950 transition group-hover:text-[#008b58]">
                       {course.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                    <p className="mt-2 text-xs leading-relaxed text-slate-600">
                       {course.shortDescription}
                     </p>
                   </div>
 
-                  <div className="mt-6 border-t border-white/5 pt-4">
+                  <div className="mt-6 border-t border-[#dfe5d8] pt-4">
                     <Link
                       href={courseRoutes.dashboard(slug)}
-                      className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 text-sm font-black text-slate-950 shadow-md shadow-emerald-500/20 transition hover:bg-emerald-400"
+                      className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-4 text-xs font-bold text-white shadow-xs transition hover:bg-[#008b58]"
                     >
                       <span>Entrer dans la formation</span>
-                      <ArrowRight size={15} />
+                      <ArrowRight size={14} />
                     </Link>
                   </div>
                 </div>
@@ -141,44 +146,58 @@ export default function DashboardPage() {
 
   // Vue 2 : Espace dédié au parcours choisi (ex: ?course=python-data-analyst)
   return (
-    <div className="kx-dark-page flex flex-col">
-      {/* Header unique du parcours — aucun doublon */}
+    <div className="min-h-screen bg-[#faf9f5] text-slate-950 flex flex-col antialiased">
+      {/* Header contextualisé du parcours */}
       <LearnerCourseContext courseSlug={courseSlug} completed={completedCount} total={modules.length} current="overview" />
       <main className="flex-1">
-        <section className="relative overflow-hidden border-b border-white/10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(59,130,246,0.25),transparent_34rem),radial-gradient(circle_at_82%_20%,rgba(20,184,166,0.12),transparent_28rem)]" />
-          <div className="kx-container relative py-8 sm:py-12 lg:py-16">
-            <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-end">
+        <section className="relative overflow-hidden border-b border-[#dfe5d8] bg-white">
+          <div className="kx-container relative py-8 sm:py-12 lg:py-14">
+            <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-center">
               <div>
-                <span className="kx-dark-eyebrow">Espace apprenant</span>
-                <h1 className="mt-5 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-6xl">
-                  {`Continue ton parcours ${courseMeta.title} avec clarté.`}
+                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-[#00a86b]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+                  Tableau de bord apprenant
+                </span>
+                <h1 className="mt-4 font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
+                  {`Continuez votre parcours ${courseMeta.title}.`}
                 </h1>
-                <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                  Reprends au bon endroit, suis ta progression et avance module par module jusqu’au certificat.
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
+                  Reprenez au bon endroit, suivez votre progression et avancez module par module jusqu&apos;à l&apos;obtention de votre certificat officiel KORYXA.
                 </p>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                   {nextModule && (
-                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 text-sm font-black text-slate-950 shadow-glow transition hover:-translate-y-0.5 hover:bg-emerald-400">
-                      Reprendre le prochain module <ArrowRight size={18} />
+                    <Link
+                      href={courseRoutes.module(nextModule.id, courseSlug)}
+                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-700/15 transition hover:bg-[#008b58]"
+                    >
+                      Reprendre le prochain module <ArrowRight size={16} />
                     </Link>
                   )}
-                  <Link href={courseRoutes.modules(courseSlug)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-6 py-4 text-sm font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10">
+                  <Link
+                    href={courseRoutes.modules(courseSlug)}
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#dfe5d8] bg-[#faf9f5] px-6 py-3 text-sm font-bold text-slate-800 shadow-xs transition hover:bg-white"
+                  >
                     Voir tous les modules
                   </Link>
                 </div>
               </div>
 
-              <aside className="rounded-3xl border border-white/10 bg-white/[0.08] p-5 shadow-2xl shadow-blue-950/30 backdrop-blur-xl">
-                <div className="rounded-2xl bg-white p-5 text-slate-950 shadow-soft">
-                  <p className="flex items-center gap-2 text-sm font-black"><Flame size={17} className="text-orange-500" /> Priorité du jour</p>
-                  <h2 className="mt-3 text-2xl font-black tracking-tight">{nextModule ? nextModule.title : "Chargement du parcours"}</h2>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {nextModule ? nextModule.description : "Préparation de ton espace apprenant."}
+              <aside className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-5 shadow-xs">
+                <div className="rounded-xl bg-white border border-[#dfe5d8] p-5 shadow-xs">
+                  <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-600">
+                    <Flame size={16} className="text-amber-500" /> Étape recommandée
+                  </p>
+                  <h2 className="mt-2 text-lg font-bold text-slate-950 tracking-tight">
+                    {nextModule ? nextModule.title : "Chargement du parcours"}
+                  </h2>
+                  <p className="mt-2 text-xs leading-relaxed text-slate-600 line-clamp-3">
+                    {nextModule ? nextModule.description : "Préparation de votre espace apprenant."}
                   </p>
                   {nextModule && (
-                    <Link href={courseRoutes.module(nextModule.id, courseSlug)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-emerald-600">
-                      Ouvrir maintenant <ArrowRight size={16} />
+                    <Link
+                      href={courseRoutes.module(nextModule.id, courseSlug)}
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#00a86b]"
+                    >
+                      Ouvrir ce module <ArrowRight size={14} />
                     </Link>
                   )}
                 </div>
@@ -195,12 +214,17 @@ export default function DashboardPage() {
 
           <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_20rem]">
             <div>
-              <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-200">Modules recommandés</p>
-                  <h2 className="mt-2 text-3xl font-black tracking-tight text-white">Continue dans l’ordre</h2>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#008b58]">Modules du programme</p>
+                  <h2 className="mt-1 font-serif text-2xl font-bold tracking-tight text-slate-950">Progression étape par étape</h2>
                 </div>
-                <Link href={courseRoutes.modules(courseSlug)} className="text-sm font-black text-blue-200 transition hover:text-white">Voir le parcours complet →</Link>
+                <Link
+                  href={courseRoutes.modules(courseSlug)}
+                  className="text-xs font-bold text-[#008b58] transition hover:underline"
+                >
+                  Voir le parcours complet →
+                </Link>
               </div>
 
               {recentModules.length > 0 ? (
@@ -210,33 +234,37 @@ export default function DashboardPage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-8 text-center shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
-                  <BookOpen className="mx-auto h-10 w-10 text-blue-200" />
-                  <p className="mt-4 text-lg font-black text-white">Préparation des modules…</p>
-                  <p className="mt-2 text-sm text-slate-400">Le parcours apparaîtra ici dès que les modules seront chargés.</p>
+                <div className="rounded-2xl border border-[#dfe5d8] bg-white p-8 text-center shadow-xs">
+                  <BookOpen className="mx-auto h-10 w-10 text-slate-400" />
+                  <p className="mt-3 text-base font-bold text-slate-950">Préparation des modules…</p>
+                  <p className="mt-1 text-xs text-slate-500">Le parcours apparaîtra ici dès que les modules seront chargés.</p>
                 </div>
               )}
             </div>
 
             <aside className="space-y-5">
-              <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
-                <Sparkles className="h-6 w-6 text-cyan-200" />
-                <h3 className="mt-4 text-lg font-black text-white">Méthode KORYXA</h3>
-                <div className="mt-4 space-y-3">
-                  {["Lire", "Exécuter", "Comprendre", "Valider"].map((step, index) => (
-                    <div key={step} className="flex items-center gap-3 rounded-2xl bg-white/[0.05] p-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-400/10 text-sm font-black text-blue-200 ring-1 ring-blue-300/20">{index + 1}</span>
-                      <span className="text-sm font-bold text-slate-200">{step}</span>
+              <div className="rounded-2xl border border-[#dfe5d8] bg-white p-5 shadow-xs">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00a86b]/10 text-[#008b58]">
+                  <Sparkles size={18} />
+                </span>
+                <h3 className="mt-3 text-base font-bold text-slate-950">Méthode KORYXA</h3>
+                <div className="mt-4 space-y-2.5">
+                  {["1. Lire le cours structuré", "2. Pratiquer dans le lab", "3. Tester sa compréhension", "4. Valider le projet final"].map((step) => (
+                    <div key={step} className="flex items-center gap-2.5 rounded-xl border border-[#dfe5d8] bg-[#faf9f5] p-2.5 text-xs font-semibold text-slate-700">
+                      <CheckCircle2 size={15} className="text-[#00a86b] shrink-0" />
+                      <span>{step}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-emerald-300/20 bg-emerald-400/10 p-5 text-emerald-100 shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
-                <CheckCircle2 className="h-6 w-6" />
-                <h3 className="mt-4 text-lg font-black">Objectif certificat</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/80">
-                  Termine les modules, valide les quiz et garde une progression propre jusqu’au certificat.
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 text-slate-950">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008b58]">
+                  <CheckCircle2 size={16} className="text-[#00a86b]" />
+                  <span>Objectif Certificat</span>
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-slate-700">
+                  Chaque module validé vous rapproche du certificat d&apos;achèvement officiel vérifiable KORYXA, valorisable sur LinkedIn et votre CV.
                 </p>
               </div>
             </aside>

@@ -13,11 +13,18 @@ interface Theory { glossary:Array<{id:string;term:string;definition:string;examp
 interface Project { id:string; title:string; summary:string; brief_md:string; minimum_version:string[]; advanced_version:string[]; milestones:Array<{id:string;module_id:string;title:string;description:string;deliverables:string[];acceptance_criteria:string[];order_index:number}>; }
 
 const notebookByOrder: Record<number, {title:string; href:string}> = {
+  0: { title: "Laboratoire Architecture LLM & RAG", href: "/notebooks/llm-rag/01-architecture-llm-rag.ipynb" },
+  1: { title: "Laboratoire Configuration Environnement", href: "/notebooks/llm-rag/02-setup-environnement.ipynb" },
+  2: { title: "Corpus Entreprise & Ingestion", href: "/resources/llm-rag/starter_corpus_entreprises.json" },
   3: { title: "Laboratoire chunking", href: "/notebooks/llm-rag/03-chunking.ipynb" },
   4: { title: "Laboratoire embeddings", href: "/notebooks/llm-rag/04-embeddings.ipynb" },
   5: { title: "Laboratoire recherche vectorielle", href: "/notebooks/llm-rag/05-vector-search.ipynb" },
   6: { title: "Laboratoire retrieval", href: "/notebooks/llm-rag/06-retrieval.ipynb" },
+  7: { title: "Laboratoire Prompt Engineering RAG", href: "/notebooks/llm-rag/07-prompt-engineering-rag.ipynb" },
   8: { title: "Laboratoire évaluation RAG", href: "/notebooks/llm-rag/08-evaluation.ipynb" },
+  9: { title: "Laboratoire Génération Sourcée", href: "/notebooks/llm-rag/09-generation-sourcee.ipynb" },
+  10: { title: "Laboratoire Interface Streamlit", href: "/notebooks/llm-rag/10-streamlit-rag-interface.ipynb" },
+  11: { title: "Laboratoire Projet Final RAG", href: "/notebooks/llm-rag/12-projet-final-rag.ipynb" },
 };
 
 function Markdown({ children }: { children?: string }) {

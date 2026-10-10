@@ -526,6 +526,53 @@ function CodeCell({ source, outputs, moduleTitle }: { source: string; outputs: C
         await pyodide.runPythonAsync(`open("ventes.csv", "w", encoding="utf-8").write("""produit,montant\nFormation Python,29000\nCoaching Data,45000\nTemplate Excel,12000\nFormation Python,29000\n""")`);
       }
 
+      if (editableCode.includes("ventes_koryxa_entreprises.csv") || editableCode.includes("ventes_koryxa.csv")) {
+        try {
+          const res = await fetch("/resources/python-data-analyst/ventes_koryxa_entreprises.csv");
+          if (res.ok) {
+            const csvText = await res.text();
+            const anyPyodide = pyodide as unknown as { FS?: { writeFile: (p: string, c: string) => void }; globals?: { set: (k: string, v: string) => void } };
+            if (anyPyodide.FS?.writeFile) {
+              anyPyodide.FS.writeFile("ventes_koryxa_entreprises.csv", csvText);
+              anyPyodide.FS.writeFile("ventes_koryxa.csv", csvText);
+            } else if (anyPyodide.globals?.set) {
+              anyPyodide.globals.set("_koryxa_raw_csv", csvText);
+              await pyodide.runPythonAsync(`
+with open("ventes_koryxa_entreprises.csv", "w", encoding="utf-8") as _f:
+    _f.write(_koryxa_raw_csv)
+with open("ventes_koryxa.csv", "w", encoding="utf-8") as _f:
+    _f.write(_koryxa_raw_csv)
+del _koryxa_raw_csv
+`);
+            }
+          }
+        } catch (e) {
+          console.warn("Chargement dataset brut:", e);
+        }
+      }
+
+      if (editableCode.includes("ventes_koryxa_entreprises_propre.csv")) {
+        try {
+          const res = await fetch("/resources/python-data-analyst/ventes_koryxa_entreprises_propre.csv");
+          if (res.ok) {
+            const csvText = await res.text();
+            const anyPyodide = pyodide as unknown as { FS?: { writeFile: (p: string, c: string) => void }; globals?: { set: (k: string, v: string) => void } };
+            if (anyPyodide.FS?.writeFile) {
+              anyPyodide.FS.writeFile("ventes_koryxa_entreprises_propre.csv", csvText);
+            } else if (anyPyodide.globals?.set) {
+              anyPyodide.globals.set("_koryxa_clean_csv", csvText);
+              await pyodide.runPythonAsync(`
+with open("ventes_koryxa_entreprises_propre.csv", "w", encoding="utf-8") as _f:
+    _f.write(_koryxa_clean_csv)
+del _koryxa_clean_csv
+`);
+            }
+          }
+        } catch (e) {
+          console.warn("Chargement dataset propre:", e);
+        }
+      }
+
       const packages = detectPackages(editableCode);
       if (packages.length && pyodide.loadPackage) {
         setRunOutput(`Chargement des bibliothèques : ${packages.join(", ")}...`);
