@@ -13,6 +13,7 @@ import {
   Code2,
   Cpu,
   Database,
+  GraduationCap,
   Layers3,
   LineChart,
   LockKeyhole,
@@ -347,9 +348,76 @@ export default function MinimalStorefront() {
           </div>
         </div>
 
-        {/* 3. View A: 8 Course Cards Grid (Directement scannable, zéro sous-filtre) */}
+        {/* 3. View A: 8 Course Cards Grid + Carte Horizontale Découverte */}
         {activeTab === "courses" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+          <div className="space-y-4 sm:space-y-5">
+            {/* Carte Horizontale Découverte 100% Offerte (Pleine largeur sur les 4 colonnes) */}
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/50 p-5 sm:p-6 md:p-7 shadow-xs hover:shadow-md transition-all">
+              <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5 sm:gap-6">
+                {/* Côté gauche : Informations, Analogie & Points forts */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-2.5">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#00a86b] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
+                      <GraduationCap size={14} /> Formation Découverte • 100% Offerte
+                    </span>
+                    <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-extrabold text-[#008b58]">
+                      Accès Libre Sans CB
+                    </span>
+                  </div>
+
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
+                    Starter Pack Data & Python : Les Fondations Expliquées Simplement
+                  </h2>
+                  <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+                    Variables, Tuples, Chaînes de caractères et DataFrames expliqués comme à un enfant de 10 ans.
+                    Exécutez votre premier code Python directement dans votre navigateur, sans rien installer.
+                  </p>
+
+                  <div className="mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold text-slate-700">
+                    <span className="flex items-center gap-1.5">
+                      <Check size={14} className="text-[#00a86b] shrink-0" /> Variables & Tuples sans jargon
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Check size={14} className="text-[#00a86b] shrink-0" /> Le DataFrame enfin limpide
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Check size={14} className="text-[#00a86b] shrink-0" /> Mini-laboratoire de code interactif
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Check size={14} className="text-[#00a86b] shrink-0" /> 4 chapitres pratiques (~45 min)
+                    </span>
+                  </div>
+                </div>
+
+                {/* Côté droit : Prix 0 FCFA + Bouton CTA */}
+                <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-3 shrink-0 pt-4 lg:pt-0 border-t lg:border-t-0 lg:border-l border-emerald-200/70 lg:pl-6">
+                  <div className="text-left lg:text-right">
+                    <div className="flex items-baseline gap-1.5 lg:justify-end">
+                      <span className="text-2xl sm:text-3xl font-black text-[#008b58] tracking-tight">
+                        0 FCFA
+                      </span>
+                      <span className="text-xs sm:text-sm text-slate-400 line-through font-bold">
+                        15 000 F
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-semibold text-slate-500">
+                      Cadeau de bienvenue
+                    </span>
+                  </div>
+
+                  <Link
+                    href="/formation-gratuite"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-[#008b58] hover:shadow-md transition-all active:scale-95"
+                  >
+                    <span>Commencer gratuitement</span>
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Grille des 8 cartes */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
             {COURSES.map((c) => {
               const Icon = c.icon;
               return (
@@ -413,6 +481,7 @@ export default function MinimalStorefront() {
                 </div>
               );
             })}
+            </div>
           </div>
         )}
 
