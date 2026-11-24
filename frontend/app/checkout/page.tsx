@@ -14,7 +14,7 @@ import {
   Package,
   ReceiptText,
   ShieldCheck,
-  Sparkles,
+  BookOpen,
   UserRound,
 } from "lucide-react";
 import { Header, FooterSEO } from "@/components/marketing/KoryxaFormationPortal";
@@ -358,7 +358,7 @@ function CheckoutContent() {
                 {order && (
                   <div className="mt-8 rounded-2xl border border-[#dfe5d8] bg-white p-6 shadow-sm">
                     <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008b58]">
-                      {packSlug ? <Package size={14} /> : <Sparkles size={14} />}
+                      {packSlug ? <Package size={14} /> : <BookOpen size={14} />}
                       {order.course_title || order.course_slug.replaceAll("-", " ")}
                     </div>
                     <p className="mt-3 text-3xl sm:text-4xl font-black text-slate-950">
@@ -429,7 +429,7 @@ function CheckoutContent() {
                     <div className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-6 shadow-sm">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008b58]">
-                          <Sparkles size={15} /> Recommandé · Instantané
+                          <CheckCircle2 size={15} /> Recommandé · Instantané
                         </div>
                         <span className="rounded-full bg-[#00a86b]/15 px-3 py-1 text-[11px] font-bold text-[#008b58]">
                           KORYXA Pay API

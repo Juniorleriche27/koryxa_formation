@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import { Bot } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import ApiWakeStatus from "@/components/layout/ApiWakeStatus";
 import "./globals.css";
 
@@ -71,16 +71,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         href="https://assistant-formation.koryxa.fr"
         target="_blank"
         rel="noreferrer"
-        aria-label="Ouvrir l’assistant KORYXA Formation"
-        className="fixed bottom-4 right-4 z-[70] inline-flex h-14 items-center justify-center gap-3 rounded-full border border-[#00a86b]/30 bg-[#00a86b] px-4 text-white shadow-xl shadow-[#00a86b]/25 transition hover:-translate-y-1 hover:bg-[#008b58] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a86b] focus-visible:ring-offset-2 sm:bottom-6 sm:right-6 sm:h-16 sm:px-5"
+        aria-label="Besoin d’aide ?"
+        title="Besoin d'aide ?"
+        className="fixed bottom-5 right-5 z-[70] inline-flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full border border-emerald-400/30 bg-[#00a86b] text-white shadow-xl shadow-emerald-900/25 transition-all duration-200 hover:-translate-y-1 hover:bg-[#008b58] hover:shadow-2xl hover:shadow-emerald-900/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a86b] focus-visible:ring-offset-2"
       >
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#00a86b] sm:h-10 sm:w-10 shadow-sm">
-          <Bot size={20} aria-hidden="true" />
-        </span>
-        <span className="hidden text-left sm:block">
-          <span className="block text-[0.68rem] font-black uppercase tracking-[0.14em] text-emerald-100">Assistant</span>
-          <span className="block text-sm font-black">Besoin d’aide ?</span>
-        </span>
+        <MessageCircle size={26} aria-hidden="true" />
       </a>
       <ApiWakeStatus />
     </>

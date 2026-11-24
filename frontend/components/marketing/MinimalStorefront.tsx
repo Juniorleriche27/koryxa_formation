@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Award,
   BarChart3,
+  BookOpen,
   BrainCircuit,
   Check,
   CheckCircle2,
@@ -17,10 +18,9 @@ import {
   LineChart,
   LockKeyhole,
   Network,
+  Package,
   ShieldCheck,
   Smartphone,
-  Sparkles,
-  Zap,
 } from "lucide-react";
 import KoryxaUserNav from "@/components/auth/KoryxaUserNav";
 
@@ -148,7 +148,7 @@ const COURSES: CourseItem[] = [
     modulesCount: 12,
     price: "12 000 FCFA",
     oldPrice: "45 000 FCFA",
-    badge: "IA Pratique",
+    badge: "Scikit-Learn",
     icon: BrainCircuit,
     iconColor: "text-purple-700",
     iconBg: "bg-purple-50 border-purple-200",
@@ -166,6 +166,7 @@ const COURSES: CourseItem[] = [
     modulesCount: 12,
     price: "12 000 FCFA",
     oldPrice: "45 000 FCFA",
+    badge: "Big Data & Pipelines",
     icon: Cpu,
     iconColor: "text-teal-700",
     iconBg: "bg-teal-50 border-teal-200",
@@ -178,12 +179,12 @@ const COURSES: CourseItem[] = [
     slug: "llm-rag",
     title: "LLM RAG Developer",
     category: "IA & Ingénierie",
-    tagline: "Assistants IA sur documents privés avec Qdrant, embeddings, Streamlit et RAGAS.",
+    tagline: "Assistants de recherche sur documents privés avec Qdrant, embeddings, Streamlit et RAGAS.",
     duration: "35h pratique",
     modulesCount: 12,
     price: "12 000 FCFA",
     oldPrice: "45 000 FCFA",
-    badge: "Dernière Génération",
+    badge: "RAG & Agents",
     icon: Network,
     iconColor: "text-emerald-700",
     iconBg: "bg-emerald-50 border-emerald-200",
@@ -291,7 +292,7 @@ export default function MinimalStorefront() {
               />
             </span>
             <div className="flex flex-col leading-none">
-              <span className="font-serif text-lg font-bold tracking-tight text-slate-950">
+              <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900">
                 KORY<span className="text-[#00a86b]">XA</span>
               </span>
               <span className="text-[10px] font-semibold text-slate-500">Pôle Formation</span>
@@ -304,7 +305,7 @@ export default function MinimalStorefront() {
               href="/dashboard"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-[#dfe5d8] bg-[#faf9f5] px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-[#008b58]"
             >
-              <Zap size={13} className="text-[#00a86b]" />
+              <BookOpen size={13} className="text-[#00a86b]" />
               Mon Espace Cours
             </Link>
             <KoryxaUserNav variant="desktop" />
@@ -316,14 +317,14 @@ export default function MinimalStorefront() {
       <main className="flex-1 px-3 py-4 sm:px-6 sm:py-6 lg:py-8 max-w-7xl mx-auto w-full">
         {/* Punchy Hero Strip (2 lines max) */}
         <div className="text-center max-w-3xl mx-auto mb-5 sm:mb-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/80 px-3 py-1 text-xs font-bold text-[#008b58] mb-2.5 shadow-xs">
-            <Sparkles size={13} className="text-[#00a86b]" />
-            Tarifs Révisés Spécial Rentrée • Mobile Money &amp; CB
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-1 text-xs font-semibold text-[#008b58] mb-3 shadow-xs">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#00a86b]" />
+            Tarifs Révisés • Paiement Mobile Money &amp; CB
           </div>
-          <h1 className="font-serif text-2xl sm:text-4xl lg:text-[2.6rem] font-bold text-slate-950 tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-black text-slate-900 tracking-tight leading-[1.12]">
             Formations Pratiques Data &amp; IA.
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm text-slate-600 max-w-xl mx-auto leading-normal">
+          <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
             Apprenez directement dans votre navigateur. Projets réels d&apos;entreprises, certifications vérifiables et accès instantané après paiement.
           </p>
 
@@ -350,7 +351,7 @@ export default function MinimalStorefront() {
                   : "text-slate-600 hover:text-slate-950"
               }`}
             >
-              <Zap size={15} className={activeTab === "packs" ? "text-white" : "text-amber-500"} />
+              <Package size={15} className={activeTab === "packs" ? "text-white" : "text-slate-500"} />
               Packs Carrière ({PACKS.length})
               <span className="rounded-full bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.2">
                 -50%
@@ -413,7 +414,7 @@ export default function MinimalStorefront() {
                       </div>
 
                       {/* Title & Tagline */}
-                      <h2 className="font-serif text-base font-bold text-slate-950 leading-snug group-hover:text-[#008b58] transition-colors">
+                      <h2 className="text-base font-bold text-slate-900 leading-snug group-hover:text-[#008b58] transition-colors">
                         {c.title}
                       </h2>
                       <p className="mt-1 text-xs text-slate-600 line-clamp-2 leading-relaxed">
@@ -435,7 +436,7 @@ export default function MinimalStorefront() {
                     <div className="mt-4 pt-3 border-t border-slate-100">
                       <div className="flex items-baseline justify-between mb-2.5">
                         <div className="flex items-baseline gap-1.5">
-                          <span className="font-serif text-xl font-black text-slate-950">
+                          <span className="text-xl font-extrabold text-slate-950 tracking-tight">
                             {c.price}
                           </span>
                           <span className="text-[11px] text-slate-400 line-through font-semibold">
@@ -497,7 +498,7 @@ export default function MinimalStorefront() {
                     </span>
                   </div>
 
-                  <h2 className="mt-3 font-serif text-xl sm:text-2xl font-bold text-slate-950">
+                  <h2 className="mt-3 text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                     {pack.title}
                   </h2>
                   <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
@@ -522,7 +523,7 @@ export default function MinimalStorefront() {
                 <div className="mt-4 border-t border-slate-100 pt-4">
                   <div className="flex items-baseline justify-between mb-3">
                     <div className="flex items-baseline gap-2">
-                      <span className="font-serif text-2xl font-black text-slate-950">
+                      <span className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight">
                         {pack.price}
                       </span>
                       <span className="text-xs text-slate-400 line-through font-bold">

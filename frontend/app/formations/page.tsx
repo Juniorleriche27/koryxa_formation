@@ -20,7 +20,7 @@ import {
   MessageCircleMore,
   Network,
   ShieldCheck,
-  Sparkles,
+  BookOpen,
   Target,
   Users,
   Workflow,
@@ -237,7 +237,7 @@ export default function FormationsPage() {
       <section className="relative overflow-hidden bg-[#faf9f5] px-4 py-16 text-slate-950 sm:px-6 lg:px-8 lg:py-24 border-b border-[#dfe5d8]">
         <div className="relative mx-auto max-w-5xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#008b58] shadow-xs">
-            <Sparkles size={14} className="text-[#00a86b]" /> Catalogue d&apos;Excellence KORYXA Formation
+            <BookOpen size={14} className="text-[#00a86b]" /> Catalogue des Parcours KORYXA
           </span>
           <h1 className="mt-6 font-serif text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.08] tracking-tight text-slate-950">
             Maîtrisez les compétences data &amp; IA.<br />
