@@ -33,33 +33,19 @@ function redirectToLogin(request: NextRequest) {
   return response;
 }
 
-export default clerkMiddleware(async (auth, request) => {
+const hasClerkKey = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
+const baseMiddleware = async (request: NextRequest) => {
   if (request.nextUrl.pathname === "/identity/formation/launch") {
     return NextResponse.next();
   }
 
-  // 1. Si Clerk a authentifié l'utilisateur
-  const authData = auth();
-  if (authData.userId) {
-    return NextResponse.next();
-  }
-
-  const hasClerkCookie = Boolean(
-    request.cookies.get("__session")?.value ||
-    request.cookies.get("__client_uat")?.value ||
-    request.cookies.get("__clerk_db_jwt")?.value
-  );
-
-  if (hasClerkCookie) {
-    return NextResponse.next();
-  }
-
-  // 2. Si la route n'est pas protégée (ex: accueil, landing, etc.), on laisse passer
+  // Si la route n'est pas protégée (ex: accueil, formation-gratuite, etc.), on laisse passer
   if (!isProtectedRoute(request)) {
     return NextResponse.next();
   }
 
-  // 3. Pour les routes protégées, vérifier le token d'accès grant/partenaire
+  // Pour les routes protégées, vérifier le token d'accès grant/partenaire
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   if (!accessToken) {
     return redirectToLogin(request);
@@ -89,7 +75,67 @@ export default clerkMiddleware(async (auth, request) => {
   }
 
   return NextResponse.next();
-});
+};
+
+export default hasClerkKey
+  ? clerkMiddleware(async (auth, request) => {
+      if (request.nextUrl.pathname === "/identity/formation/launch") {
+        return NextResponse.next();
+      }
+
+      // 1. Si Clerk a authentifié l'utilisateur
+      const authData = auth();
+      if (authData.userId) {
+        return NextResponse.next();
+      }
+
+      const hasClerkCookie = Boolean(
+        request.cookies.get("__session")?.value ||
+        request.cookies.get("__client_uat")?.value ||
+        request.cookies.get("__clerk_db_jwt")?.value
+      );
+
+      if (hasClerkCookie) {
+        return NextResponse.next();
+      }
+
+      // 2. Si la route n'est pas protégée, on laisse passer
+      if (!isProtectedRoute(request)) {
+        return NextResponse.next();
+      }
+
+      // 3. Pour les routes protégées, vérifier le token d'accès grant/partenaire
+      const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
+      if (!accessToken) {
+        return redirectToLogin(request);
+      }
+
+      const sessionPayload = await getAccessSessionPayload(accessToken);
+      if (!sessionPayload || sessionPayload.sub === "legacy-access") {
+        return redirectToLogin(request);
+      }
+
+      const requestedCourse = normalizeCourseSlug(request.nextUrl.searchParams.get("course"));
+
+      try {
+        if (sessionPayload.kind === "identity") {
+          return NextResponse.next();
+        }
+
+        const grant = await findGrantById(sessionPayload.sub);
+        const summary = summarizeGrant(grant);
+        const sessionCourse = normalizeCourseSlug(sessionPayload.course);
+
+        if (summary.status !== "active" || (requestedCourse && requestedCourse !== sessionCourse && !(await grantMatchesCourse(grant!, requestedCourse)))) {
+          return redirectToLogin(request);
+        }
+      } catch {
+        return redirectToLogin(request);
+      }
+
+      return NextResponse.next();
+    })
+  : baseMiddleware;
 
 export const config = {
   matcher: [
