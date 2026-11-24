@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
@@ -17,7 +18,6 @@ import {
   BookOpen,
   UserRound,
 } from "lucide-react";
-import { Header, FooterSEO } from "@/components/marketing/KoryxaFormationPortal";
 import { accessAPI, commerceAPI, getApiErrorMessage } from "@/lib/api";
 import { courseCatalog } from "@/lib/courseConfig";
 
@@ -329,26 +329,55 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f5] text-slate-950 antialiased">
-      <Header />
-
-      <main className="px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
-        <div className="mx-auto max-w-5xl">
-          <Link
-            href={packSlug ? "/formations#packs" : `/formations/${activeSlug}`}
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition hover:text-[#008b58]"
-          >
-            <ArrowLeft size={16} /> {packSlug ? "Retour aux Packs" : "Retour à la formation"}
+    <div className="min-h-screen bg-[#faf9f5] text-slate-950 antialiased flex flex-col justify-between">
+      {/* Header Tunnel de Vente épuré sans menu distrayant */}
+      <header className="sticky top-0 z-40 border-b border-[#dfe5d8] bg-white/95 backdrop-blur-md px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2.5 group" aria-label="Accueil KORYXA Formation">
+            <span className="relative flex h-8 w-8 overflow-hidden rounded-lg border border-slate-200 bg-white p-0.5 shadow-xs transition group-hover:scale-105">
+              <Image
+                src="/assets/brand/koryxa-formation-logo.webp"
+                alt="KORYXA"
+                width={32}
+                height={32}
+                className="h-full w-full object-contain"
+                priority
+              />
+            </span>
+            <div className="flex flex-col leading-none">
+              <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900">
+                KORY<span className="text-[#00a86b]">XA</span>
+              </span>
+              <span className="text-[10px] font-semibold text-slate-500">Pôle Formation</span>
+            </div>
           </Link>
 
-          <section className="mt-6 overflow-hidden rounded-3xl border border-[#dfe5d8] bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-[#008b58]"
+          >
+            <ArrowLeft size={14} /> Retour au catalogue
+          </Link>
+        </div>
+      </header>
+
+      <main className="px-4 py-8 sm:px-6 lg:px-8 lg:py-12 flex-1">
+        <div className="mx-auto max-w-5xl">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition hover:text-[#008b58]"
+          >
+            <ArrowLeft size={16} /> Retour aux formations
+          </Link>
+
+          <section className="mt-4 overflow-hidden rounded-3xl border border-[#dfe5d8] bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
             <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
               {/* Colonne Gauche : Récapitulatif */}
               <aside className="border-b border-[#dfe5d8] bg-[#faf9f5]/80 p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-10">
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#00a86b]/30 bg-[#00a86b]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#008b58]">
                   <ReceiptText size={14} /> KORYXA Checkout
                 </div>
-                <h1 className="mt-5 font-serif text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+                <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
                   Finaliser ma commande
                 </h1>
                 <p className="mt-3 text-sm leading-relaxed text-slate-600">
@@ -494,7 +523,20 @@ function CheckoutContent() {
         </div>
       </main>
 
-      <FooterSEO />
+      {/* Footer épuré sans liens de dispersion */}
+      <footer className="border-t border-[#dfe5d8] bg-white px-4 py-4 text-center text-xs text-slate-500">
+        <div className="mx-auto flex max-w-5xl flex-col sm:flex-row items-center justify-between gap-2">
+          <p>© {new Date().getFullYear()} KORYXA — Paiement 100% sécurisé Mobile Money &amp; CB</p>
+          <a
+            href="https://wa.me/22892092572"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#008b58] font-bold hover:underline"
+          >
+            Assistance WhatsApp direct (+228 92 09 25 72)
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
