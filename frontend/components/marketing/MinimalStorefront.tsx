@@ -7,7 +7,6 @@ import {
   ArrowRight,
   Award,
   BarChart3,
-  BookOpen,
   BrainCircuit,
   Check,
   CheckCircle2,
@@ -269,11 +268,6 @@ const PACKS: CareerPack[] = [
 
 export default function MinimalStorefront() {
   const [activeTab, setActiveTab] = useState<"courses" | "packs">("courses");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-
-  const filteredCourses = selectedCategory === "all"
-    ? COURSES
-    : COURSES.filter((c) => c.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-[#faf9f5] text-slate-950 flex flex-col justify-between antialiased selection:bg-[#00a86b]/20 selection:text-slate-950">
@@ -299,15 +293,8 @@ export default function MinimalStorefront() {
             </div>
           </Link>
 
-          {/* Quick links & Profile */}
+          {/* Profil utilisateur / Connexion uniquement (Chemin unique) */}
           <div className="flex items-center gap-2.5">
-            <Link
-              href="/dashboard"
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-[#dfe5d8] bg-[#faf9f5] px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-white hover:text-[#008b58]"
-            >
-              <BookOpen size={13} className="text-[#00a86b]" />
-              Mon Espace Cours
-            </Link>
             <KoryxaUserNav variant="desktop" />
           </div>
         </div>
@@ -315,7 +302,7 @@ export default function MinimalStorefront() {
 
       {/* 2. Main Storefront Container (Above-the-fold optimization) */}
       <main className="flex-1 px-3 py-4 sm:px-6 sm:py-6 lg:py-8 max-w-7xl mx-auto w-full">
-        {/* Punchy Hero Strip (2 lines max) */}
+        {/* Punchy Hero Strip */}
         <div className="text-center max-w-3xl mx-auto mb-5 sm:mb-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-1 text-xs font-semibold text-[#008b58] mb-3 shadow-xs">
             <span className="h-1.5 w-1.5 rounded-full bg-[#00a86b]" />
@@ -360,113 +347,72 @@ export default function MinimalStorefront() {
           </div>
         </div>
 
-        {/* 3. View A: 8 Course Cards Grid */}
+        {/* 3. View A: 8 Course Cards Grid (Directement scannable, zéro sous-filtre) */}
         {activeTab === "courses" && (
-          <div>
-            {/* Quick Filter Pill Bar */}
-            <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-4 overflow-x-auto pb-1 text-xs">
-              {[
-                { id: "all", label: "Tout afficher" },
-                { id: "Fondamentaux", label: "Fondamentaux (5 000 F)" },
-                { id: "Analytics & Data", label: "Analytics (8 000 F)" },
-                { id: "IA & Ingénierie", label: "IA & Ingénierie (12 000 F)" },
-              ].map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors ${
-                    selectedCategory === cat.id
-                      ? "bg-slate-900 text-white"
-                      : "bg-white border border-[#dfe5d8] text-slate-600 hover:bg-slate-100"
-                  }`}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+            {COURSES.map((c) => {
+              const Icon = c.icon;
+              return (
+                <div
+                  key={c.id}
+                  className="group relative flex flex-col justify-between rounded-2xl border border-[#dfe5d8] bg-white p-4 shadow-xs hover:shadow-md hover:border-[#00a86b] transition-all duration-200"
                 >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Cards Grid: 4 columns on large desktop, 2 on tablet, 1 on mobile */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-              {filteredCourses.map((c) => {
-                const Icon = c.icon;
-                return (
-                  <div
-                    key={c.id}
-                    className="group relative flex flex-col justify-between rounded-2xl border border-[#dfe5d8] bg-white p-4 shadow-xs hover:shadow-md hover:border-[#00a86b] transition-all duration-200"
-                  >
-                    <div>
-                      {/* Top Bar : Icon + Category / Badge */}
-                      <div className="flex items-start justify-between gap-2 mb-2.5">
-                        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${c.iconBg} ${c.iconColor}`}>
-                          <Icon size={20} />
-                        </span>
-                        <div className="flex flex-col items-end gap-1">
-                          {c.badge && (
-                            <span className="rounded-full bg-emerald-100/90 text-[#008b58] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wide">
-                              {c.badge}
-                            </span>
-                          )}
-                          <span className="text-[10px] font-semibold text-slate-400">
-                            {c.category}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Title & Tagline */}
-                      <h2 className="text-base font-bold text-slate-900 leading-snug group-hover:text-[#008b58] transition-colors">
-                        {c.title}
-                      </h2>
-                      <p className="mt-1 text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                        {c.tagline}
-                      </p>
-
-                      {/* Highlights */}
-                      <ul className="mt-3 space-y-1 border-t border-slate-100 pt-2.5 text-[11px] text-slate-600">
-                        {c.highlights.map((h, i) => (
-                          <li key={i} className="flex items-center gap-1.5">
-                            <Check size={12} className="text-[#00a86b] shrink-0" />
-                            <span className="truncate">{h}</span>
-                          </li>
-                        ))}
-                      </ul>
+                  <div>
+                    {/* Top Bar : Icon + Category */}
+                    <div className="flex items-start justify-between gap-2 mb-2.5">
+                      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${c.iconBg} ${c.iconColor}`}>
+                        <Icon size={20} />
+                      </span>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600">
+                        {c.category}
+                      </span>
                     </div>
 
-                    {/* Bottom Pricing & Direct Buy Button */}
-                    <div className="mt-4 pt-3 border-t border-slate-100">
-                      <div className="flex items-baseline justify-between mb-2.5">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-xl font-extrabold text-slate-950 tracking-tight">
-                            {c.price}
-                          </span>
-                          <span className="text-[11px] text-slate-400 line-through font-semibold">
-                            {c.oldPrice}
-                          </span>
-                        </div>
-                        <span className="text-[10px] font-medium text-slate-500">
-                          {c.duration}
-                        </span>
-                      </div>
+                    {/* Title & Tagline */}
+                    <h2 className="text-base font-bold text-slate-900 leading-snug group-hover:text-[#008b58] transition-colors">
+                      {c.title}
+                    </h2>
+                    <p className="mt-1 text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                      {c.tagline}
+                    </p>
 
-                      <div className="flex flex-col gap-1.5">
-                        <Link
-                          href={c.checkoutUrl}
-                          className="inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-[#00a86b] px-3 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#008b58] transition-all"
-                        >
-                          S&apos;inscrire ({c.price}) <ArrowRight size={14} />
-                        </Link>
-                        <Link
-                          href={c.detailUrl}
-                          className="inline-flex items-center justify-center text-[11px] font-semibold text-slate-500 hover:text-[#008b58] py-1 transition-colors"
-                        >
-                          Voir le programme complet →
-                        </Link>
-                      </div>
-                    </div>
+                    {/* Highlights */}
+                    <ul className="mt-3 space-y-1 border-t border-slate-100 pt-2.5 text-[11px] text-slate-600">
+                      {c.highlights.map((h, i) => (
+                        <li key={i} className="flex items-center gap-1.5">
+                          <Check size={12} className="text-[#00a86b] shrink-0" />
+                          <span className="truncate">{h}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                );
-              })}
-            </div>
+
+                  {/* Bottom Pricing & Single Path Action */}
+                  <div className="mt-4 pt-3 border-t border-slate-100">
+                    <div className="flex items-baseline justify-between mb-2.5">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-xl font-extrabold text-slate-950 tracking-tight">
+                          {c.price}
+                        </span>
+                        <span className="text-[11px] text-slate-400 line-through font-semibold">
+                          {c.oldPrice}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-medium text-slate-500">
+                        {c.duration}
+                      </span>
+                    </div>
+
+                    <Link
+                      href={c.checkoutUrl}
+                      className="inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-[#00a86b] px-3 py-2 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-[#008b58] transition-all"
+                    >
+                      S&apos;inscrire ({c.price}) <ArrowRight size={15} />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -587,9 +533,6 @@ export default function MinimalStorefront() {
         <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-2">
           <p>© {new Date().getFullYear()} KORYXA — Pôle Formation. Tous droits réservés.</p>
           <div className="flex items-center gap-4 text-slate-600 font-medium">
-            <Link href="/dashboard" className="hover:text-[#008b58]">Espace Apprenant</Link>
-            <Link href="/formations" className="hover:text-[#008b58]">Catalogue Détaillé</Link>
-            <Link href="/faq" className="hover:text-[#008b58]">FAQ</Link>
             <a
               href="https://wa.me/22892092572"
               target="_blank"
