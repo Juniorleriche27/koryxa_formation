@@ -1,21 +1,24 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import {
   ArrowLeft,
   Check,
   CheckCircle2,
   ExternalLink,
   Loader2,
+  LogIn,
   Package,
   ReceiptText,
   ShieldCheck,
   Sparkles,
+  UserRound,
 } from "lucide-react";
 import { Header, FooterSEO } from "@/components/marketing/KoryxaFormationPortal";
-import { commerceAPI, getApiErrorMessage } from "@/lib/api";
+import { accessAPI, commerceAPI, getApiErrorMessage } from "@/lib/api";
 import { courseCatalog } from "@/lib/courseConfig";
 
 type Order = {
@@ -74,6 +77,177 @@ const coursePrices: Record<string, number> = {
   "data-engineering-python-sql": 69000,
 };
 
+function ClerkCheckoutIdentity({
+  onIdentityDetected,
+}: {
+  onIdentityDetected: (identity: { name?: string; phone?: string; email?: string; isSignedIn: boolean }) => void;
+}) {
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (isSignedIn && user) {
+      const name = user.fullName || [user.firstName, user.lastName].filter(Boolean).join(" ") || "";
+      const email = user.primaryEmailAddress?.emailAddress || "";
+      const phone = user.phoneNumbers?.[0]?.phoneNumber || "";
+      onIdentityDetected({ name, phone, email, isSignedIn: true });
+    } else {
+      onIdentityDetected({ isSignedIn: false });
+    }
+  }, [isLoaded, isSignedIn, user, onIdentityDetected]);
+
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center gap-2 rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-4 text-xs font-semibold text-slate-500">
+        <Loader2 size={16} className="animate-spin text-[#00a86b]" />
+        <span>Vérification de votre compte KORYXA...</span>
+      </div>
+    );
+  }
+
+  if (isSignedIn && user) {
+    return (
+      <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#00a86b]/15 text-[#008b58]">
+            <CheckCircle2 size={20} />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#008b58]">Compte KORYXA actif</p>
+            <p className="font-bold text-slate-950 text-sm">{user.fullName || user.primaryEmailAddress?.emailAddress}</p>
+            {user.primaryEmailAddress && (
+              <p className="text-xs text-slate-500">{user.primaryEmailAddress.emailAddress}</p>
+            )}
+          </div>
+        </div>
+        <span className="hidden sm:inline-flex rounded-full bg-white border border-emerald-200 px-3 py-1 text-[11px] font-bold text-[#008b58] shadow-xs">
+          Accès immédiat
+        </span>
+      </div>
+    );
+  }
+
+  const currentNext = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/checkout";
+
+  return (
+    <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5">
+      <div className="flex items-start gap-3.5">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
+          <UserRound size={20} />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800">
+              Recommandé avant paiement
+            </span>
+          </div>
+          <h4 className="mt-1 font-serif text-base font-bold text-slate-950">
+            Connectez-vous à votre compte KORYXA
+          </h4>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600">
+            Pour que votre formation soit immédiatement débloquée dans votre espace apprenant dès validation du paiement, connectez-vous ou créez votre compte en 1 clic.
+          </p>
+          <div className="mt-3.5 flex flex-wrap items-center gap-2.5">
+            <Link
+              href={`/login?next=${encodeURIComponent(currentNext)}`}
+              className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-slate-800"
+            >
+              <LogIn size={14} /> Se connecter à KORYXA
+            </Link>
+            <Link
+              href={`/register?next=${encodeURIComponent(currentNext)}`}
+              className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-800 shadow-xs transition hover:bg-slate-50"
+            >
+              Créer un compte
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SessionCheckoutIdentity({
+  onIdentityDetected,
+}: {
+  onIdentityDetected: (identity: { name?: string; phone?: string; email?: string; isSignedIn: boolean }) => void;
+}) {
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    accessAPI
+      .me()
+      .then(({ data }) => {
+        setUser(data);
+        onIdentityDetected({ name: data.name, email: data.email, isSignedIn: true });
+      })
+      .catch(() => {
+        setUser(null);
+        onIdentityDetected({ isSignedIn: false });
+      })
+      .finally(() => setChecked(true));
+  }, [onIdentityDetected]);
+
+  if (!checked) return null;
+
+  if (user) {
+    return (
+      <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#00a86b]/15 text-[#008b58]">
+            <CheckCircle2 size={20} />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#008b58]">Compte KORYXA actif</p>
+            <p className="font-bold text-slate-950 text-sm">{user.name}</p>
+            <p className="text-xs text-slate-500">{user.email}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const currentNext = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/checkout";
+
+  return (
+    <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5">
+      <div className="flex items-start gap-3.5">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
+          <UserRound size={20} />
+        </div>
+        <div className="flex-1">
+          <h4 className="font-serif text-base font-bold text-slate-950">
+            Connectez-vous à votre compte KORYXA
+          </h4>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600">
+            Votre formation sera instantanément rattachée à votre espace apprenant dès confirmation.
+          </p>
+          <div className="mt-3.5 flex flex-wrap items-center gap-2.5">
+            <Link
+              href={`/login?next=${encodeURIComponent(currentNext)}`}
+              className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-slate-800"
+            >
+              <LogIn size={14} /> Se connecter à KORYXA
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CheckoutIdentityBlock({
+  onIdentityDetected,
+}: {
+  onIdentityDetected: (identity: { name?: string; phone?: string; email?: string; isSignedIn: boolean }) => void;
+}) {
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+    return <SessionCheckoutIdentity onIdentityDetected={onIdentityDetected} />;
+  }
+  return <ClerkCheckoutIdentity onIdentityDetected={onIdentityDetected} />;
+}
+
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const courseSlug = searchParams.get("course");
@@ -97,10 +271,28 @@ function CheckoutContent() {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [purchaseAttemptId, setPurchaseAttemptId] = useState("");
+  const [isSignedIn, setIsSignedIn] = useState<boolean | null>(null);
+
+  const handleIdentityDetected = useCallback(
+    (identity: { name?: string; phone?: string; email?: string; isSignedIn: boolean }) => {
+      setIsSignedIn(identity.isSignedIn);
+      if (identity.isSignedIn) {
+        if (identity.name) setCustomerName((prev) => prev || identity.name || "");
+        if (identity.phone) setCustomerPhone((prev) => prev || identity.phone || "");
+      }
+    },
+    [],
+  );
 
   const [initiatingPay, setInitiatingPay] = useState(false);
 
   async function handleKoryxaPayCheckout() {
+    if (isSignedIn === false) {
+      const currentNext = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/checkout";
+      window.location.href = `/login?next=${encodeURIComponent(currentNext)}`;
+      return;
+    }
+
     if (customerName.trim().length < 2 || customerPhone.replace(/\D/g, "").length < 8) {
       setError("Renseignez votre nom et un numéro Mobile Money valide.");
       return;
@@ -231,6 +423,8 @@ function CheckoutContent() {
                   </div>
                 ) : (
                   <div className="space-y-6">
+                    <CheckoutIdentityBlock onIdentityDetected={handleIdentityDetected} />
+
                     {/* Option 1 : KORYXA Pay en ligne */}
                     <div className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-6 shadow-sm">
                       <div className="flex items-center justify-between gap-3">
@@ -279,7 +473,11 @@ function CheckoutContent() {
                         className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#00a86b]/20 transition hover:bg-[#008b58] disabled:opacity-60"
                       >
                         {initiatingPay ? <Loader2 size={18} className="animate-spin" /> : <ExternalLink size={18} />}
-                        {initiatingPay ? "Connexion à KORYXA Pay..." : `Payer ${Number(order?.amount || 0).toLocaleString("fr-FR")} FCFA avec KORYXA Pay →`}
+                        {initiatingPay
+                          ? "Connexion à KORYXA Pay..."
+                          : isSignedIn === false
+                          ? `Se connecter pour payer ${Number(order?.amount || 0).toLocaleString("fr-FR")} FCFA →`
+                          : `Payer ${Number(order?.amount || 0).toLocaleString("fr-FR")} FCFA avec KORYXA Pay →`}
                       </button>
                     </div>
 
