@@ -257,7 +257,7 @@ export default function LandingPage() {
               <LockKeyhole size={15} className="text-[#00a86b]" /> Accès sécurisé
             </span>
             <span className="flex items-center gap-1.5">
-              <Star size={15} className="text-amber-500" /> Tarif officiel : 29 000 FCFA
+              <Star size={15} className="text-amber-500" /> Tarif accessible : 8 000 FCFA
             </span>
             <span className="flex items-center gap-1.5">
               <Award size={15} className="text-[#00a86b]" /> Certification officielle incluse
@@ -408,9 +408,10 @@ export default function LandingPage() {
 
             <div className="rounded-2xl border border-[#dfe5d8] bg-white p-6 text-center shadow-md">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Tarif Unique</p>
-              <p className="mt-3 font-serif text-4xl font-black text-slate-950">
-                29 000 <span className="text-base font-bold text-slate-500">FCFA</span>
-              </p>
+              <div className="mt-3 flex items-baseline justify-center gap-2">
+                <span className="font-serif text-4xl font-black text-slate-950">8 000 FCFA</span>
+                <span className="text-sm font-semibold text-slate-400 line-through">29 000 FCFA</span>
+              </div>
               <p className="mt-2 text-xs text-slate-500">Paiement sécurisé via Mobile Money et carte bancaire</p>
               <Link
                 href={purchaseUrl}

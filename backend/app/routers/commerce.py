@@ -103,17 +103,30 @@ def _initiate_koryxa_pay(payload: InitiateKoryxaPaySchema, customer_id: str):
     db = get_service_supabase()
 
     pack_prices = {
-        "full-stack-data-analyst": 89000,
-        "data-scientist-ai-engineer": 129000,
-        "data-ultimate-all-access": 199000,
+        "full-stack-data-analyst": 15000,
+        "data-scientist-ai-engineer": 25000,
+        "data-ultimate-all-access": 35000,
+    }
+
+    course_prices = {
+        "excel-data-analyst": 5000,
+        "sql-data-analyst": 5000,
+        "python-data-analyst": 8000,
+        "power-bi-data-analyst": 8000,
+        "statistics-data-science-python": 8000,
+        "machine-learning-python": 12000,
+        "data-engineering-python-sql": 12000,
+        "llm-rag": 12000,
     }
 
     if payload.item_type == "pack":
-        amount = pack_prices.get(payload.product_code, 89000)
+        amount = pack_prices.get(payload.product_code, 15000)
+    elif payload.product_code in course_prices:
+        amount = course_prices[payload.product_code]
     else:
         course_res = db.table("courses").select("price_amount").eq("slug", payload.product_code).limit(1).execute()
         if not course_res.data or course_res.data[0].get("price_amount") is None:
-            amount = 29000
+            amount = 8000
         else:
             amount = int(course_res.data[0]["price_amount"])
 

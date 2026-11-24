@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { KoryxaFormationPortal } from "@/components/marketing/KoryxaFormationPortal";
+import MinimalStorefront from "@/components/marketing/MinimalStorefront";
 
 export const metadata: Metadata = {
   title: "KORYXA Formation — Formations pratiques en Data, IA et Automatisation",
@@ -116,7 +116,7 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(catalogJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <KoryxaFormationPortal />
+      <MinimalStorefront />
     </>
   );
 }

@@ -45,12 +45,12 @@ const careerPacks = [
       "SQL Data Analyst (PostgreSQL, CTE, Vues analytiques)",
       "Power BI Data Analyst (DAX, Modélisation, RLS)",
     ],
-    price: "89 000 FCFA",
-    oldPrice: "127 000 FCFA",
-    saving: "Économie de 38 000 FCFA (-30%)",
+    price: "15 000 FCFA",
+    oldPrice: "25 000 FCFA",
+    saving: "Économie de 10 000 FCFA (-40%)",
     featured: false,
     outcome: "Autonomie totale sur l'analyse et le reporting décisionnel",
-    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Full-Stack Data Analyst (89 000 FCFA).",
+    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Full-Stack Data Analyst (15 000 FCFA).",
   },
   {
     slug: "data-scientist-ai-engineer",
@@ -64,12 +64,12 @@ const careerPacks = [
       "Machine Learning avec Python (Scikit-Learn, SHAP, Churn)",
       "LLM RAG Developer (Embeddings, Vector DB, Qdrant)",
     ],
-    price: "129 000 FCFA",
-    oldPrice: "176 000 FCFA",
-    saving: "Économie de 47 000 FCFA (-31%)",
+    price: "25 000 FCFA",
+    oldPrice: "40 000 FCFA",
+    saving: "Économie de 15 000 FCFA (-38%)",
     featured: true,
     outcome: "Double compétence hautement recherchée : Data Science & IA Appliquée",
-    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Data Scientist & AI Engineer (129 000 FCFA).",
+    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Data Scientist & AI Engineer (25 000 FCFA).",
   },
   {
     slug: "data-ultimate-all-access",
@@ -82,12 +82,12 @@ const careerPacks = [
       "Tous les projets portfolios, corrigés et certifications inclus",
       "Accès prioritaire à toutes les nouvelles formations",
     ],
-    price: "199 000 FCFA",
-    oldPrice: "352 000 FCFA",
-    saving: "Économie massive de 153 000 FCFA (-43%)",
+    price: "35 000 FCFA",
+    oldPrice: "70 000 FCFA",
+    saving: "Économie massive de 35 000 FCFA (-50%)",
     featured: false,
     outcome: "Le pass complet pour devenir le profil le plus complet du marché",
-    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Data Ultimate All-Access (199 000 FCFA).",
+    whatsappText: "Bonjour KORYXA, je souhaite commander le Pack Data Ultimate All-Access (35 000 FCFA).",
   },
 ];
 
@@ -103,8 +103,8 @@ const tracks = [
     href: "/formations/python-data-analyst",
     active: true,
     featured: false,
-    price: "29 000 FCFA",
-    oldPrice: "45 000 FCFA",
+    price: "8 000 FCFA",
+    oldPrice: "25 000 FCFA",
     outcome: "Projet d'analyse de données portfolio (FCFA)",
     tags: ["Python", "Pandas", "EDA", "Pyodide"],
   },
@@ -119,8 +119,8 @@ const tracks = [
     href: "/formations/excel-data-analyst",
     active: true,
     featured: false,
-    price: "39 000 FCFA",
-    oldPrice: "49 000 FCFA",
+    price: "5 000 FCFA",
+    oldPrice: "39 000 FCFA",
     outcome: "Dashboard Excel professionnel",
     tags: ["Excel", "RECHERCHEX", "Power Query", "TCD"],
   },
@@ -135,8 +135,8 @@ const tracks = [
     href: "/formations/sql-data-analyst",
     active: true,
     featured: false,
-    price: "39 000 FCFA",
-    oldPrice: "49 000 FCFA",
+    price: "5 000 FCFA",
+    oldPrice: "39 000 FCFA",
     outcome: "Analyse PostgreSQL professionnelle",
     tags: ["SQL", "PostgreSQL", "CTE", "Vues Analytiques"],
   },
@@ -151,8 +151,8 @@ const tracks = [
     href: "/formations/power-bi-data-analyst",
     active: true,
     featured: false,
-    price: "49 000 FCFA",
-    oldPrice: "59 000 FCFA",
+    price: "8 000 FCFA",
+    oldPrice: "35 000 FCFA",
     outcome: "Rapport Power BI professionnel",
     tags: ["Power BI", "DAX", "Star Schema", "RLS"],
   },
@@ -167,8 +167,8 @@ const tracks = [
     href: "/formations/statistics-data-science-python",
     active: true,
     featured: false,
-    price: "49 000 FCFA",
-    oldPrice: "59 000 FCFA",
+    price: "8 000 FCFA",
+    oldPrice: "35 000 FCFA",
     outcome: "Projet Data Science portfolio",
     tags: ["Statistiques", "Python", "K-Means", "Séries Temporelles"],
   },
@@ -183,8 +183,8 @@ const tracks = [
     href: "/formations/machine-learning-python",
     active: true,
     featured: false,
-    price: "49 000 FCFA",
-    oldPrice: "69 000 FCFA",
+    price: "12 000 FCFA",
+    oldPrice: "45 000 FCFA",
     outcome: "Projet Machine Learning portfolio",
     tags: ["Scikit-Learn", "Random Forest", "SHAP", "Validation"],
   },
@@ -199,8 +199,8 @@ const tracks = [
     href: "/formations/data-engineering-python-sql",
     active: true,
     featured: false,
-    price: "49 000 FCFA",
-    oldPrice: "79 000 FCFA",
+    price: "12 000 FCFA",
+    oldPrice: "45 000 FCFA",
     outcome: "Plateforme Data Engineering portfolio",
     tags: ["Python", "PostgreSQL", "dbt", "Airflow", "Docker"],
   },
@@ -215,8 +215,8 @@ const tracks = [
     href: "/formations/llm-rag",
     active: true,
     featured: true,
-    price: "49 000 FCFA",
-    oldPrice: "69 000 FCFA",
+    price: "12 000 FCFA",
+    oldPrice: "45 000 FCFA",
     outcome: "Assistant documentaire RAG déployable",
     tags: ["LLM", "RAG", "Qdrant", "Streamlit"],
   },
@@ -450,16 +450,20 @@ export default function FormationsPage() {
                     {oldPrice && <p className="text-xs font-semibold text-slate-400 line-through">{oldPrice}</p>}
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#008b58]">Tarif officiel unique</span>
                   </div>
-                  <Link
-                    href={href}
-                    className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold transition ${
-                      featured
-                        ? "bg-[#00a86b] text-white hover:bg-[#008b58]"
-                        : "bg-slate-900 text-white hover:bg-[#00a86b]"
-                    }`}
-                  >
-                    Voir le programme complet <ArrowRight size={14} />
-                  </Link>
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href={`/checkout?course=${href.replace("/formations/", "")}`}
+                      className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#008b58]"
+                    >
+                      S&apos;inscrire ({price}) <ArrowRight size={14} />
+                    </Link>
+                    <Link
+                      href={href}
+                      className="inline-flex min-h-9 w-full items-center justify-center gap-1 text-xs font-semibold text-slate-500 hover:text-[#008b58] transition"
+                    >
+                      Voir le programme détaillé →
+                    </Link>
+                  </div>
                 </div>
               </article>
             ))}

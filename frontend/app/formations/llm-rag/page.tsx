@@ -535,7 +535,7 @@ export default function LlmRagLandingPage() {
               courseSlug={LLM_RAG_COURSE_SLUG}
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-700/15 transition hover:bg-[#008b58]"
             >
-              Rejoindre la formation • 49 000 FCFA <ArrowRight size={16} />
+              Rejoindre la formation • 12 000 FCFA <ArrowRight size={16} />
             </PurchaseCourseLink>
             <a
               href="#programme"
@@ -550,7 +550,7 @@ export default function LlmRagLandingPage() {
               <LockKeyhole size={15} className="text-[#00a86b]" /> Accès immédiat et à vie
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Star size={15} className="text-amber-500 fill-amber-500" /> Tarif unique 49 000 FCFA
+              <Star size={15} className="text-amber-500 fill-amber-500" /> Tarif accessible 12 000 FCFA
             </span>
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheck size={15} className="text-[#00a86b]" /> Certificat KORYXA inclus
@@ -724,8 +724,8 @@ export default function LlmRagLandingPage() {
           <div className="mt-8 rounded-3xl border border-[#dfe5d8] bg-white p-8 sm:p-10 shadow-xl text-center">
             <p className="text-xs font-bold uppercase tracking-widest text-[#008b58]">Tarif d&apos;accès complet</p>
             <div className="mt-4 flex items-baseline justify-center gap-3">
-              <span className="text-4xl sm:text-5xl font-black text-slate-950">49 000 FCFA</span>
-              <span className="text-base sm:text-lg font-medium text-slate-400 line-through">79 000 FCFA</span>
+              <span className="text-4xl sm:text-5xl font-black text-slate-950">12 000 FCFA</span>
+              <span className="text-base sm:text-lg font-medium text-slate-400 line-through">45 000 FCFA</span>
             </div>
             <p className="mt-2 text-xs font-semibold text-[#008b58]">Accès à vie garanti • Mises à jour continues incluses</p>
 
@@ -749,7 +749,7 @@ export default function LlmRagLandingPage() {
                 courseSlug={LLM_RAG_COURSE_SLUG}
                 className="w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#00a86b] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-700/15 transition hover:bg-[#008b58]"
               >
-                S&apos;inscrire à la formation • 49 000 FCFA <ArrowRight size={16} />
+                S&apos;inscrire à la formation • 12 000 FCFA <ArrowRight size={16} />
               </PurchaseCourseLink>
               <Link
                 href={courseRoutes.access(LLM_RAG_COURSE_SLUG)}

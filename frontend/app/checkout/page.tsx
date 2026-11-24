@@ -36,8 +36,8 @@ const careerPacksConfig: Record<
 > = {
   "full-stack-data-analyst": {
     title: "Pack Full-Stack Data Analyst",
-    price: 89000,
-    originalPrice: 127000,
+    price: 15000,
+    originalPrice: 21000,
     courses: [
       "Excel Data Analyst",
       "SQL Data Analyst (PostgreSQL)",
@@ -46,8 +46,8 @@ const careerPacksConfig: Record<
   },
   "data-scientist-ai-engineer": {
     title: "Pack Data Scientist & AI Engineer",
-    price: 129000,
-    originalPrice: 186000,
+    price: 25000,
+    originalPrice: 40000,
     courses: [
       "Python Data Analyst",
       "Statistiques & Data Science avec Python",
@@ -57,8 +57,8 @@ const careerPacksConfig: Record<
   },
   "data-ultimate-all-access": {
     title: "Pack Data Ultimate All-Access",
-    price: 199000,
-    originalPrice: 372000,
+    price: 35000,
+    originalPrice: 70000,
     courses: [
       "Les 8 parcours complets (Python, SQL, Excel, Power BI, Stats, ML, RAG, Data Engineering)",
       "Accès illimité à vie et futures mises à jour",
@@ -67,14 +67,14 @@ const careerPacksConfig: Record<
 };
 
 const coursePrices: Record<string, number> = {
-  "python-data-analyst": 29000,
-  "excel-data-analyst": 39000,
-  "llm-rag": 49000,
-  "sql-data-analyst": 39000,
-  "power-bi-data-analyst": 49000,
-  "statistics-data-science-python": 49000,
-  "machine-learning-python": 59000,
-  "data-engineering-python-sql": 69000,
+  "excel-data-analyst": 5000,
+  "sql-data-analyst": 5000,
+  "python-data-analyst": 8000,
+  "power-bi-data-analyst": 8000,
+  "statistics-data-science-python": 8000,
+  "machine-learning-python": 12000,
+  "data-engineering-python-sql": 12000,
+  "llm-rag": 12000,
 };
 
 function ClerkCheckoutIdentity({

@@ -469,7 +469,7 @@ export default function StatisticsDataScienceLanding() {
               <LockKeyhole size={15} className="text-[#00a86b]" /> Accès immédiat &amp; à vie
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Star size={15} className="text-amber-500 fill-amber-500" /> Tarif unique : 49 000 FCFA
+              <Star size={15} className="text-amber-500 fill-amber-500" /> Tarif accessible : 8 000 FCFA
             </span>
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheck size={15} className="text-[#00a86b]" /> Certificat officiel vérifiable
@@ -687,8 +687,8 @@ export default function StatisticsDataScienceLanding() {
           <div className="mt-8 rounded-3xl border border-[#dfe5d8] bg-white p-8 sm:p-10 shadow-xl text-center">
             <p className="text-xs font-bold uppercase tracking-widest text-[#008b58]">Accès complet &amp; illimité</p>
             <div className="mt-4 flex items-baseline justify-center gap-3">
-              <span className="text-4xl sm:text-5xl font-extrabold text-slate-950">49 000 FCFA</span>
-              <span className="text-base sm:text-lg font-medium text-slate-400 line-through">79 000 FCFA</span>
+              <span className="text-4xl sm:text-5xl font-extrabold text-slate-950">8 000 FCFA</span>
+              <span className="text-base sm:text-lg font-medium text-slate-400 line-through">35 000 FCFA</span>
             </div>
             <p className="mt-2 text-xs font-semibold text-[#008b58]">Paiement unique · Aucun abonnement caché</p>
 

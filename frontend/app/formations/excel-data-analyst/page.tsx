@@ -338,7 +338,7 @@ export default function ExcelDataAnalystLanding() {
               <Layers3 size={16} className="text-[#00a86b]" /> 12 modules d’application
             </span>
             <span className="flex items-center gap-1.5">
-              <LockKeyhole size={16} className="text-[#00a86b]" /> Tarif certifié : 39 000 FCFA
+              <LockKeyhole size={16} className="text-[#00a86b]" /> Tarif accessible : 5 000 FCFA
             </span>
             <span className="flex items-center gap-1.5">
               <GraduationCap size={16} className="text-[#00a86b]" /> Certificat officiel KORYXA
@@ -499,8 +499,8 @@ export default function ExcelDataAnalystLanding() {
             <div className="rounded-2xl border border-[#dfe5d8] bg-[#faf9f5] p-6 text-center shadow-md">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Tarif Unique</p>
               <div className="mt-3 flex items-baseline justify-center gap-2">
-                <span className="font-serif text-4xl font-black text-slate-950">39 000 FCFA</span>
-                <span className="text-sm font-semibold text-slate-400 line-through">49 000 FCFA</span>
+                <span className="font-serif text-4xl font-black text-slate-950">5 000 FCFA</span>
+                <span className="text-sm font-semibold text-slate-400 line-through">39 000 FCFA</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">Paiement sécurisé via Mobile Money et carte bancaire</p>
               <PurchaseCourseLink
