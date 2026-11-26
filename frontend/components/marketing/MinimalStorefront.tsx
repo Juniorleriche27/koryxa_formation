@@ -576,6 +576,48 @@ export default function MinimalStorefront() {
           </div>
         )}
 
+        {/* 4.5. Cross-Promo : Pack Mon premier assistant IA (Compact & Non Saturant) */}
+        <section className="mt-6 rounded-2xl border border-emerald-200/80 bg-gradient-to-r from-white via-emerald-50/40 to-white p-4 sm:p-5 shadow-xs">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                  Projet Pratique IA · Accès à vie
+                </span>
+                <span className="text-[11px] font-bold text-[#008b58]">
+                  Paiement unique • Livre 68p + Code Source complet
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">
+                Pack « Mon premier assistant IA » — Créer &amp; Livrer un Chatbot RAG Client
+              </h3>
+              <p className="mt-1 text-xs text-slate-600 leading-relaxed max-w-3xl">
+                Guide en 12 chapitres, code source FastAPI &amp; Next.js (Cohere), 35 questions d&apos;évaluation et kit contractuel (devis, cahier des charges, PV de recette).
+              </p>
+            </div>
+
+            <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-2.5 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-emerald-200/60 md:pl-5">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                  11 000 FCFA
+                </span>
+                <span className="text-xs text-slate-400 line-through font-bold">
+                  55 000 F
+                </span>
+              </div>
+              <a
+                href="https://mon-assistant.koryxa.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#00a86b] transition"
+              >
+                <span>Découvrir le pack</span>
+                <ArrowRight size={15} />
+              </a>
+            </div>
+          </div>
+        </section>
+
         {/* 5. Direct Trust Bar (Payment & Sovereign Learning Guarantee) */}
         <section className="mt-6 rounded-2xl border border-[#dfe5d8] bg-white p-3.5 sm:p-4 text-center">
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold text-slate-600">
